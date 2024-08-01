@@ -1,0 +1,98 @@
+delimiter $$
+
+drop function if exists verificacion_usuario$$
+create function verificacion_usuario(
+mail varchar(60),
+    contra char(64)
+)returns bool reads sql data
+begin
+declare correcto bool;
+if(
+exists(
+select *
+        from Usuario U
+        where U.Mail = mail and U.Contraseña = sha2(contra)
+)
+)
+then
+set correcto = true;
+else
+set correcto = false;
+end if;
+return correcto;
+end$$
+
+drop function if exists verificacion_mail_registrado$$
+create function verificacion_mail_registrado(unMail varchar(60))
+returns bool reads sql data
+begin
+declare existe bool;
+    set existe = false;
+    if(
+exists(
+select *
+            from Usuario
+            where Mail = unMail
+)
+)
+    then
+set existe = true;
+end if;
+    return true;
+end$$
+
+drop function if exists DisponibilidadFechas$$
+create function DisponibilidadFecha(unIdHabitacion int unsigned, unaEntrada datetime, unaSalida datetime )
+returns bool reads sql data
+begin
+declare disponible bool;
+    set disponible = true;
+    if(
+exists(
+select *
+            from Reserva
+            where (Entrada >= unaEntrada and Entrada <= unaSalida) or (Entrada <= unaEntrada and Salida >= unaEntrada) and idHabitacion = unIdHabitacion
+) and unaEntrada < now()
+)
+then
+set disponible = false;
+end if;
+    return disponible;
+end$$
+
+drop function if exists HabitacionesDisponiblesTipo$$
+create function HabitacionesDisponiblesTipo(unIdTipo int unsigned, unidHotel int unsigned, unaEntrada datetime, unaSalida datetime)
+returns tinyint unsigned reads sql data
+begin
+declare disponibles tinyint unsigned ;
+select count(*) into disponibles
+from Habitacion
+where idHotel = unIdHotel and idTipo = unIdTipo;
+return disponibles;
+end$$
+
+drop trigger if exists befInsReserva$$
+create trigger befInsReserva before insert on Reserva
+for each row
+begin
+declare disponible bool;
+select DisponibilidadFecha(New.idHabitacion, New.Entrada, New.Salida) into disponible;
+if(disponible = false)
+then
+signal sqlstate '45000'
+set message_text = "La fecha solicitada no disponible";
+end if;
+end$$
+
+drop trigger if exists befInsUsuario$$
+create trigger befInsUsuario before insert on Usuario
+for each row
+begin
+declare existe bool;
+    select verificacion_mail_registrado(New.Mail) into existe;
+    if(existe = true)
+    then
+signal sqlstate '45000'
+        set message_text = "Mail ingresado ya registrado, ir a log in?";
+end if;
+end$$
