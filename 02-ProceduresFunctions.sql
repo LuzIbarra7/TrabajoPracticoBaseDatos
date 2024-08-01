@@ -11,7 +11,7 @@ if(
 exists(
 select *
         from Usuario U
-        where U.Mail = mail and U.Contraseña = sha2(contra)
+        where U.Mail = mail and U.Contraseña = sha2(contra, 256)
 )
 )
 then
@@ -41,7 +41,7 @@ end if;
     return true;
 end$$
 
-drop function if exists DisponibilidadFechas$$
+drop function if exists DisponibilidadFecha$$
 create function DisponibilidadFecha(unIdHabitacion int unsigned, unaEntrada datetime, unaSalida datetime )
 returns bool reads sql data
 begin
