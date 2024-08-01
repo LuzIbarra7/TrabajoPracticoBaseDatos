@@ -136,13 +136,12 @@ CREATE PROCEDURE insert_reserva(
   IN p_idUsuario INT UNSIGNED,
   IN p_Entrada DATETIME,
   IN p_Salida DATETIME,
-  IN p_Precio DECIMAL(10, 2),
   IN p_Telefono INT,
   out p_idReserva int unsigned
 )
 BEGIN
   INSERT INTO `Reserva` (`idHabitacion`, `idMetododePago`, `idUsuario`, `Entrada`, `Salida`, `Precio`, `Telefono`)
-  VALUES (p_idHabitacion, p_idMetododePago, p_idUsuario, p_Entrada, p_Salida, p_Precio, p_Telefono);
+  VALUES (p_idHabitacion, p_idMetododePago, p_idUsuario, p_Entrada, p_Salida, datediff(day, p_Entrada, p_Salida), p_Telefono);
   set p_idReserva = last_insert_id();
 END //
 
