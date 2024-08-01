@@ -119,7 +119,7 @@ CREATE PROCEDURE insert_usuario(
 )
 BEGIN
   INSERT INTO `Usuario` (`Nombre`, `Apellido`, `Mail`, `Contraseña`) 
-  VALUES (p_Nombre, p_Apellido, p_Mail, sha2(p_Contraseña));
+  VALUES (p_Nombre, p_Apellido, p_Mail, p_Contraseña);
   SET p_idUsuario = LAST_INSERT_ID();
 END //
 
