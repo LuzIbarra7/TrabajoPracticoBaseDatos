@@ -103,6 +103,28 @@ END //
 
 DELIMITER ;
 
+
+
+-- Procedure for Usuario
+DROP PROCEDURE IF EXISTS insert_usuario;
+
+DELIMITER //
+
+CREATE PROCEDURE insert_usuario(
+  IN p_Nombre VARCHAR(45),
+  IN p_Apellido VARCHAR(45),
+  IN p_Mail VARCHAR(60),
+  IN p_Contraseña CHAR(64),
+  OUT p_idUsuario INT unsigned
+)
+BEGIN
+  INSERT INTO `Usuario` (`Nombre`, `Apellido`, `Mail`, `Contraseña`) 
+  VALUES (p_Nombre, p_Apellido, p_Mail, sha2(p_Contraseña));
+  SET p_idUsuario = LAST_INSERT_ID();
+END //
+
+DELIMITER ;
+
 -- Procedure for Reserva
 DROP PROCEDURE IF EXISTS insert_reserva;
 
@@ -125,27 +147,6 @@ BEGIN
 END //
 
 DELIMITER ;
-
--- Procedure for Usuario
-DROP PROCEDURE IF EXISTS insert_usuario;
-
-DELIMITER //
-
-CREATE PROCEDURE insert_usuario(
-  IN p_Nombre VARCHAR(45),
-  IN p_Apellido VARCHAR(45),
-  IN p_Mail VARCHAR(60),
-  IN p_Contraseña CHAR(64),
-  OUT p_idUsuario INT unsigned
-)
-BEGIN
-  INSERT INTO `Usuario` (`Nombre`, `Apellido`, `Mail`, `Contraseña`) 
-  VALUES (p_Nombre, p_Apellido, p_Mail, sha2(p_Contraseña));
-  SET p_idUsuario = LAST_INSERT_ID();
-END //
-
-DELIMITER ;
-
 -- Procedure for Comentario
 DROP PROCEDURE IF EXISTS insert_comentario;
 
