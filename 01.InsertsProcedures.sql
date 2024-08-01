@@ -141,7 +141,7 @@ CREATE PROCEDURE insert_reserva(
 )
 BEGIN
   INSERT INTO `Reserva` (`idHabitacion`, `idMetododePago`, `idUsuario`, `Entrada`, `Salida`, `Precio`, `Telefono`)
-  select p_idHabitacion, p_idMetododePago, p_idUsuario, p_Entrada, p_Salida, H.PrecioPorNoche * (datediff(day, p_Entrada, p_Salida)), p_Telefono
+  select p_idHabitacion, p_idMetododePago, p_idUsuario, p_Entrada, p_Salida, H.PrecioPorNoche * (datediff(p_Entrada, p_Salida)), p_Telefono
   from Habitacion H
   where idHabitacion = p_idHabitacion;
   set p_idReserva = last_insert_id();
