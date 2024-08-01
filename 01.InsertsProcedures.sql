@@ -1,14 +1,16 @@
--- Procedure for Pais
 DROP PROCEDURE IF EXISTS insert_pais;
 
 DELIMITER //
 
 CREATE PROCEDURE insert_pais(
-  IN p_Nombre VARCHAR(45)
+  IN p_Nombre VARCHAR(45),
+  OUT p_idPais int
 )
 BEGIN
   INSERT INTO `Pais` (`Nombre`) VALUES (p_Nombre);
+  set p_idPais = last_insert_id();
 END //
+
 
 DELIMITER ;
 
@@ -19,11 +21,14 @@ DELIMITER //
 
 CREATE PROCEDURE insert_ciudad(
   IN p_idPais INT UNSIGNED,
-  IN p_nombre VARCHAR(45)
+  IN p_nombre VARCHAR(45),
+  out p_IdCiudad int
 )
 BEGIN
   INSERT INTO `Ciudad` (`idPais`, `nombre`) VALUES (p_idPais, p_nombre);
+  set p_IdCiudad = last_insert_id();
 END //
+
 
 DELIMITER ;
 
@@ -37,11 +42,14 @@ CREATE PROCEDURE insert_hotel(
   IN p_Nombre VARCHAR(45),
   IN p_Direccion VARCHAR(45),
   IN p_Telefono INT,
-  IN p_URL VARCHAR(90)
+  IN p_URL VARCHAR(90),
+  out p_idHotel int
 )
 BEGIN
   INSERT INTO `Hotel` (`idCiudad`, `Nombre`, `Direccion`, `Telefono`, `URL`) VALUES (p_idCiudad, p_Nombre, p_Direccion, p_Telefono, p_URL);
+  set p_idHotel = last_insert_id();
 END //
+
 
 DELIMITER ;
 
@@ -51,10 +59,12 @@ DROP PROCEDURE IF EXISTS insert_tipo_habitacion;
 DELIMITER //
 
 CREATE PROCEDURE insert_tipo_habitacion(
-  IN p_Nombre VARCHAR(45)
+  IN p_Nombre VARCHAR(45),
+  out p_idTipo int
 )
 BEGIN
   INSERT INTO `TipoHabitacion` (`Nombre`) VALUES (p_Nombre);
+  set p_idTipo = last_insert_id();
 END //
 
 DELIMITER ;
@@ -67,10 +77,12 @@ DELIMITER //
 CREATE PROCEDURE insert_habitacion(
   IN p_idHotel INT UNSIGNED,
   IN p_idTipo INT UNSIGNED,
-  IN p_PrecioPorNoche DECIMAL(10, 2)
+  IN p_PrecioPorNoche DECIMAL(10, 2),
+  out p_idHabitacion int
 )
 BEGIN
   INSERT INTO `Habitacion` (`idHotel`, `idTipo`, `PrecioPorNoche`) VALUES (p_idHotel, p_idTipo, p_PrecioPorNoche);
+  set p_idHabitacion = last_insert_id();
 END //
 
 DELIMITER ;
@@ -81,10 +93,12 @@ DROP PROCEDURE IF EXISTS insert_metodo_pago;
 DELIMITER //
 
 CREATE PROCEDURE insert_metodo_pago(
-  IN p_TipoMedioPago VARCHAR(45)
+  IN p_TipoMedioPago VARCHAR(45),
+  out p_idMetodoPago int
 )
 BEGIN
   INSERT INTO `MetodoPago` (`TipoMedioPago`) VALUES (p_TipoMedioPago);
+  set p_idMetodoPago = last_insert_id();
 END //
 
 DELIMITER ;
@@ -101,11 +115,13 @@ CREATE PROCEDURE insert_reserva(
   IN p_Entrada DATETIME,
   IN p_Salida DATETIME,
   IN p_Precio DECIMAL(10, 2),
-  IN p_Telefono INT
+  IN p_Telefono INT,
+  out p_idReserva int
 )
 BEGIN
   INSERT INTO `Reserva` (`idHabitacion`, `idMetododePago`, `idUsuario`, `Entrada`, `Salida`, `Precio`, `Telefono`)
   VALUES (p_idHabitacion, p_idMetododePago, p_idUsuario, p_Entrada, p_Salida, p_Precio, p_Telefono);
+  set p_idReserva = last_insert_id();
 END //
 
 DELIMITER ;
@@ -123,9 +139,8 @@ CREATE PROCEDURE insert_usuario(
   OUT p_idUsuario INT
 )
 BEGIN
-  INSERT INTO `Usuario` (`Nombre`, `Apellido`, `Mail`, `Contraseña`)
-  VALUES (p_Nombre, p_Apellido, p_Mail, sha2(p_Contraseña, 256));
-
+  INSERT INTO `Usuario` (`Nombre`, `Apellido`, `Mail`, `Contraseña`) 
+  VALUES (p_Nombre, p_Apellido, p_Mail, sha2(p_Contraseña));
   SET p_idUsuario = LAST_INSERT_ID();
 END //
 
@@ -139,10 +154,13 @@ DELIMITER //
 CREATE PROCEDURE insert_comentario(
   IN p_idHabitacion INT UNSIGNED,
   IN p_Comentario VARCHAR(100),
-  IN p_Calificacion TINYINT(10)
+  IN p_Calificacion TINYINT(10),
+  out p_idComentario int
 )
 BEGIN
   INSERT INTO `Comentario` (`idHabitacion`, `Comentario`, `Calificacion`) VALUES (p_idHabitacion, p_Comentario, p_Calificacion);
+  set p_idComentario = last_insert_id();
 END //
 
-DELIMITER ;
+DELIMITER;
+delimiter $$
