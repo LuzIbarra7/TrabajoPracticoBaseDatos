@@ -4,7 +4,7 @@ DELIMITER //
 
 CREATE PROCEDURE insert_pais(
   IN p_Nombre VARCHAR(45),
-  OUT p_idPais int
+  OUT p_idPais int unsigned
 )
 BEGIN
   INSERT INTO `Pais` (`Nombre`) VALUES (p_Nombre);
@@ -22,7 +22,7 @@ DELIMITER //
 CREATE PROCEDURE insert_ciudad(
   IN p_idPais INT UNSIGNED,
   IN p_nombre VARCHAR(45),
-  out p_IdCiudad int
+  out p_IdCiudad int unsigned
 )
 BEGIN
   INSERT INTO `Ciudad` (`idPais`, `nombre`) VALUES (p_idPais, p_nombre);
@@ -43,7 +43,7 @@ CREATE PROCEDURE insert_hotel(
   IN p_Direccion VARCHAR(45),
   IN p_Telefono INT,
   IN p_URL VARCHAR(90),
-  out p_idHotel int
+  out p_idHotel int unsigned
 )
 BEGIN
   INSERT INTO `Hotel` (`idCiudad`, `Nombre`, `Direccion`, `Telefono`, `URL`) VALUES (p_idCiudad, p_Nombre, p_Direccion, p_Telefono, p_URL);
@@ -60,7 +60,7 @@ DELIMITER //
 
 CREATE PROCEDURE insert_tipo_habitacion(
   IN p_Nombre VARCHAR(45),
-  out p_idTipo int
+  out p_idTipo int unsigned
 )
 BEGIN
   INSERT INTO `TipoHabitacion` (`Nombre`) VALUES (p_Nombre);
@@ -78,7 +78,7 @@ CREATE PROCEDURE insert_habitacion(
   IN p_idHotel INT UNSIGNED,
   IN p_idTipo INT UNSIGNED,
   IN p_PrecioPorNoche DECIMAL(10, 2),
-  out p_idHabitacion int
+  out p_idHabitacion int unsigned
 )
 BEGIN
   INSERT INTO `Habitacion` (`idHotel`, `idTipo`, `PrecioPorNoche`) VALUES (p_idHotel, p_idTipo, p_PrecioPorNoche);
@@ -94,7 +94,7 @@ DELIMITER //
 
 CREATE PROCEDURE insert_metodo_pago(
   IN p_TipoMedioPago VARCHAR(45),
-  out p_idMetodoPago int
+  out p_idMetodoPago int unsigned
 )
 BEGIN
   INSERT INTO `MetodoPago` (`TipoMedioPago`) VALUES (p_TipoMedioPago);
@@ -116,7 +116,7 @@ CREATE PROCEDURE insert_reserva(
   IN p_Salida DATETIME,
   IN p_Precio DECIMAL(10, 2),
   IN p_Telefono INT,
-  out p_idReserva int
+  out p_idReserva int unsigned
 )
 BEGIN
   INSERT INTO `Reserva` (`idHabitacion`, `idMetododePago`, `idUsuario`, `Entrada`, `Salida`, `Precio`, `Telefono`)
@@ -136,7 +136,7 @@ CREATE PROCEDURE insert_usuario(
   IN p_Apellido VARCHAR(45),
   IN p_Mail VARCHAR(60),
   IN p_Contraseña CHAR(64),
-  OUT p_idUsuario INT
+  OUT p_idUsuario INT unsigned
 )
 BEGIN
   INSERT INTO `Usuario` (`Nombre`, `Apellido`, `Mail`, `Contraseña`) 
@@ -155,7 +155,7 @@ CREATE PROCEDURE insert_comentario(
   IN p_idHabitacion INT UNSIGNED,
   IN p_Comentario VARCHAR(100),
   IN p_Calificacion TINYINT(10),
-  out p_idComentario int
+  out p_idComentario int unsigned
 )
 BEGIN
   INSERT INTO `Comentario` (`idHabitacion`, `Comentario`, `Calificacion`) VALUES (p_idHabitacion, p_Comentario, p_Calificacion);
