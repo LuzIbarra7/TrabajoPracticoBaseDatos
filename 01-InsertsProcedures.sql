@@ -1,3 +1,5 @@
+Use `5to_Trivago` ;
+SELECT 'Creando SP' AS 'Estado';
 DROP PROCEDURE IF EXISTS insert_pais;
 
 DELIMITER //
@@ -164,5 +166,4 @@ BEGIN
   set p_idComentario = last_insert_id();
 END //
 
-DELIMITER;
-delimiter $$
+DELIMITER ;

@@ -1,3 +1,5 @@
+use `5to_Trivago` ;
+SELECT 'Creando Triggers' AS 'Estado';
 delimiter $$
 drop trigger if exists befInsReserva$$
 create trigger befInsReserva before insert on Reserva

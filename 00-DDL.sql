@@ -1,20 +1,20 @@
 -- -----------------------------------------------------
--- Schema Trivago
+-- Schema 5to_Trivago
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `Trivago` ;
+DROP SCHEMA IF EXISTS `5to_Trivago` ;
 
 -- -----------------------------------------------------
--- Schema Trivago
+-- Schema 5to_Trivago
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `Trivago`;
-USE `Trivago` ;
+CREATE SCHEMA IF NOT EXISTS `5to_Trivago`;
+USE `5to_Trivago` ;
 
 -- -----------------------------------------------------
--- Table `Trivago`.`Pais`
+-- Table `5to_Trivago`.`Pais`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Trivago`.`Pais` ;
+DROP TABLE IF EXISTS `5to_Trivago`.`Pais` ;
 
-CREATE TABLE IF NOT EXISTS `Trivago`.`Pais` (
+CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Pais` (
   `idPais` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `Nombre` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idPais`),
@@ -23,11 +23,11 @@ CREATE TABLE IF NOT EXISTS `Trivago`.`Pais` (
 
 
 -- -----------------------------------------------------
--- Table `Trivago`.`Ciudad`
+-- Table `5to_Trivago`.`Ciudad`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Trivago`.`Ciudad` ;
+DROP TABLE IF EXISTS `5to_Trivago`.`Ciudad` ;
 
-CREATE TABLE IF NOT EXISTS `Trivago`.`Ciudad` (
+CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Ciudad` (
   `idCiudad` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `idPais` INT UNSIGNED NOT NULL,
   `nombre` VARCHAR(45) NOT NULL,
@@ -36,18 +36,18 @@ CREATE TABLE IF NOT EXISTS `Trivago`.`Ciudad` (
   INDEX `fk_Ciudad_Pais1_idx` (`idPais` ASC) ,
   CONSTRAINT `fk_Ciudad_Pais1`
     FOREIGN KEY (`idPais`)
-    REFERENCES `Trivago`.`Pais` (`idPais`))
+    REFERENCES `5to_Trivago`.`Pais` (`idPais`))
 ;
 
 
 -- -----------------------------------------------------
--- Table `Trivago`.`Hotel`
+-- Table `5to_Trivago`.`Hotel`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Trivago`.`Hotel` ;
+DROP TABLE IF EXISTS `5to_Trivago`.`Hotel` ;
 
-CREATE TABLE IF NOT EXISTS `Trivago`.`Hotel` (
+CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Hotel` (
   `idHotel` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `idCuidad` INT UNSIGNED NOT NULL,
+  `idCiudad` INT UNSIGNED NOT NULL,
   `Nombre` VARCHAR(45) NOT NULL,
   `Direccion` VARCHAR(45) NOT NULL,
   `Telefono` INT UNSIGNED NOT NULL,
@@ -55,21 +55,21 @@ CREATE TABLE IF NOT EXISTS `Trivago`.`Hotel` (
   PRIMARY KEY (`idHotel`),
   UNIQUE INDEX `Hotelcol_UNIQUE` (`Telefono` ASC) ,
   UNIQUE INDEX `Direccion_UNIQUE` (`Direccion` ASC) ,
-  INDEX `fk_Hotel_Ciudad1_idx` (`idCuidad` ASC) ,
+  INDEX `fk_Hotel_Ciudad1_idx` (`idCiudad` ASC) ,
   UNIQUE INDEX `URL_UNIQUE` (`URL` ASC) ,
   CONSTRAINT `fk_Hotel_Ciudad1`
-    FOREIGN KEY (`idCuidad`)
-    REFERENCES `Trivago`.`Ciudad` (`idCiudad`)
+    FOREIGN KEY (`idCiudad`)
+    REFERENCES `5to_Trivago`.`Ciudad` (`idCiudad`)
 )
 ;
 
 
 -- -----------------------------------------------------
--- Table `Trivago`.`TipoHabitacion`
+-- Table `5to_Trivago`.`TipoHabitacion`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Trivago`.`TipoHabitacion` ;
+DROP TABLE IF EXISTS `5to_Trivago`.`TipoHabitacion` ;
 
-CREATE TABLE IF NOT EXISTS `Trivago`.`TipoHabitacion` (
+CREATE TABLE IF NOT EXISTS `5to_Trivago`.`TipoHabitacion` (
   `idTipo` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `Nombre` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idTipo`),
@@ -78,12 +78,12 @@ CREATE TABLE IF NOT EXISTS `Trivago`.`TipoHabitacion` (
 
 
 -- -----------------------------------------------------
--- Table `Trivago`.`Habitacion`
+-- Table `5to_Trivago`.`Habitacion`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Trivago`.`Habitacion` ;
+DROP TABLE IF EXISTS `5to_Trivago`.`Habitacion` ;
 
-CREATE TABLE IF NOT EXISTS `Trivago`.`Habitacion` (
-  `idHabitacion` INT UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Habitacion` (
+  `idHabitacion` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `idHotel` INT UNSIGNED NOT NULL,
   `idTipo` INT UNSIGNED NOT NULL,
   `PrecioPorNoche` DECIMAL UNSIGNED NULL,
@@ -92,21 +92,21 @@ CREATE TABLE IF NOT EXISTS `Trivago`.`Habitacion` (
   INDEX `fk_Habitacion_TipoHanbitacion1_idx` (`idTipo` ASC) ,
   CONSTRAINT `fk_Habitacion_Hotel1`
     FOREIGN KEY (`idHotel`)
-    REFERENCES `Trivago`.`Hotel` (`idHotel`)
+    REFERENCES `5to_Trivago`.`Hotel` (`idHotel`)
 ,
   CONSTRAINT `fk_Habitacion_TipoHanbitacion1`
     FOREIGN KEY (`idTipo`)
-    REFERENCES `Trivago`.`TipoHabitacion` (`idTipo`)
+    REFERENCES `5to_Trivago`.`TipoHabitacion` (`idTipo`)
 )
 ;
 
 
 -- -----------------------------------------------------
--- Table `Trivago`.`MetodoPago`
+-- Table `5to_Trivago`.`MetodoPago`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Trivago`.`MetodoPago` ;
+DROP TABLE IF EXISTS `5to_Trivago`.`MetodoPago` ;
 
-CREATE TABLE IF NOT EXISTS `Trivago`.`MetodoPago` (
+CREATE TABLE IF NOT EXISTS `5to_Trivago`.`MetodoPago` (
   `idMetodoPago` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `TipoMedioPago` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idMetodoPago`),
@@ -114,11 +114,11 @@ CREATE TABLE IF NOT EXISTS `Trivago`.`MetodoPago` (
 ;
 
 -- -----------------------------------------------------
--- Table `Trivago`.`Usuario`
+-- Table `5to_Trivago`.`Usuario`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Trivago`.`Usuario` ;
+DROP TABLE IF EXISTS `5to_Trivago`.`Usuario` ;
 
-CREATE TABLE IF NOT EXISTS `Trivago`.`Usuario` (
+CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Usuario` (
   `idUsuario` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `Nombre` VARCHAR(45) NOT NULL,
   `Apellido` VARCHAR(45) NOT NULL,
@@ -131,11 +131,11 @@ CREATE TABLE IF NOT EXISTS `Trivago`.`Usuario` (
 
 
 -- -----------------------------------------------------
--- Table `Trivago`.`Reserva`
+-- Table `5to_Trivago`.`Reserva`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Trivago`.`Reserva` ;
+DROP TABLE IF EXISTS `5to_Trivago`.`Reserva` ;
 
-CREATE TABLE IF NOT EXISTS `Trivago`.`Reserva` (
+CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Reserva` (
   `idReserva` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `idHabitacion` INT UNSIGNED NOT NULL,
   `idMetododePago` INT UNSIGNED NOT NULL,
@@ -150,26 +150,26 @@ CREATE TABLE IF NOT EXISTS `Trivago`.`Reserva` (
   INDEX `fk_Reserva_Usuario1_idx` (`idUsuario` ASC),
   CONSTRAINT `fk_Reserva_Habitacion1`
     FOREIGN KEY (`idHabitacion`)
-    REFERENCES `Trivago`.`Habitacion` (`idHabitacion`)
+    REFERENCES `5to_Trivago`.`Habitacion` (`idHabitacion`)
 ,
   CONSTRAINT `fk_Reserva_MetodoPago1`
     FOREIGN KEY (`idMetododePago`)
-    REFERENCES `Trivago`.`MetodoPago` (`idMetodoPago`)
+    REFERENCES `5to_Trivago`.`MetodoPago` (`idMetodoPago`)
 ,
   CONSTRAINT `fk_Reserva_Usuario1`
     FOREIGN KEY (`idUsuario`)
-    REFERENCES `Trivago`.`Usuario` (`idUsuario`)
+    REFERENCES `5to_Trivago`.`Usuario` (`idUsuario`)
 )
 ;
 
 
 
 -- -----------------------------------------------------
--- Table `Trivago`.`Comentario`
+-- Table `5to_Trivago`.`Comentario`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Trivago`.`Comentario` ;
+DROP TABLE IF EXISTS `5to_Trivago`.`Comentario` ;
 
-CREATE TABLE IF NOT EXISTS `Trivago`.`Comentario` (
+CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Comentario` (
   `idComentario` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `idHabitacion` INT UNSIGNED NOT NULL,
   `Comentario` VARCHAR(100) NOT NULL,
@@ -178,5 +178,5 @@ CREATE TABLE IF NOT EXISTS `Trivago`.`Comentario` (
   INDEX `fk_Comentario_Habitacion_idx` (`idHabitacion` ASC) ,
   CONSTRAINT `fk_Comentario_Habitacion`
     FOREIGN KEY (`idHabitacion`)
-    REFERENCES `Trivago`.`Habitacion` (`idHabitacion`)
-)
+    REFERENCES `5to_Trivago`.`Habitacion` (`idHabitacion`)
+);

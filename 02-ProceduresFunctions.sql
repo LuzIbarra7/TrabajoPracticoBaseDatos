@@ -1,3 +1,5 @@
+use `5to_Trivago` ;
+SELECT 'Creando SF' AS 'Estado';
 delimiter $$
 
 drop function if exists verificacion_usuario$$
