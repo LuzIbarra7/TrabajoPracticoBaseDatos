@@ -35,6 +35,6 @@ git clone https://github.com/ChengLeonardo/TrabajoPracticoBaseDatos.git
 
 | Año   | División| Participante                                                                |                                                                                                       |
 | :---: | :---:   |       :---                                                                  | :---
-| 2024  | 5° 7°   | Mario Rojas ([@LucasMedina04]())
-| 2024  | 5° 7°   | Luz Mabel ([@LucasMedina04]())            
+| 2024  | 5° 7°   | Mario Rojas ([@MarioRojas]())
+| 2024  | 5° 7°   | Luz Mabel ([@LuzMabel]())            
 | 2024  | 5° 7°   | Leonardo Cheng ([@ChengLeonardo](https://github.com/ChengLeonardo))
