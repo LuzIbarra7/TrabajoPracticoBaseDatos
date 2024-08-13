@@ -7,7 +7,7 @@ Material de consumo para las consultas de Base de Datos.
 
 ## DER
 
-![basededatos](https://github.com/user-attachments/assets/21362105-7167-4b4f-918d-c02b37c3b250)
+<img src =https://github.com/user-attachments/assets/21362105-7167-4b4f-918d-c02b37c3b250>
 
 ## Comenzando 🚀
 
