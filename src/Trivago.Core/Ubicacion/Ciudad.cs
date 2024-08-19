@@ -1,7 +1,9 @@
 namespace Trivago.Core.Ubicacion;
-public class Pais
+
+public class Ciudad
 {
+    public int idCiudad { get; set; }
     public int idPais { get; set; }
-    public List<Ciudad> Ciudades { get; set; }  
+    public List<Hotel>  Hoteles { get; set; }
     public string Nombre { get; set; }
 }
