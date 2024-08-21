@@ -1,31 +1,26 @@
-using System.Data;
 using Trivago.Core.Persistencia;
 using Trivago.Core.Ubicacion;
 
 namespace Trivago.RepoDapper;
 
-public class RepoPais : RepoDapper, IRepoPais
+public class RepoUsuario : IRepoUsuario
 {
-    public RepoPais(IDbConnection conexion) : base(conexion)
-    {
-    }
-
-    public void Alta(Pais elemento)
+    public void Alta(Usuario elemento)
     {
         throw new NotImplementedException();
     }
 
-    public Pais? Detalle(uint id)
+    public Usuario? Detalle(uint id)
     {
         throw new NotImplementedException();
     }
 
-    public List<Ciudad> InformarCiudad(int idPais)
+    public List<Usuario> Listar()
     {
         throw new NotImplementedException();
     }
 
-    public List<Pais> Listar()
+    public Usuario? UsuarioPorPass(string email, string pass)
     {
         throw new NotImplementedException();
     }

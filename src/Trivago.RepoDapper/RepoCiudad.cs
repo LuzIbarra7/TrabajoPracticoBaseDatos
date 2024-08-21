@@ -1,31 +1,26 @@
-using System.Data;
 using Trivago.Core.Persistencia;
 using Trivago.Core.Ubicacion;
 
 namespace Trivago.RepoDapper;
 
-public class RepoPais : RepoDapper, IRepoPais
+public class RepoCiudad : IRepoCiudad
 {
-    public RepoPais(IDbConnection conexion) : base(conexion)
-    {
-    }
-
-    public void Alta(Pais elemento)
+    public void Alta(Ciudad elemento)
     {
         throw new NotImplementedException();
     }
 
-    public Pais? Detalle(uint id)
+    public Ciudad? Detalle(uint id)
     {
         throw new NotImplementedException();
     }
 
-    public List<Ciudad> InformarCiudad(int idPais)
+    public List<Hotel> InformarHoteles(int idCiudad)
     {
         throw new NotImplementedException();
     }
 
-    public List<Pais> Listar()
+    public List<Ciudad> Listar()
     {
         throw new NotImplementedException();
     }
