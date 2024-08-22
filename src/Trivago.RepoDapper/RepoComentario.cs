@@ -1,22 +1,28 @@
-using Trivago.Core.Persistencia;
-using Trivago.Core.Ubicacion;
-
 namespace Trivago.RepoDapper;
-
-public class RepoComentario : IRepoComentario
+public class RepoComentario : RepoDapper, IRepoComentario
 {
-    public void Alta(Comentario elemento)
+    public RepoComentario(IDbConnection conexion) : base(conexion)
     {
-        throw new NotImplementedException();
+    }
+
+    public uint Alta(Comentario comentario)
+    {
+        string storedProcedure = "insert_comentario";
+        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, comentario);
+        return IdInsertado;
     }
 
     public Comentario? Detalle(uint id)
     {
-        throw new NotImplementedException();
+        string sql = "Select * from Comentario where idComentario = @Id LIMIT 1";
+        var resultado = _conexion.QuerySingleOrDefault<Comentario>(sql, new { Id = id});
+        return resultado;
     }
 
     public List<Comentario> Listar()
     {
-        throw new NotImplementedException();
+        string sql = "Select * from Comentario";
+        var resultado = _conexion.Query<Comentario>(sql).ToList();
+        return resultado;
     }
 }

@@ -1,22 +1,33 @@
+using System.Data;
 using Trivago.Core.Persistencia;
 using Trivago.Core.Ubicacion;
 
 namespace Trivago.RepoDapper;
 
-public class RepoTipoHabitacion : IRepoTipoHabitacion
+public class RepoTipoHabitacion : RepoDapper, IRepoTipoHabitacion
 {
-    public void Alta(Habitacion elemento)
+    public RepoTipoHabitacion(IDbConnection conexion) : base(conexion)
     {
-        throw new NotImplementedException();
     }
 
-    public Habitacion? Detalle(uint id)
+    public uint Alta(TipoHabitacion tipoHabitacion)
     {
-        throw new NotImplementedException();
+        string storedProcedure = "insert_tipo_habitacion";
+        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, tipoHabitacion);
+        return IdInsertado;
     }
 
-    public List<Habitacion> Listar()
+    public TipoHabitacion? Detalle(uint id)
     {
-        throw new NotImplementedException();
+        string sql = "Select * from TipoHabitacion where idTipoHabitacion = @Id LIMIT 1";
+        var resultado = _conexion.QuerySingleOrDefault<TipoHabitacion>(sql, new { Id = id});
+        return resultado;
+    }
+
+    public List<TipoHabitacion> Listar()
+    {
+        string sql = "Select * from TipoHabitacion";
+        var resultado = _conexion.Query<TipoHabitacion>(sql).ToList();
+        return resultado;
     }
 }

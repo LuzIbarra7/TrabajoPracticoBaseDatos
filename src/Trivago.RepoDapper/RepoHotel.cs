@@ -1,22 +1,39 @@
+using System.Data;
 using Trivago.Core.Persistencia;
 using Trivago.Core.Ubicacion;
 
 namespace Trivago.RepoDapper;
 
-public class RepoHotel : IRepoHotel
+public class RepoHotel : RepoDapper, IRepoHotel
 {
-    public void Alta(Hotel elemento)
+    public RepoHotel(IDbConnection conexion) : base(conexion)
     {
-        throw new NotImplementedException();
+    }
+
+    public List<Hotel> InformarHoteles(int idHotel)
+    {
+        string sql = "Select * from Hotel where idHotel = @Id";
+        var resultado = _conexion.Query<Hotel>(sql, new { Id = idHotel}).ToList();
+        return resultado;
+    }
+    public uint Alta(Hotel hotel)
+    {
+        string storedProcedure = "insert_hotel";
+        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, hotel);
+        return IdInsertado;
     }
 
     public Hotel? Detalle(uint id)
     {
-        throw new NotImplementedException();
+        string sql = "Select * from Hotel where idHotel = @Id LIMIT 1";
+        var resultado = _conexion.QuerySingleOrDefault<Hotel>(sql, new { Id = id});
+        return resultado;
     }
 
     public List<Hotel> Listar()
     {
-        throw new NotImplementedException();
+        string sql = "Select * from Hotel";
+        var resultado = _conexion.Query<Hotel>(sql).ToList();
+        return resultado;
     }
 }

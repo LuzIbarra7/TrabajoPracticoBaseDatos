@@ -10,23 +10,24 @@ public class RepoPais : RepoDapper, IRepoPais
     {
     }
 
-    public void Alta(Pais elemento)
+    public uint Alta(Pais pais)
     {
-        throw new NotImplementedException();
+        string storedProcedure = "insert_pais";
+        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, pais);
+        return IdInsertado;
     }
 
     public Pais? Detalle(uint id)
     {
-        throw new NotImplementedException();
-    }
-
-    public List<Ciudad> InformarCiudad(int idPais)
-    {
-        throw new NotImplementedException();
+        string sql = "Select * from Pais where idPais = @Id LIMIT 1";
+        var resultado = _conexion.QuerySingleOrDefault<Pais>(sql, new { Id = id});
+        return resultado;
     }
 
     public List<Pais> Listar()
     {
-        throw new NotImplementedException();
+        string sql = "Select * from Pais";
+        var resultado = _conexion.Query<Pais>(sql).ToList();
+        return resultado;
     }
 }

@@ -10,19 +10,25 @@ public class RepoHabitacion : RepoDapper, IRepoHabitacion
     {
     }
 
-    public void Alta(Habitacion elemento)
+    public uint Alta(Habitacion habitacion)
     {
-        throw new NotImplementedException();
+        string storedProcedure = "insert_habitacion";
+        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, habitacion);
+        return IdInsertado;
     }
 
     public Habitacion? Detalle(uint id)
     {
-        throw new NotImplementedException();
+        string sql = "Select * from Habitacion where idHabitacion = @Id LIMIT 1";
+        var resultado = _conexion.QuerySingleOrDefault<Habitacion>(sql, new { Id = id});
+        return resultado;
     }
 
     public List<Habitacion> Listar()
     {
-        throw new NotImplementedException();
+        string sql = "Select * from Habitacion";
+        var resultado = _conexion.Query<Habitacion>(sql).ToList();
+        return resultado;
     }
 }
 
