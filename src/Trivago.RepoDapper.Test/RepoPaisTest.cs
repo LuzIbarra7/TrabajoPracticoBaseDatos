@@ -1,4 +1,5 @@
 using Trivago.Core.Persistencia;
+using Trivago.Core.Ubicacion;
 
 namespace Trivago.RepoDapper.Test;
 
@@ -14,11 +15,33 @@ public class RepoPaisTest : TestBase
     [InlineData("Argentina")]
     [InlineData("Brasil")]
     [InlineData("Francia")]
-    public void TraerPaisOK(string nombrePais)
+    public void TraerTodo(string nombrePais)
     {
         var paises= _repoPais.Listar();
 
         Assert.NotEmpty(paises);
         Assert.Contains(paises, p=> p.Nombre == nombrePais);
+    }
+    [Fact]
+    public void TraerPorId()
+    {
+        var pais = _repoPais.Detalle(1);
+
+        Assert.NotNull(pais);
+    }
+    [Fact]
+    public void Insertar()
+    {
+        Pais pais = new Pais()
+        {
+            Nombre = "Alemania",
+        };
+        Assert.Equal(0, pais.idPais);
+        var insert_pais = _repoPais.Alta(pais);
+        
+        Assert.NotEqual(0, pais.idPais);
+        var otraAlemania = _repoPais.Detalle(pais.idPais);
+        Assert.Equal(pais.Nombre, otraAlemania.Nombre);
+
     }
 }
