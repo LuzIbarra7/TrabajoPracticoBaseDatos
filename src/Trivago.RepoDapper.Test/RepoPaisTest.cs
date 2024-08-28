@@ -31,7 +31,7 @@ public class RepoPaisTest : TestBase
         Assert.NotNull(pais);
     }
     [Fact]
-    public void Insertar()
+    public uint Insertar()
     {
         Pais pais = new Pais()
         {
@@ -44,5 +44,6 @@ public class RepoPaisTest : TestBase
         var otraAlemania = _repoPais.Detalle(pais.idPais);
         Assert.Equal(pais.Nombre, otraAlemania.Nombre);
 
+        return insert_pais;
     }
 }

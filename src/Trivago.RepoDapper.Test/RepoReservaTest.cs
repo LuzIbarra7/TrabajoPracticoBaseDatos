@@ -11,15 +11,23 @@ public class RepoReservaTest : TestBase
     {
         _repoReserva = new RepoReserva(Conexion);
     }
-
-    public Reserva InformarReservaPorId(uint Id)
+    [Fact]
+    public Reserva? InformarReservaPorId()
     {
-        var detalle = _repoReserva.Detalle(Id);
+        var detalle = _repoReserva.Detalle(1);
+        Assert.NotNull(detalle);
         return detalle;
+
     }
-    
+    [Fact]
     public List<Reserva> InformarReservas()
     {
-        var 
+        var reservas = _repoReserva.Listar();
+        return reservas;
+    }
+    public uint Insertar()
+    {
+        var idOUt = _repoReserva.Alta(new Reserva{ Entrada})
+        return idOUt
     }
 }
