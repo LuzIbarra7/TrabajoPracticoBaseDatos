@@ -8,9 +8,19 @@ public class RepoComentario : RepoDapper, IRepoComentario
     public uint Alta(Comentario comentario)
     {
         string storedProcedure = "insert_comentario";
-        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, comentario);
-        return IdInsertado;
+
+        var parametros = new DynamicParameters();
+        parametros.Add("p_idHabitacion", comentario.Habitacion);
+        parametros.Add("p_Comentario", comentario.comentario);
+        parametros.Add("p_Calificacion", comentario.Calificacion);
+        parametros.Add("p_idComentario", ParameterDirection.Output);
+               
+        _conexion.Execute(storedProcedure, parametros);
+
+        comentario.idComentario = parametros.Get<uint>("p_idComentario");
+        return comentario.idComentario;
     }
+
 
     public Comentario? Detalle(uint id)
     {

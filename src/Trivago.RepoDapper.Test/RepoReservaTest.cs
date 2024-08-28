@@ -1,12 +1,25 @@
+using Trivago.Core.Persistencia;
+using Trivago.Core.Ubicacion;
 using Xunit;
 
 namespace Trivago.RepoDapper.Test;
 
-public class RepoReservaTest
+public class RepoReservaTest : TestBase
 {
-    [Fact]
-    public void Test1()
+    private readonly IRepoReserva _repoReserva;
+    public RepoReservaTest() : base()
     {
-        Assert.True(true);
+        _repoReserva = new RepoReserva(Conexion);
+    }
+
+    public Reserva InformarReservaPorId(uint Id)
+    {
+        var detalle = _repoReserva.Detalle(Id);
+        return detalle;
+    }
+    
+    public List<Reserva> InformarReservas()
+    {
+        var 
     }
 }

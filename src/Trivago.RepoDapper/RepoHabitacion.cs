@@ -13,9 +13,20 @@ public class RepoHabitacion : RepoDapper, IRepoHabitacion
     public uint Alta(Habitacion habitacion)
     {
         string storedProcedure = "insert_habitacion";
-        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, habitacion);
-        return IdInsertado;
+
+        var parametros = new DynamicParameters();
+
+        parametros.Add("p_idHotel", habitacion.hotel);
+        parametros.Add("p_idTipo", habitacion.tipoHabitacion);
+        parametros.Add("p_PrecioPorNoche", habitacion.PrecioPorNoche);
+        parametros.Add("p_idHabitacion", ParameterDirection.Output);
+               
+        _conexion.Execute(storedProcedure, parametros);
+
+        habitacion.idHabitacion = parametros.Get<uint>("p_idHabitacion");
+        return habitacion.idHabitacion;
     }
+
 
     public Habitacion? Detalle(uint id)
     {

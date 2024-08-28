@@ -2,6 +2,6 @@ namespace Trivago.Core.Ubicacion;
 
 public class MetodoPago
 {
-    public int idMetodoPago { get; set; }
+    public uint idMetodoPago { get; set; }
     public string TipoMedioPago { get; set; }
 }

@@ -13,8 +13,15 @@ public class RepoMetodoPago : RepoDapper, IRepoMetodoPago
     public uint Alta(MetodoPago metodoPago)
     {
         string storedProcedure = "insert_metodo_pago";
-        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, metodoPago);
-        return IdInsertado;
+
+        var parametros = new DynamicParameters();
+        parametros.Add("p_TipoMedioPago", metodoPago.TipoMedioPago);
+        parametros.Add("p_idMetodoPago", ParameterDirection.Output);
+               
+        _conexion.Execute(storedProcedure, parametros);
+
+        metodoPago.idMetodoPago = parametros.Get<uint>("p_idMetodoPago");
+        return metodoPago.idMetodoPago;
     }
 
     public MetodoPago? Detalle(uint id)

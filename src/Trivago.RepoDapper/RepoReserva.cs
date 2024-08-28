@@ -13,8 +13,20 @@ public class RepoReserva : RepoDapper, IRepoReserva
     public uint Alta(Reserva reserva)
     {
         string storedProcedure = "insert_reserva";
-        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, reserva);
-        return IdInsertado;
+
+        var parametros = new DynamicParameters();
+        parametros.Add("p_idHabitacion", reserva.habitacion.idHabitacion);
+        parametros.Add("p_idMetododePago", reserva.metodoPago.idMetodoPago);
+        parametros.Add("idUsuario", reserva.idUsuario);
+        parametros.Add("p_Entrada", reserva.Entrada);
+        parametros.Add("p_Salida", reserva.Salida);
+        parametros.Add("p_Telefono", reserva.Telefono);
+        parametros.Add("p_idReserva", ParameterDirection.Output);
+               
+        _conexion.Execute(storedProcedure, parametros);
+
+        reserva.idReserva = parametros.Get<uint>("p_idReserva");
+        return reserva.idReserva;
     }
 
     public Reserva? Detalle(uint id)

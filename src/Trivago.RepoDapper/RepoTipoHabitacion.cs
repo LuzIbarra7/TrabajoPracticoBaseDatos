@@ -13,8 +13,15 @@ public class RepoTipoHabitacion : RepoDapper, IRepoTipoHabitacion
     public uint Alta(TipoHabitacion tipoHabitacion)
     {
         string storedProcedure = "insert_tipo_habitacion";
-        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, tipoHabitacion);
-        return IdInsertado;
+
+        var parametros = new DynamicParameters();
+        parametros.Add("p_Nombre", tipoHabitacion.Nombre);
+        parametros.Add("p_idTipo", ParameterDirection.Output);
+               
+        _conexion.Execute(storedProcedure, parametros);
+
+        tipoHabitacion.idTipo= parametros.Get<uint>("p_idTipo");
+        return tipoHabitacion.idTipo;
     }
 
     public TipoHabitacion? Detalle(uint id)

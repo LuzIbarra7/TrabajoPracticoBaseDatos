@@ -19,9 +19,20 @@ public class RepoHotel : RepoDapper, IRepoHotel
     public uint Alta(Hotel hotel)
     {
         string storedProcedure = "insert_hotel";
-        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, hotel);
-        return IdInsertado;
+
+        var parametros = new DynamicParameters();
+        parametros.Add("p_idCiudad", hotel.idCiudad);
+        parametros.Add("p_Nombre", hotel.Nombre);
+        parametros.Add("p_Direccion", hotel.Direccion);
+        parametros.Add("p_Telefono", hotel.Telefono);
+        parametros.Add("p_idHotel", ParameterDirection.Output);
+               
+        _conexion.Execute(storedProcedure, parametros);
+
+        hotel.idHotel = parametros.Get<uint>("p_idHotel");
+        return hotel.idHotel;
     }
+
 
     public Hotel? Detalle(uint id)
     {

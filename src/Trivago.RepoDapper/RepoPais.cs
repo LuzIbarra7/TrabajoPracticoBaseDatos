@@ -1,9 +1,4 @@
-using System.Data;
-using Trivago.Core.Persistencia;
-using Trivago.Core.Ubicacion;
-
 namespace Trivago.RepoDapper;
-
 public class RepoPais : RepoDapper, IRepoPais
 {
     public RepoPais(IDbConnection conexion) : base(conexion)
@@ -13,8 +8,15 @@ public class RepoPais : RepoDapper, IRepoPais
     public uint Alta(Pais pais)
     {
         string storedProcedure = "insert_pais";
-        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, pais);
-        return IdInsertado;
+
+        var parametros = new DynamicParameters();
+        parametros.Add("p_Nombre", pais.Nombre);
+        parametros.Add("p_idPais", ParameterDirection.Output);
+               
+        _conexion.Execute(storedProcedure, parametros);
+
+        pais.idPais = parametros.Get<uint>("p_idPais");
+        return pais.idPais;
     }
 
     public Pais? Detalle(uint id)

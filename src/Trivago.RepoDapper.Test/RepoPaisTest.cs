@@ -5,7 +5,7 @@ namespace Trivago.RepoDapper.Test;
 
 public class RepoPaisTest : TestBase
 {
-    readonly IRepoPais _repoPais;
+    private readonly IRepoPais _repoPais;
     public RepoPaisTest() : base()
     {
         _repoPais = new RepoPais(Conexion);
@@ -22,6 +22,7 @@ public class RepoPaisTest : TestBase
         Assert.NotEmpty(paises);
         Assert.Contains(paises, p=> p.Nombre == nombrePais);
     }
+
     [Fact]
     public void TraerPorId()
     {
@@ -36,10 +37,10 @@ public class RepoPaisTest : TestBase
         {
             Nombre = "Alemania",
         };
-        Assert.Equal(0, pais.idPais);
+        Assert.Equal<uint>(0, pais.idPais);
         var insert_pais = _repoPais.Alta(pais);
         
-        Assert.NotEqual(0, pais.idPais);
+        Assert.NotEqual<uint>(0, pais.idPais);
         var otraAlemania = _repoPais.Detalle(pais.idPais);
         Assert.Equal(pais.Nombre, otraAlemania.Nombre);
 

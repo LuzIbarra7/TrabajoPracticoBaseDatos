@@ -13,10 +13,19 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
     public uint Alta(Usuario usuario)
     {
         string storedProcedure = "insert_usuario";
-        var IdInsertado = _conexion.QuerySingle<uint>(storedProcedure, usuario);
-        return IdInsertado;
-    }
 
+        var parametros = new DynamicParameters();
+        parametros.Add("p_Nombre", usuario.Nombre);
+        parametros.Add("p_Apellido", usuario.Apellido);
+        parametros.Add("p_Mail", usuario.Mail);
+        parametros.Add("p_Contraseña", usuario.Contrasena);
+        parametros.Add("p_idUsuario", ParameterDirection.Output);
+               
+        _conexion.Execute(storedProcedure, parametros);
+
+        usuario.idUsuario = parametros.Get<uint>("p_idUsuario");
+        return usuario.idUsuario;
+    }
     public Usuario? Detalle(uint id)
     {
         string sql = "Select * from Usuario where idUsuario = @Id LIMIT 1";
