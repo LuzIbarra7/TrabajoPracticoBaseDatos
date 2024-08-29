@@ -1,8 +1,9 @@
-Use `5to_Trivago` ;
-SELECT 'Creando SP' AS 'Estado';
-DROP PROCEDURE IF EXISTS insert_pais;
-
 DELIMITER //
+Use `5to_Trivago` //
+SELECT 'Creando SP' AS 'Estado'//
+DROP PROCEDURE IF EXISTS insert_pais//
+
+
 
 CREATE PROCEDURE insert_pais(
   IN p_Nombre VARCHAR(45),

@@ -7,6 +7,6 @@ public class Hotel
     public  List<Habitacion> Habitaciones { get; set; }
     public string Nombre { get; set; }
     public string Direccion  { get; set; }
-    public uint Telefono { get; set; }
+    public string Telefono { get; set; }
     public string URL { get; set; } 
 }

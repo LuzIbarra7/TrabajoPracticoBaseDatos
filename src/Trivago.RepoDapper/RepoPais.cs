@@ -11,7 +11,7 @@ public class RepoPais : RepoDapper, IRepoPais
 
         var parametros = new DynamicParameters();
         parametros.Add("p_Nombre", pais.Nombre);
-        parametros.Add("p_idPais", ParameterDirection.Output);
+        parametros.Add("p_idPais", direction: ParameterDirection.Output);
                
         _conexion.Execute(storedProcedure, parametros);
 

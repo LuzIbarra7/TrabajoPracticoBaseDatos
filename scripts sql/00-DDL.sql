@@ -1,3 +1,5 @@
+drop DATABASE if EXISTS 5to_Trivago;
+
 -- -----------------------------------------------------
 -- Schema 5to_Trivago
 -- -----------------------------------------------------
@@ -7,6 +9,7 @@ DROP SCHEMA IF EXISTS `5to_Trivago` ;
 -- Schema 5to_Trivago
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `5to_Trivago`;
+CREATE DATABASE if not exists 5to_Trivago;
 USE `5to_Trivago` ;
 
 -- -----------------------------------------------------

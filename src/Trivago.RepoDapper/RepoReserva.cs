@@ -17,11 +17,11 @@ public class RepoReserva : RepoDapper, IRepoReserva
         var parametros = new DynamicParameters();
         parametros.Add("p_idHabitacion", reserva.habitacion.idHabitacion);
         parametros.Add("p_idMetododePago", reserva.metodoPago.idMetodoPago);
-        parametros.Add("idUsuario", reserva.idUsuario);
+        parametros.Add("p_idUsuario", reserva.idUsuario);
         parametros.Add("p_Entrada", reserva.Entrada);
         parametros.Add("p_Salida", reserva.Salida);
         parametros.Add("p_Telefono", reserva.Telefono);
-        parametros.Add("p_idReserva", ParameterDirection.Output);
+        parametros.Add("p_idReserva", direction: ParameterDirection.Output);
                
         _conexion.Execute(storedProcedure, parametros);
 

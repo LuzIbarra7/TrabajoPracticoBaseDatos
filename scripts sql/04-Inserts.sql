@@ -1,3 +1,4 @@
+DELIMITER ;
 use `5to_Trivago` ;
 SELECT 'Insertando' AS 'Estado';
 -- Procedure for Pais
@@ -52,8 +53,8 @@ call insert_usuario('Luz', 'Ibarra', 'luzibarra@gmail.com', '231', @idUsuarioLuz
 -- where idUsuario in (1, 2, 3);
 
 call insert_reserva(@idHabitacionHotelBuenosAiresSuite1, @idMercadoPago, @idUsuarioLeonardoCheng, now(), '2024-11-03', 11111111, @idReservaLeonardoChengHabitacionHotelBuenosAiresSuite1);
-call insert_reserva(@idHabitacionHotelMendozaJuniorSuite1, @idEfectivo, @idUsuarioMarioRojas, now(), '2024-12-02', 11111112, @idReservaMarioRojasHabitacionHotelBuenosAiresSuite1);
-call insert_reserva(@idHabitacionHotelSantiagodelEsteroGranSuite1, @idVisaDebito, @idUsuarioLuzIbarra, now(), '2024-09-03', 11111113, @idReservaLuzIbarraHabitacionHotelBuenosAiresSuite1);
+call insert_reserva(@idHabitacionHotelMendozaJuniorSuite1, @idEfectivo, @idUsuarioMarioRojas, '2024-11-04', '2024-12-02', 11111112, @idReservaMarioRojasHabitacionHotelBuenosAiresSuite1);
+call insert_reserva(@idHabitacionHotelSantiagodelEsteroGranSuite1, @idVisaDebito, @idUsuarioLuzIbarra, '2024-12-04', '2025-01-03', 11111113, @idReservaLuzIbarraHabitacionHotelBuenosAiresSuite1);
 
 -- delete from Reserva
 -- where idReserva in (1, 2, 3);
