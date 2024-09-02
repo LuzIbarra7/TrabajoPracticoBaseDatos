@@ -11,8 +11,8 @@ public class RepoCiudad : RepoDapper, IRepoCiudad
 
         var parametros = new DynamicParameters();
         parametros.Add("p_nombre", ciudad.Nombre);
-        parametros.Add("p_idPais");
-        parametros.Add("p_idCiudad", ParameterDirection.Output);
+        parametros.Add("p_idPais", ciudad.idPais);
+        parametros.Add("p_idCiudad", direction: ParameterDirection.Output);
                
         _conexion.Execute(storedProcedure, parametros);
 

@@ -1,3 +1,5 @@
+using Microsoft.VisualBasic;
+
 namespace Trivago.RepoDapper;
 public class RepoPais : RepoDapper, IRepoPais
 {
@@ -23,6 +25,12 @@ public class RepoPais : RepoDapper, IRepoPais
     {
         string sql = "Select * from Pais where idPais = @Id LIMIT 1";
         var resultado = _conexion.QuerySingleOrDefault<Pais>(sql, new { Id = id});
+        return resultado;
+    }
+    public Pais? DetallePorNombre(string nombrePais)
+    {
+        string sql = "Select * from Pais where Nombre = @Nombre Limit 1";
+        var resultado = _conexion.QuerySingleOrDefault<Pais>(sql, new {Nombre = nombrePais});
         return resultado;
     }
 

@@ -1,6 +1,6 @@
 namespace Trivago.RepoDapper.Test;
 
-public class RepoComentario
+public class RepoComentarioTest
 {
     
 }
