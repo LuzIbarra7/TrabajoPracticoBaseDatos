@@ -16,10 +16,10 @@ public class RepoHabitacion : RepoDapper, IRepoHabitacion
 
         var parametros = new DynamicParameters();
 
-        parametros.Add("p_idHotel", habitacion.hotel);
-        parametros.Add("p_idTipo", habitacion.tipoHabitacion);
+        parametros.Add("p_idHotel", habitacion.hotel.idHotel);
+        parametros.Add("p_idTipo", habitacion.tipoHabitacion.idTipo);
         parametros.Add("p_PrecioPorNoche", habitacion.PrecioPorNoche);
-        parametros.Add("p_idHabitacion", ParameterDirection.Output);
+        parametros.Add("p_idHabitacion",direction: ParameterDirection.Output);
                
         _conexion.Execute(storedProcedure, parametros);
 

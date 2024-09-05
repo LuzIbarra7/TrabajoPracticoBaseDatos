@@ -26,7 +26,7 @@ public class RepoTipoHabitacion : RepoDapper, IRepoTipoHabitacion
 
     public TipoHabitacion? Detalle(uint id)
     {
-        string sql = "Select * from TipoHabitacion where idTipoHabitacion = @Id LIMIT 1";
+        string sql = "Select * from TipoHabitacion where idTipo = @Id LIMIT 1";
         var resultado = _conexion.QuerySingleOrDefault<TipoHabitacion>(sql, new { Id = id});
         return resultado;
     }

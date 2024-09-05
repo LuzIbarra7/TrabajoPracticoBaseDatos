@@ -22,15 +22,23 @@ public class RepoHotelTest : TestBase
         return detalle;
 
     }
+
+    [Fact]
     public uint Insertar()
     {
-        var hoteles = _repoHotel.Listar();
-        var francia = "Francia";
-        var idFrancia = _repoPais.DetallePorNombre(francia).idPais;
-        var ciudad = new Ciudad{ Hoteles = hoteles, idCiudad = 0, idPais = idFrancia, Nombre = "Paris"};        
-        var idOUT = _repoCiudad.Alta(ciudad);
+        Hotel hotel = new Hotel()
+        {
+            Nombre = "San Vernardo",
+            idCiudad= 1,
+            Direccion = "libertador 123",
+            Telefono = "37976723"
         
-        Assert.NotEqual<uint>(0, ciudad.idCiudad);
-        return idOUT; 
+        };
+        var insert_hotel = _repoHotel.Alta(hotel);
+        return insert_hotel ;
+    
+
+
+
     }
-}
+    }

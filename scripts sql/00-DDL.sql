@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Hotel` (
   `Nombre` VARCHAR(45) NOT NULL,
   `Direccion` VARCHAR(45) NOT NULL,
   `Telefono` INT UNSIGNED NOT NULL,
-  `URL` VARCHAR(90) NOT NULL,
+  `URL` VARCHAR(90),
   PRIMARY KEY (`idHotel`),
   UNIQUE INDEX `Hotelcol_UNIQUE` (`Telefono` ASC) ,
   UNIQUE INDEX `Direccion_UNIQUE` (`Direccion` ASC) ,
