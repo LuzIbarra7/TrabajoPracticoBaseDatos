@@ -41,7 +41,6 @@ public class RepoHabitacionTest : TestBase
             tipoHabitacion = tipoHabitacion,
             hotel = hotel,
             PrecioPorNoche = 1
-
         };
         var alta_Habitacion =_repoHabitacion.Alta(Habitacion);
         return alta_Habitacion;

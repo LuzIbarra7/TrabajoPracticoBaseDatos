@@ -13,7 +13,7 @@ public class RepoComentario : RepoDapper, IRepoComentario
         parametros.Add("p_idHabitacion", comentario.Habitacion);
         parametros.Add("p_Comentario", comentario.comentario);
         parametros.Add("p_Calificacion", comentario.Calificacion);
-        parametros.Add("p_idComentario", ParameterDirection.Output);
+        parametros.Add("p_idComentario", direction: ParameterDirection.Output);
                
         _conexion.Execute(storedProcedure, parametros);
 
