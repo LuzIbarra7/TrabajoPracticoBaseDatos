@@ -15,16 +15,25 @@ public class RepoHotelTest : TestBase
     
     }
     [Fact]
-    public Hotel? InformarCiudadPorId()
+    public void InformarCiudadPorId()
     {
         var detalle = _repoHotel.Detalle(1);
         Assert.NotNull(detalle);
-        return detalle;
+        Assert.Equal(detalle.Direccion, "Rivadavia 1");
 
     }
-
+    [Theory]
+    [InlineData("Rivadavia 1")]
+    [InlineData("Rivadavia 2")]
+    [InlineData("Rivadavia 3")]
+    public void Informar(string direccion)
+    {
+        var lista = _repoHotel.Listar();
+        
+        Assert.Contains(lista, hotel => hotel.Direccion == direccion);
+    }
     [Fact]
-    public uint Insertar()
+    public void Insertar()
     {
         Hotel hotel = new Hotel()
         {
@@ -35,10 +44,18 @@ public class RepoHotelTest : TestBase
         
         };
         var insert_hotel = _repoHotel.Alta(hotel);
-        return insert_hotel ;
-    
 
+        hotel.idHotel = insert_hotel;
 
-
+        Assert.NotEqual<uint>(0, insert_hotel);
+        Assert.NotNull(_repoHotel.Detalle(insert_hotel));
     }
+    [Theory]
+    [InlineData("Rivadavia 1")]
+    public void InformarHoteles(string direccion)
+    {
+        var hoteles = _repoHotel.InformarHoteles(1);
+
+        Assert.Contains(hoteles, hotel => hotel.Direccion == direccion);
     }
+}

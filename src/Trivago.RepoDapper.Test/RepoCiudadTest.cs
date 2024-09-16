@@ -17,36 +17,48 @@ public class RepoCiudadTest : TestBase
     }
 
     [Fact]
-    public Ciudad? InformarCiudadPorId()
+    public void InformarCiudadPorId()
     {
         var detalle = _repoCiudad.Detalle(1);
+
         Assert.NotNull(detalle);
-        return detalle;
+        Assert.Equal(detalle.Nombre, "Buenos Aires");
+
 
     }
-    [Fact]
-    public List<Ciudad> InformarCiudad()
+    [Theory]
+    [InlineData("Buenos Aires")]
+    [InlineData("Mendoza")]
+    [InlineData("Santiago del Estero")]
+    public void InformarCiudad(string nombreCiudad)
     {
         var ciudades = _repoCiudad.Listar();
-        return ciudades;
+        
+        Assert.NotEmpty(ciudades);
+        Assert.Contains(ciudades, ciudad => ciudad.Nombre == nombreCiudad);
     }
     [Fact]
-    public uint Insertar()
+    public void Insertar()
     {
         var hoteles = _repoHotel.Listar();
         var francia = "Francia";
         var idFrancia = _repoPais.DetallePorNombre(francia).idPais;
         var ciudad = new Ciudad{ Hoteles = hoteles, idCiudad = 0, idPais = idFrancia, Nombre = "Paris"};        
         var idOUT = _repoCiudad.Alta(ciudad);
-        
+
         Assert.NotEqual<uint>(0, ciudad.idCiudad);
-        return idOUT; 
+        Assert.NotNull(_repoCiudad.Detalle(idOUT));
     }
-    [Fact]
-    public List<Ciudad> informarciudadporpais()
+    [Theory]
+    [InlineData("Buenos Aires")]
+    [InlineData("Mendoza")]
+    [InlineData("Santiago del Estero")]
+    public void informarciudadporpais(string nombreCiudad)
     {
         var ciudades = _repoCiudad.InformarCiudad(1);
-        return ciudades;
+        
+        Assert.NotEmpty(ciudades);
+        Assert.Contains(ciudades, ciudad => ciudad.Nombre == nombreCiudad);
     }
 }
 

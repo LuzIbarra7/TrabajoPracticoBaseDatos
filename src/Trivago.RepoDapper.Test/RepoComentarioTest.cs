@@ -16,12 +16,14 @@ public class RepoComentarioTest : TestBase
     public void InformarComentario()
     {
         var detalle = _RepoComentario.Detalle(1);
+
         Assert.NotNull(detalle);
     }
     [Fact]
     public void Listar()
     {
         var lista = _RepoComentario.Listar();
+
         Assert.NotNull(lista);
         Assert.NotEmpty(lista);
         Assert.Contains(lista, objec => objec.comentario == "nose" && objec.idComentario == 3);
@@ -32,6 +34,9 @@ public class RepoComentarioTest : TestBase
         var comentario = new Comentario {comentario = "ja", Calificacion = 3, Fecha = new DateTime(2025, 02, 1), Habitacion = 2, idComentario = 0};
         var id = _RepoComentario.Alta(comentario);
         comentario.idComentario = id;
+
+        Assert.NotEqual<uint>(0, id);
+        Assert.NotNull(_RepoComentario.Detalle(id));
     }
 
 
