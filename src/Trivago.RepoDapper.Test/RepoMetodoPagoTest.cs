@@ -21,7 +21,7 @@ public class RepoMetodoPagoTest : TestBase
     [Theory]
     [InlineData("Efectivo")]
     [InlineData("Mercado Pago")]
-    [InlineData("Visa Debito")]
+    [InlineData("VisaDebito")]
     public void InforarMetodoPago(string tipoMedioPago)
     {
         var metodoPagos = _repoMetodoPago.Listar();

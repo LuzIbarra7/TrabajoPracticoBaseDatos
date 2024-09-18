@@ -39,5 +39,11 @@ public class RepoComentarioTest : TestBase
         Assert.NotNull(_RepoComentario.Detalle(id));
     }
 
+    [Fact]
+    public void ListarPorHabitacion()
+    {
+        var lista = _RepoComentario.ListarPorHabitacion(1);
 
+        Assert.Contains(lista, comentario => comentario.Calificacion == 3);
+    }
 }

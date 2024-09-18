@@ -15,21 +15,25 @@ public class RepoReservaTest : TestBase
         _repoMetodoPago = new RepoMetodoPago(Conexion);
     }
     [Fact]
-    public Reserva? InformarReservaPorId()
+    public void InformarReservaPorId()
     {
         var detalle = _repoReserva.Detalle(1);
-        Assert.NotNull(detalle);
-        return detalle;
 
+        Assert.NotNull(detalle);
+        Assert.Equal("11111111", detalle.Telefono.ToString());
     }
-    [Fact]
-    public List<Reserva> InformarReservas()
+    [Theory]
+    [InlineData(11111111)]
+    [InlineData(11111112)]
+    [InlineData(11111113)]
+    public void InformarReservas(uint numTelefono)
     {
         var reservas = _repoReserva.Listar();
-        return reservas;
+        
+        Assert.Contains(reservas, reserva => reserva.Telefono == numTelefono);
     }
     [Fact]
-    public uint Insertar()
+    public void Insertar()
     {
         var habitacion = _repoHabitacion.Detalle(1)!;
         var efectivo = _repoMetodoPago.Detalle(1)!;
@@ -49,6 +53,6 @@ public class RepoReservaTest : TestBase
         
         Assert.NotEqual<uint>(0, reserva.idReserva);
         
-        return idOUT; 
+
     }
 }
