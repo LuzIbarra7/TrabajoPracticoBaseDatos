@@ -33,7 +33,7 @@ public class RepoCiudad : RepoDapper, IRepoCiudad
         var resultado = _conexion.Query<Ciudad>(sql).ToList();
         return resultado;
     }
-    public List<Ciudad> InformarCiudad(uint idPais)
+    public List<Ciudad> InformarCiudadPorIdPais(uint idPais)
     {
         string sql = "Select * from Ciudad where idPais = @IdPais";
         var resultado = _conexion.Query<Ciudad>(sql, new { IdPais = idPais} ).ToList();

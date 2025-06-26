@@ -42,6 +42,8 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
 
     public Usuario? UsuarioPorPass(string email, string pass)
     {
-        throw new NotImplementedException();
+        string sql = "Select * from Usuario where Mail = @mail and Contrasena = @Contrasena";
+        var resultado = _conexion.QuerySingle<Usuario>(sql, new { mail = email, Contrasena = pass});
+        return resultado;
     }
 }

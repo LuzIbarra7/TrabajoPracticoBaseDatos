@@ -42,4 +42,17 @@ public class RepoReserva : RepoDapper, IRepoReserva
         var resultado = _conexion.Query<Reserva>(sql).ToList();
         return resultado;
     }
+    public List<Reserva> InformarReservasPorIdHabitacion(uint idHabitacion)
+    {
+        string sql = "Select * from Reserva where idHabitacion = @Id";
+        var resultado = _conexion.Query<Reserva>(sql, new { Id = idHabitacion}).ToList();
+        return resultado;
+    }
+
+    public List<Reserva> InformarReservasPorIdMetodoPago(uint idMetodoPago)
+    {
+        string sql = "Select * from Reserva where idMetodoPago = @Id";
+        var resultado = _conexion.Query<Reserva>(sql, new { Id = idMetodoPago}).ToList();
+        return resultado;
+    }
 }

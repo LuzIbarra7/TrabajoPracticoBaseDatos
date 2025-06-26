@@ -10,10 +10,10 @@ public class RepoHotel : RepoDapper, IRepoHotel
     {
     }
 
-    public List<Hotel> InformarHoteles(int idHotel)
+    public List<Hotel> InformarHotelesPorIdCiudad(int idCiudad)
     {
-        string sql = "Select * from Hotel where idHotel = @Id";
-        var resultado = _conexion.Query<Hotel>(sql, new { Id = idHotel}).ToList();
+        string sql = "Select * from Hotel where idCiudad = @Id";
+        var resultado = _conexion.Query<Hotel>(sql, new { Id = idCiudad}).ToList();
         return resultado;
     }
     public uint Alta(Hotel hotel)
