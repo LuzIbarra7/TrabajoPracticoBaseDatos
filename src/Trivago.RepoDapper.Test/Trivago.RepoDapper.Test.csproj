@@ -30,7 +30,7 @@
     <ProjectReference Include="..\Trivago.RepoDapper\Trivago.RepoDapper.csproj" />
   </ItemGroup>
 
-    <ItemGroup>
+  <ItemGroup>
     <None Update="appSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

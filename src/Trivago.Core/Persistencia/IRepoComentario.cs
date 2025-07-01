@@ -5,5 +5,5 @@ namespace Trivago.Core.Persistencia;
 
 public interface IRepoComentario :  IAlta<Comentario, uint>, IListado<Comentario>, IDetalle<Comentario, uint>
 {
-    List<Comentario> ListarPorHabitacion(uint idHabitacion);
+    List<Comentario> ListarPorIdHabitacion(uint idHabitacion);
 }

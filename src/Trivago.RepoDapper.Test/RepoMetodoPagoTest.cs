@@ -1,4 +1,5 @@
 using Trivago.Core.Persistencia;
+using Trivago.Core.Ubicacion;
 
 namespace Trivago.RepoDapper.Test;
 
@@ -28,5 +29,21 @@ public class RepoMetodoPagoTest : TestBase
 
         Assert.Contains(metodoPagos, metodoPago => metodoPago.TipoMedioPago == tipoMedioPago);
     }
-    
+
+    [Fact]
+    public void Insertar()
+    {
+        var tipoMedioPago = new MetodoPago{
+            TipoMedioPago = "testUnit"
+        
+        };
+
+        var idAutoIncrement = _repoMetodoPago.Alta(tipoMedioPago);
+
+        var listaMetodoPago = _repoMetodoPago.Listar();
+        
+        Assert.Equal("4", $"{idAutoIncrement}");
+        Assert.NotNull(_repoMetodoPago.Detalle(idAutoIncrement));
+        Assert.Contains(listaMetodoPago, metodoPago => metodoPago.idMetodoPago == idAutoIncrement);
+    }
 }

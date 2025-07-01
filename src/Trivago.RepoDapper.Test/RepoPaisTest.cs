@@ -46,4 +46,13 @@ public class RepoPaisTest : TestBase
 
         return insert_pais;
     }
+
+    [Fact]
+    public void DetallePorNombre()
+    {
+        var Argentina = _repoPais.DetallePorNombre("Argentina");
+
+        Assert.NotNull(Argentina);
+        Assert.Equal("Argentina", Argentina.Nombre);
+    }
 }

@@ -55,7 +55,7 @@ public class RepoCiudadTest : TestBase
     [InlineData("Santiago del Estero")]
     public void informarciudadporpais(string nombreCiudad)
     {
-        var ciudades = _repoCiudad.InformarCiudad(1);
+        var ciudades = _repoCiudad.InformarCiudadPorIdPais(1);
         
         Assert.NotEmpty(ciudades);
         Assert.Contains(ciudades, ciudad => ciudad.Nombre == nombreCiudad);

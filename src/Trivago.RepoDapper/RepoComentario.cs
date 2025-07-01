@@ -36,10 +36,10 @@ public class RepoComentario : RepoDapper, IRepoComentario
         return resultado;
     }
 
-    public List<Comentario> ListarPorHabitacion(uint idHabitacion)
+    public List<Comentario> ListarPorIdHabitacion(uint idHabitacion)
     {
         string sql = "Select * from Comentario where idHabitacion = @IdHabitacion";
-        var resultado = _conexion.Query<Comentario>(sql, new { idHabitacion = idHabitacion} ).ToList();
+        var resultado = _conexion.Query<Comentario>(sql, new { IdHabitacion = idHabitacion} ).ToList();
 
         return resultado;
     }

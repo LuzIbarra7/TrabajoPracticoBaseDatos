@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Usuario` (
   `Nombre` VARCHAR(45) NOT NULL,
   `Apellido` VARCHAR(45) NOT NULL,
   `Mail` VARCHAR(60) NOT NULL,
-  `Contraseña` CHAR(64) NOT NULL,
+  `Contrasena` CHAR(64) NOT NULL,
   PRIMARY KEY (`idUsuario`),
   UNIQUE INDEX `Mail_UNIQUE` (`Mail` ASC)
 )

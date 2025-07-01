@@ -54,7 +54,7 @@ public class RepoHotelTest : TestBase
     [InlineData("Rivadavia 1")]
     public void InformarHoteles(string direccion)
     {
-        var hoteles = _repoHotel.InformarHoteles(1);
+        var hoteles = _repoHotel.InformarHotelesPorIdCiudad(1);
 
         Assert.Contains(hoteles, hotel => hotel.Direccion == direccion);
     }

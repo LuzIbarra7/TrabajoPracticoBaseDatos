@@ -42,7 +42,7 @@ public class RepoComentarioTest : TestBase
     [Fact]
     public void ListarPorHabitacion()
     {
-        var lista = _RepoComentario.ListarPorHabitacion(1);
+        var lista = _RepoComentario.ListarPorIdHabitacion(1);
 
         Assert.Contains(lista, comentario => comentario.Calificacion == 3);
     }

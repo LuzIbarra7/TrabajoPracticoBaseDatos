@@ -30,7 +30,7 @@ public class RepoHabitacionTest : TestBase
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]
-    public void InformarCiudad(uint idHabitacion)
+    public void Listar(uint idHabitacion)
     {
         var habitaciones = _repoHabitacion.Listar();
 
@@ -55,4 +55,22 @@ public class RepoHabitacionTest : TestBase
         Assert.NotEqual<uint>(0, alta_Habitacion);
         Assert.NotNull(_repoComentario.Detalle(alta_Habitacion));
     }
+    [Fact]
+    public void InformarHabitacionPorIdHotel()
+    {
+        var habitaciones = _repoHabitacion.InformarHabitacionPorIdHotel(2);
+
+        Assert.NotNull(habitaciones);
+        Assert.Contains(habitaciones, habitacion => habitacion.PrecioPorNoche == (decimal)20000.00);
+    }
+
+    [Fact]
+    public void InformarHabitacionPorIdTipo()
+    {
+        var habitaciones = _repoHabitacion.InformarHabitacionPorIdTipo(3);
+
+        Assert.NotNull(habitaciones);
+        Assert.Contains(habitaciones, habitacion => habitacion.PrecioPorNoche == (decimal)30000.00);
+    }
+    
 }

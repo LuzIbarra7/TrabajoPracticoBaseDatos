@@ -117,12 +117,12 @@ CREATE PROCEDURE insert_usuario(
   IN p_Nombre VARCHAR(45),
   IN p_Apellido VARCHAR(45),
   IN p_Mail VARCHAR(60),
-  IN p_Contraseña CHAR(64),
+  IN p_Contrasena CHAR(64),
   OUT p_idUsuario INT unsigned
 )
 BEGIN
-  INSERT INTO `Usuario` (`Nombre`, `Apellido`, `Mail`, `Contraseña`) 
-  VALUES (p_Nombre, p_Apellido, p_Mail, p_Contraseña);
+  INSERT INTO `Usuario` (`Nombre`, `Apellido`, `Mail`, `Contrasena`) 
+  VALUES (p_Nombre, p_Apellido, p_Mail, p_Contrasena);
   SET p_idUsuario = LAST_INSERT_ID();
 END //
 
