@@ -6,4 +6,5 @@ namespace Trivago.Core.Persistencia;
 public interface IAlta<T,N> where N : IBinaryNumber<N>
 {
     N Alta(T elemento);
+    Task<N> AltaAsync(T elemento);
 }
