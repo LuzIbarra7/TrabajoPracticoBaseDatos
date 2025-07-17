@@ -36,40 +36,69 @@ public class RepoPais : RepoDapper, IRepoPais
     }
 
     //Detalle Async
-    private async Task<Pais?> DetallePaisInternaAsync(object param, string filtro, Func<string, object, Task<Pais?>> ejecutor)
-    {
-        string sql = $"SELECT * FROM Pais WHERE {filtro} LIMIT 1";
-        return await ejecutor(sql, param);
-    }
-
     public Pais? Detalle(uint id)
     {
-        return DetallePaisInternaAsync(new { Id = id }, "idPais = @Id", (sql, param) =>
+        string sql = @"
+        SELECT * FROM Pais WHERE idPais = @Id LIMIT 1;
+        SELECT * FROM Ciudad WHERE idPais = @Id;
+    ";
+
+        using (var multi = _conexion.QueryMultiple(sql, new { Id = id }))
         {
-            var result = _conexion.QuerySingleOrDefault<Pais>(sql, param);
-            return Task.FromResult(result);
-        }).GetAwaiter().GetResult();
+            var pais = multi.ReadSingleOrDefault<Pais>();
+            if (pais is not null)
+            {
+                pais.Ciudades = multi.Read<Ciudad>().ToList();
+            }
+            return pais;
+        }
     }
+
     public async Task<Pais?> DetalleAsync(uint id)
     {
-        return await DetallePaisInternaAsync(new { Id = id }, "idPais = @Id", (sql, param) =>
-            _conexion.QuerySingleOrDefaultAsync<Pais>(sql, param));
+        string sql = @"
+        SELECT * FROM Pais WHERE idPais = @Id LIMIT 1;
+        SELECT * FROM Ciudad WHERE idPais = @Id;
+    ";
+
+        using (var multi = await _conexion.QueryMultipleAsync(sql, new { Id = id }))
+        {
+            var pais = await multi.ReadSingleOrDefaultAsync<Pais>();
+            if (pais is not null)
+            {
+                pais.Ciudades = (await multi.ReadAsync<Ciudad>()).ToList();
+            }
+            return pais;
+        }
     }
+
 
     //Detalle por nombre Async
     public Pais? DetallePorNombre(string nombrePais)
     {
-        return DetallePaisInternaAsync(new { Nombre = nombrePais }, "Nombre = @Nombre", (sql, param) =>
+        string sql = @"
+        SELECT * FROM Pais WHERE Nombre = @Nombre LIMIT 1;
+        SELECT * FROM Ciudad WHERE idPais = (SELECT idPais FROM Pais WHERE Nombre = @Nombre LIMIT 1);
+    ";
+
+        using (var multi = _conexion.QueryMultiple(sql, new { Nombre = nombrePais }))
         {
-            var result = _conexion.QuerySingleOrDefault<Pais>(sql, param);
-            return Task.FromResult(result);
-        }).GetAwaiter().GetResult();
+            var pais = multi.ReadSingleOrDefault<Pais>();
+            if (pais is not null)
+            {
+                pais.Ciudades = multi.Read<Ciudad>().ToList();
+            }
+            return pais;
+        }
     }
+
     public async Task<Pais?> DetallePorNombreAsync(string nombrePais)
     {
-        return await DetallePaisInternaAsync(new { Nombre = nombrePais }, "Nombre = @Nombre", (sql, param) =>
-            _conexion.QuerySingleOrDefaultAsync<Pais>(sql, param));
+        string sql = "SELECT * FROM Pais WHERE Nombre = @Nombre LIMIT 1";
+        return await _conexion.QuerySingleOrDefaultAsync<Pais>(sql, new { Nombre = nombrePais });
     }
+
+
 
     //Listar Async
     private async Task<List<Pais>> ListarPaisInternaAsync(Func<string, Task<IEnumerable<Pais>>> ejecutor)

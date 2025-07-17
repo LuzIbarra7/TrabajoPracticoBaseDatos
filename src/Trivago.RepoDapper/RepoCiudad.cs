@@ -36,25 +36,42 @@ public class RepoCiudad : RepoDapper, IRepoCiudad
 
 
     //Async Detalle
-    private async Task<Ciudad?> DetalleInternoAsync(uint id, Func<string, object, Task<Ciudad?>> ejecutor)
-    {
-        string sql = "SELECT * FROM Ciudad WHERE idCiudad = @Id LIMIT 1";
-        return await ejecutor(sql, new { Id = id });
-    }
-
     public Ciudad? Detalle(uint id)
     {
-        return DetalleInternoAsync(id, (query, param) =>
+        string sql = @"
+        SELECT * FROM Ciudad WHERE idCiudad = @Id LIMIT 1;
+        SELECT * FROM Hotel WHERE idCiudad = @Id;
+    ";
+
+        using (var multi = _conexion.QueryMultiple(sql, new { Id = id }))
         {
-            var result = _conexion.QuerySingleOrDefault<Ciudad>(query, param);
-            return Task.FromResult(result);
-        }).GetAwaiter().GetResult();
+            var ciudad = multi.ReadSingleOrDefault<Ciudad>();
+            if (ciudad is not null)
+            {
+                ciudad.Hoteles = multi.Read<Hotel>().ToList();
+            }
+            return ciudad;
+        }
     }
+
     public async Task<Ciudad?> DetalleAsync(uint id)
     {
-        return await DetalleInternoAsync(id, (query, param) =>
-            _conexion.QuerySingleOrDefaultAsync<Ciudad>(query, param));
+        string sql = @"
+        SELECT * FROM Ciudad WHERE idCiudad = @Id LIMIT 1;
+        SELECT * FROM Hotel WHERE idCiudad = @Id;
+    ";
+
+        using (var multi = await _conexion.QueryMultipleAsync(sql, new { Id = id }))
+        {
+            var ciudad = await multi.ReadSingleOrDefaultAsync<Ciudad>();
+            if (ciudad is not null)
+            {
+                ciudad.Hoteles = (await multi.ReadAsync<Hotel>()).ToList();
+            }
+            return ciudad;
+        }
     }
+
 
 
     //Listar Async
