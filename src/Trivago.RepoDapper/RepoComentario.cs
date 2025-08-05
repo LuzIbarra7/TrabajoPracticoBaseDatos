@@ -43,11 +43,23 @@ public class RepoComentario : RepoDapper, IRepoComentario
         return _conexion.QuerySingleOrDefault<Comentario>(sql, new { Id = id });
     }
 
-    public async Task<Comentario?> DetalleAsync(uint id)
+public async Task<Comentario?> DetalleAsync(uint id)
+{
+    string sqlComentario = "SELECT * FROM Comentario WHERE idComentario = @Id LIMIT 1";
+    string sqlHabitacion = "SELECT idHabitacion FROM Habitacion WHERE idHabitacion = (SELECT idHabitacion FROM Comentario WHERE idComentario = @Id LIMIT 1)";
+
+    // Obtener el comentario
+    var comentario = await _conexion.QuerySingleOrDefaultAsync<Comentario>(sqlComentario, new { Id = id });
+
+    if (comentario != null)
     {
-        string sql = "SELECT * FROM Comentario WHERE idComentario = @Id LIMIT 1";
-        return await _conexion.QuerySingleOrDefaultAsync<Comentario>(sql, new { Id = id });
+        // Obtener el idHabitacion relacionado
+        var idHabitacion = await _conexion.QuerySingleOrDefaultAsync<uint>(sqlHabitacion, new { Id = id });
+        comentario.Habitacion = idHabitacion;
     }
+
+    return comentario;
+}
 
 
     //Listar Async
@@ -57,12 +69,25 @@ public class RepoComentario : RepoDapper, IRepoComentario
         return _conexion.Query<Comentario>(sql).ToList();
     }
 
-    public async Task<List<Comentario>> ListarAsync()
+public async Task<List<Comentario>> ListarAsync()
+{
+    string sqlComentarios = "SELECT * FROM Comentario";
+    string sqlHabitacion = "SELECT idHabitacion FROM Habitacion WHERE idHabitacion = @Id";
+
+    // Obtener todos los comentarios
+    var comentarios = (await _conexion.QueryAsync<Comentario>(sqlComentarios)).ToList();
+
+    foreach (var comentario in comentarios)
     {
-        string sql = "SELECT * FROM Comentario";
-        var resultado = await _conexion.QueryAsync<Comentario>(sql);
-        return resultado.ToList();
+        // Obtener el idHabitacion para cada comentario
+        var idHabitacion = await _conexion.QuerySingleOrDefaultAsync<uint>(sqlHabitacion, new { Id = comentario.idComentario });
+        comentario.Habitacion = idHabitacion;
     }
+
+    return comentarios;
+}
+
+
 
 
     //Listar por Habitacion Async
