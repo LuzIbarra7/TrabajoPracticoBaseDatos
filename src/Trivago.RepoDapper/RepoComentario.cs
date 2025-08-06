@@ -43,23 +43,21 @@ public class RepoComentario : RepoDapper, IRepoComentario
         return _conexion.QuerySingleOrDefault<Comentario>(sql, new { Id = id });
     }
 
-public async Task<Comentario?> DetalleAsync(uint id)
-{
-    string sqlComentario = "SELECT * FROM Comentario WHERE idComentario = @Id LIMIT 1";
-    string sqlHabitacion = "SELECT idHabitacion FROM Habitacion WHERE idHabitacion = (SELECT idHabitacion FROM Comentario WHERE idComentario = @Id LIMIT 1)";
-
-    // Obtener el comentario
-    var comentario = await _conexion.QuerySingleOrDefaultAsync<Comentario>(sqlComentario, new { Id = id });
-
-    if (comentario != null)
+    public async Task<Comentario?> DetalleAsync(uint id)
     {
-        // Obtener el idHabitacion relacionado
-        var idHabitacion = await _conexion.QuerySingleOrDefaultAsync<uint>(sqlHabitacion, new { Id = id });
-        comentario.Habitacion = idHabitacion;
-    }
+        string sql = @"
+        SELECT 
+            idComentario,
+            idHabitacion AS Habitacion,
+            Comentario AS comentario,
+            Calificacion,
+            NOW() AS Fecha 
+        FROM Comentario
+        WHERE idComentario = @Id
+        LIMIT 1";
 
-    return comentario;
-}
+        return await _conexion.QuerySingleOrDefaultAsync<Comentario>(sql, new { Id = id });
+    }
 
 
     //Listar Async
@@ -69,25 +67,20 @@ public async Task<Comentario?> DetalleAsync(uint id)
         return _conexion.Query<Comentario>(sql).ToList();
     }
 
-public async Task<List<Comentario>> ListarAsync()
-{
-    string sqlComentarios = "SELECT * FROM Comentario";
-    string sqlHabitacion = "SELECT idHabitacion FROM Habitacion WHERE idHabitacion = @Id";
-
-    // Obtener todos los comentarios
-    var comentarios = (await _conexion.QueryAsync<Comentario>(sqlComentarios)).ToList();
-
-    foreach (var comentario in comentarios)
+    public async Task<List<Comentario>> ListarAsync()
     {
-        // Obtener el idHabitacion para cada comentario
-        var idHabitacion = await _conexion.QuerySingleOrDefaultAsync<uint>(sqlHabitacion, new { Id = comentario.idComentario });
-        comentario.Habitacion = idHabitacion;
+        string sql = @"
+            SELECT 
+                idComentario,
+                idHabitacion AS Habitacion,
+                Comentario AS comentario,
+                Calificacion,
+                NOW() AS Fecha 
+        FROM Comentario";
+
+        var comentarios = await _conexion.QueryAsync<Comentario>(sql);
+        return comentarios.ToList();
     }
-
-    return comentarios;
-}
-
-
 
 
     //Listar por Habitacion Async
