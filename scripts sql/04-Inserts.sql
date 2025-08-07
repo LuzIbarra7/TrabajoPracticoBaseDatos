@@ -59,9 +59,10 @@ call insert_reserva(@idHabitacionHotelSantiagodelEsteroGranSuite1, @idVisaDebito
 -- delete from Reserva
 -- where idReserva in (1, 2, 3);
 
-call insert_comentario(@idHabitacionHotelBuenosAiresSuite1, 'no me gusta', 3, @idComentarioHabitacionHotelBuenosAiresSuite1_1);
-call insert_comentario(@idHabitacionHotelMendozaJuniorSuite1, 'me gusta', 8, @idComentarioHabitacionHotelMendozaJuniorSuite1_1);
-call insert_comentario(@idHabitacionHotelSantiagodelEsteroGranSuite1, 'nose', 6, @idComentarioHabitacionHotelSantiagodelEsteroGranSuite1_1);
+CALL insert_comentario(@idHabitacionHotelBuenosAiresSuite1, 'no me gusta', 3, '2025-08-01 14:00:00', @idComentarioHabitacionHotelBuenosAiresSuite1_1);
+CALL insert_comentario(@idHabitacionHotelMendozaJuniorSuite1, 'me gusta', 8, '2025-08-02 09:30:00', @idComentarioHabitacionHotelMendozaJuniorSuite1_1);
+CALL insert_comentario(@idHabitacionHotelSantiagodelEsteroGranSuite1, 'nose', 6, '2025-08-03 17:15:00', @idComentarioHabitacionHotelSantiagodelEsteroGranSuite1_1);
+
 
 -- delete from Comentario
 -- where idComentario in (1, 2, 3);

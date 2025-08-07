@@ -170,15 +170,16 @@ CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Reserva` (
 -- -----------------------------------------------------
 -- Table `5to_Trivago`.`Comentario`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `5to_Trivago`.`Comentario` ;
+DROP TABLE IF EXISTS IF NOT EXISTS `5to_Trivago`.`Comentario`;
 
 CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Comentario` (
   `idComentario` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `idHabitacion` INT UNSIGNED NOT NULL,
   `Comentario` VARCHAR(100) NOT NULL,
   `Calificacion` TINYINT(10) NOT NULL,
+  `Fecha` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idComentario`),
-  INDEX `fk_Comentario_Habitacion_idx` (`idHabitacion` ASC) ,
+  INDEX `fk_Comentario_Habitacion_idx` (`idHabitacion` ASC),
   CONSTRAINT `fk_Comentario_Habitacion`
     FOREIGN KEY (`idHabitacion`)
     REFERENCES `5to_Trivago`.`Habitacion` (`idHabitacion`)

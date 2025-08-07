@@ -1,4 +1,5 @@
 namespace Trivago.RepoDapper;
+
 public class RepoComentario : RepoDapper, IRepoComentario
 {
     public RepoComentario(IDbConnection conexion) : base(conexion)
@@ -14,6 +15,12 @@ public class RepoComentario : RepoDapper, IRepoComentario
         parametros.Add("p_idHabitacion", comentario.Habitacion);
         parametros.Add("p_Comentario", comentario.comentario);
         parametros.Add("p_Calificacion", comentario.Calificacion);
+
+        //if (comentario.Fecha == default)
+        //comentario.Fecha = DateTime.Now;
+
+        parametros.Add("p_Fecha", comentario.Fecha);
+
         parametros.Add("p_idComentario", direction: ParameterDirection.Output);
 
         await ejecutor(storedProcedure, parametros);
@@ -51,7 +58,7 @@ public class RepoComentario : RepoDapper, IRepoComentario
             idHabitacion AS Habitacion,
             Comentario AS comentario,
             Calificacion,
-            NOW() AS Fecha 
+            Fecha
         FROM Comentario
         WHERE idComentario = @Id
         LIMIT 1";
@@ -71,11 +78,11 @@ public class RepoComentario : RepoDapper, IRepoComentario
     {
         string sql = @"
             SELECT 
-                idComentario,
-                idHabitacion AS Habitacion,
-                Comentario AS comentario,
-                Calificacion,
-                NOW() AS Fecha 
+            idComentario,
+            idHabitacion AS Habitacion, 
+            Comentario AS comentario,
+            Calificacion,
+            Fecha
         FROM Comentario";
 
         var comentarios = await _conexion.QueryAsync<Comentario>(sql);
