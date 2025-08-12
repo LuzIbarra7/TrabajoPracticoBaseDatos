@@ -33,12 +33,19 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-//Para un GET en la ruta "/todoitems", 
 app.MapGet("/pais", async (IRepoPais repo) =>
-    await repo.ListarAsync()
-        is List<Pais> paises
-            ? Results.Ok(paises)
-            : Results.NotFound());
+{
+    var paises = await repo.ListarAsync();
+
+    if (paises is not List<Pais> listaPaises || !listaPaises.Any())
+        return Results.NotFound();
+
+    // Mapeamos la lista de Pais a PaisDto (solo IdPais y Nombre, sin Ciudades)
+    var paisesDto = listaPaises.Select(pais => new Paisdto(pais.idPais, pais.Nombre)).ToList();
+
+    return Results.Ok(paisesDto);
+});
+
 
 app.MapGet("/pais/{id}", async (uint id, IRepoPais repo) =>
 {
@@ -91,6 +98,8 @@ app.MapPost("/comentario", async (Comentario comentario, IRepoComentario repo) =
 
 
 app.Run();
+
+public record struct Paisdto(uint IdPais, string Nombre);
 
 public class PaisDto
 {
