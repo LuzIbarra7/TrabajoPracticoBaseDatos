@@ -1,15 +1,26 @@
 using System.Data;
 using Trivago.Core.Persistencia;
 using Trivago.Core.Ubicacion;
+using Dapper;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Trivago.RepoDapper;
 
 public class RepoUsuario : RepoDapper, IRepoUsuario
 {
-    public RepoUsuario(IDbConnection conexion) : base(conexion)
+    public RepoUsuario(IDbConnection conexion) : base(conexion) { }
+
+    // Hash SHA-256 en C#
+    private string HashContrasena(string contrasena)
     {
+        using var sha = SHA256.Create();
+        byte[] bytes = Encoding.UTF8.GetBytes(contrasena);
+        byte[] hash = sha.ComputeHash(bytes);
+        return BitConverter.ToString(hash).Replace("-", "").ToLower();
     }
-    //altas
+
+    // --- ALTAS ---
     private async Task<uint> AltaUsuarioInternaAsync(Usuario usuario, Func<string, DynamicParameters, Task> ejecutor)
     {
         string storedProcedure = "insert_usuario";
@@ -18,8 +29,8 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
         parametros.Add("p_Nombre", usuario.Nombre);
         parametros.Add("p_Apellido", usuario.Apellido);
         parametros.Add("p_Mail", usuario.Mail);
-        parametros.Add("p_Contraseña", usuario.Contrasena);
-        parametros.Add("p_idUsuario", ParameterDirection.Output);
+        parametros.Add("p_Contrasena", HashContrasena(usuario.Contrasena)); // Hash aquí
+        parametros.Add("p_idUsuario", dbType: DbType.UInt32, direction: ParameterDirection.Output);
 
         await ejecutor(storedProcedure, parametros);
 
@@ -31,20 +42,21 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
     {
         return AltaUsuarioInternaAsync(usuario, (sp, p) =>
         {
-            _conexion.Execute(sp, p);
+            _conexion.Execute(sp, p, commandType: CommandType.StoredProcedure);
             return Task.CompletedTask;
         }).GetAwaiter().GetResult();
     }
+
     public async Task<uint> AltaAsync(Usuario usuario)
     {
-        return await AltaUsuarioInternaAsync(usuario, (sp, p) => _conexion.ExecuteAsync(sp, p));
+        return await AltaUsuarioInternaAsync(usuario, (sp, p) =>
+            _conexion.ExecuteAsync(sp, p, commandType: CommandType.StoredProcedure));
     }
 
-    //detalle
-
+    // --- DETALLE ---
     private async Task<Usuario?> DetalleUsuarioInternaAsync(uint id, Func<string, object, Task<Usuario?>> ejecutor)
     {
-        string sql = "SELECT * FROM Usuario WHERE idUsuario = @Id LIMIT 1";
+        string sql = "SELECT idUsuario, Nombre, Apellido, Mail FROM Usuario WHERE idUsuario = @Id LIMIT 1";
         return await ejecutor(sql, new { Id = id });
     }
 
@@ -56,17 +68,17 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
             return Task.FromResult(result);
         }).GetAwaiter().GetResult();
     }
+
     public async Task<Usuario?> DetalleAsync(uint id)
     {
         return await DetalleUsuarioInternaAsync(id, (sql, param) =>
             _conexion.QuerySingleOrDefaultAsync<Usuario>(sql, param));
     }
 
-
-    //listar
+    // --- LISTAR ---
     private async Task<List<Usuario>> ListarUsuarioInternaAsync(Func<string, Task<IEnumerable<Usuario>>> ejecutor)
     {
-        string sql = "SELECT * FROM Usuario";
+        string sql = "SELECT idUsuario, Nombre, Apellido, Mail FROM Usuario";
         var resultado = await ejecutor(sql);
         return resultado.ToList();
     }
@@ -79,17 +91,19 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
             return Task.FromResult(result);
         }).GetAwaiter().GetResult();
     }
+
     public async Task<List<Usuario>> ListarAsync()
     {
         return await ListarUsuarioInternaAsync(sql => _conexion.QueryAsync<Usuario>(sql));
     }
 
-//usuario
+    // --- LOGIN ---
     private async Task<Usuario?> UsuarioPorPassInternaAsync(string email, string pass, Func<string, object, Task<Usuario?>> ejecutor)
     {
-        string sql = "SELECT * FROM Usuario WHERE Mail = @mail AND Contrasena = @Contrasena";
-        return await ejecutor(sql, new { mail = email, Contrasena = pass });
+        string sql = "SELECT idUsuario, Nombre, Apellido, Mail FROM Usuario WHERE Mail = @mail AND Contrasena = @Contrasena";
+        return await ejecutor(sql, new { mail = email, Contrasena = HashContrasena(pass) });
     }
+
     public async Task<Usuario?> UsuarioPorPassAsync(string email, string pass)
     {
         return await UsuarioPorPassInternaAsync(email, pass, (sql, param) =>
@@ -104,5 +118,4 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
             return Task.FromResult(result);
         }).GetAwaiter().GetResult();
     }
-
 }

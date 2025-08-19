@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Habitacion` (
   `idHabitacion` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `idHotel` INT UNSIGNED NOT NULL,
   `idTipo` INT UNSIGNED NOT NULL,
-  `PrecioPorNoche` DECIMAL UNSIGNED NULL,
+  `PrecioPorNoche` DECIMAL(10,2) UNSIGNED NULL,
   PRIMARY KEY (`idHabitacion`, `idHotel`),
   INDEX `fk_Habitacion_Hotel1_idx` (`idHotel` ASC) ,
   INDEX `fk_Habitacion_TipoHanbitacion1_idx` (`idTipo` ASC) ,
@@ -170,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Reserva` (
 -- -----------------------------------------------------
 -- Table `5to_Trivago`.`Comentario`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS IF NOT EXISTS `5to_Trivago`.`Comentario`;
+DROP TABLE IF EXISTS `5to_Trivago`.`Comentario`;
 
 CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Comentario` (
   `idComentario` INT UNSIGNED NOT NULL AUTO_INCREMENT,

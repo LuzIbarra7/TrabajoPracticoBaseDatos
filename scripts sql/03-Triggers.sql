@@ -1,8 +1,11 @@
 delimiter $$
-use `5to_Trivago`$$
-SELECT 'Creando Triggers' AS 'Estado'$$
+
+use `5to_Trivago` $$
+
+SELECT 'Creando Triggers' AS 'Estado' $$
 
 drop trigger if exists befInsReserva$$
+
 create trigger befInsReserva before insert on Reserva
 for each row
 begin
@@ -15,9 +18,9 @@ set message_text = "La fecha solicitada no disponible";
 end if;
 end$$
 
-drop trigger if exists befInsUsuario$$
-create trigger befInsUsuario before insert on Usuario
-for each row
-begin
-set New.Contraseña = sha2(New.Contraseña, 256);
-end$$
+#DROP TRIGGER IF EXISTS befInsUsuario$$
+#CREATE TRIGGER befInsUsuario BEFORE INSERT ON Usuario
+#FOR EACH ROW
+#BEGIN
+#    SET NEW.Contrasena = SHA2(NEW.Contrasena, 256);
+#END$$

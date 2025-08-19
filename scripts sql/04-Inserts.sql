@@ -31,9 +31,9 @@ call insert_tipo_habitacion('Gran suite', @idGranSuite);
 -- delete from TipoHabitacion
 -- where idTipo in (1, 2, 3);
 
-call insert_habitacion(@idHotelBuenosAires, @idSuite, 10000.00, @idHabitacionHotelBuenosAiresSuite1);
-call insert_habitacion(@idHotelMendoza, @idJuniorSuite, 20000.00, @idHabitacionHotelMendozaJuniorSuite1);
-call insert_habitacion(@idHotelSantiagodelEstero, @idGranSuite, 30000.00, @idHabitacionHotelSantiagodelEsteroGranSuite1);
+call insert_habitacion(@idHotelBuenosAires, @idSuite, 10000, @idHabitacionHotelBuenosAiresSuite1);
+call insert_habitacion(@idHotelMendoza, @idJuniorSuite, 20000, @idHabitacionHotelMendozaJuniorSuite1);
+call insert_habitacion(@idHotelSantiagodelEstero, @idGranSuite, 30000, @idHabitacionHotelSantiagodelEsteroGranSuite1);
 
 -- delete from Habitacion
 -- where idHabitacion in (1, 2, 3);

@@ -80,7 +80,7 @@ DELIMITER //
 CREATE PROCEDURE insert_habitacion(
   IN p_idHotel INT UNSIGNED,
   IN p_idTipo INT UNSIGNED,
-  IN p_PrecioPorNoche DECIMAL(10, 2),
+  IN p_PrecioPorNoche DECIMAL(10,2),
   out p_idHabitacion int unsigned
 )
 BEGIN
@@ -118,15 +118,17 @@ CREATE PROCEDURE insert_usuario(
   IN p_Apellido VARCHAR(45),
   IN p_Mail VARCHAR(60),
   IN p_Contrasena CHAR(64),
-  OUT p_idUsuario INT unsigned
+  OUT p_idUsuario INT UNSIGNED
 )
 BEGIN
-  INSERT INTO `Usuario` (`Nombre`, `Apellido`, `Mail`, `Contrasena`) 
+  INSERT INTO `Usuario` (`Nombre`, `Apellido`, `Mail`, `Contrasena`)
   VALUES (p_Nombre, p_Apellido, p_Mail, p_Contrasena);
+
   SET p_idUsuario = LAST_INSERT_ID();
 END //
 
 DELIMITER ;
+
 
 -- Procedure for Reserva
 DROP PROCEDURE IF EXISTS insert_reserva;

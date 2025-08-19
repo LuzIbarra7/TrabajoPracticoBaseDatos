@@ -13,7 +13,7 @@ if(
 exists(
 select *
         from Usuario U
-        where U.Mail = mail and U.Contraseña = sha2(contra, 256)
+        where U.Mail = mail and U.Contrasena = sha2(contra, 256)
 )
 )
 then
