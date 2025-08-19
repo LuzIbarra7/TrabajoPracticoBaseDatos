@@ -18,6 +18,9 @@ builder.Services.AddScoped<IDbConnection>(sp => new MySqlConnection(connectionSt
 //Cada vez que necesite la interfaz, se va a instanciar automaticamente AdoDapper y se va a pasar al metodo de la API
 builder.Services.AddScoped<IRepoPais, RepoPais>();
 builder.Services.AddScoped<IRepoComentario, RepoComentario>();
+builder.Services.AddScoped<IRepoCiudad, RepoCiudad>();
+builder.Services.AddScoped<IRepoUsuario, RepoUsuario>();
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -96,10 +99,57 @@ app.MapPost("/comentario", async (Comentario comentario, IRepoComentario repo) =
 });
 
 
+//Ciudad
+app.MapGet("/ciudad", async (IRepoCiudad repo) =>
+{
+    var ciudades = await repo.ListarAsync();
+    return Results.Ok(ciudades.Select(c => new Ciudaddto(c.idCiudad, c.idPais, c.Nombre)));
+});
+
+app.MapGet("/ciudad/{id}", async (uint id, IRepoCiudad repo) =>
+{
+    var ciudad = await repo.DetalleAsync(id);
+    return ciudad is null
+        ? Results.NotFound()
+        : Results.Ok(new Ciudaddto(ciudad.idCiudad, ciudad.idPais, ciudad.Nombre));
+});
+
+
+// app.MapPost("/ciudad", async (Ciudad ciudad, IRepoCiudad repo) =>
+// {
+//     var id = await repo.AltaAsync(ciudad);
+//     return Results.Created($"/ciudad/{id}", new { id });
+// });
+
+
+// USUARIO
+app.MapGet("/usuario", async (IRepoUsuario repo) =>
+{
+    var usuarios = await repo.ListarAsync();
+    return Results.Ok(usuarios.Select(u => new UsuarioDto(u.idUsuario, u.Nombre, u.Apellido, u.Mail)));
+});
+
+app.MapGet("/usuario/{id}", async (uint id, IRepoUsuario repo) =>
+{
+    var usuario = await repo.DetalleAsync(id);
+    return usuario is null
+        ? Results.NotFound()
+        : Results.Ok(new UsuarioDto(usuario.idUsuario, usuario.Nombre, usuario.Apellido, usuario.Mail));
+});
+
+// app.MapPost("/usuario", async (Usuario usuario, IRepoUsuario repo) =>
+// {
+//     var id = await repo.AltaAsync(usuario);
+//     return Results.Created($"/usuario/{id}", new { id });
+// });
 
 app.Run();
 
 public record struct Paisdto(uint IdPais, string Nombre);
+
+public readonly record struct Ciudaddto(uint idCiudad, uint idPais, string Nombre);
+
+public readonly record struct UsuarioDto(uint idUsuario, string Nombre, string Apellido, string Mail);
 
 public class PaisDto
 {
