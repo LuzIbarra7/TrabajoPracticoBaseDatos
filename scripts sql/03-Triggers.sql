@@ -18,9 +18,3 @@ set message_text = "La fecha solicitada no disponible";
 end if;
 end$$
 
-#DROP TRIGGER IF EXISTS befInsUsuario$$
-#CREATE TRIGGER befInsUsuario BEFORE INSERT ON Usuario
-#FOR EACH ROW
-#BEGIN
-#    SET NEW.Contrasena = SHA2(NEW.Contrasena, 256);
-#END$$

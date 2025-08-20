@@ -40,13 +40,13 @@ public class RepoTipoHabitacion : RepoDapper, IRepoTipoHabitacion
 
 
     //Detalle
-    private async Task<TipoHabitacion?> DetalleTipoHabitacionInternaAsync(uint id, Func<string, object, Task<TipoHabitacion?>> ejecutor)
+    private async Task<TipoHabitacion?> DetalleTipoHabitacionInternaAsync(int id, Func<string, object, Task<TipoHabitacion?>> ejecutor)
     {
         string sql = "SELECT * FROM TipoHabitacion WHERE idTipo = @Id LIMIT 1";
         return await ejecutor(sql, new { Id = id });
     }
 
-    public TipoHabitacion? Detalle(uint id)
+    public TipoHabitacion? Detalle(int id)
     {
         return DetalleTipoHabitacionInternaAsync(id, (sql, param) =>
         {
@@ -54,7 +54,7 @@ public class RepoTipoHabitacion : RepoDapper, IRepoTipoHabitacion
             return Task.FromResult(result);
         }).GetAwaiter().GetResult();
     }
-    public async Task<TipoHabitacion?> DetalleAsync(uint id)
+    public async Task<TipoHabitacion?> DetalleAsync(int id)
     {
         return await DetalleTipoHabitacionInternaAsync(id, (sql, param) =>
             _conexion.QuerySingleOrDefaultAsync<TipoHabitacion>(sql, param));

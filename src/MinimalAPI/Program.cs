@@ -19,6 +19,7 @@ builder.Services.AddScoped<IDbConnection>(sp => new MySqlConnection(connectionSt
 builder.Services.AddScoped<IRepoPais, RepoPais>();
 builder.Services.AddScoped<IRepoComentario, RepoComentario>();
 builder.Services.AddScoped<IRepoUsuario, RepoUsuario>();
+builder.Services.AddScoped<IRepoTipoHabitacion, RepoTipoHabitacion>();
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -119,13 +120,38 @@ app.MapPost("/usuario", async (Usuario usuario, IRepoUsuario repo) =>
     return Results.Created($"/usuario/{id}", new { id });
 });
 
+//TipoHabitacion
+app.MapGet("/tipohabitacion", (IRepoTipoHabitacion repo) =>
+{
+    var lista = repo.Listar()
+        .Select(t => new TipoHabitacionDto(t.idTipo, t.Nombre))
+        .ToList();
+    return Results.Ok(lista);
+});
+
+app.MapGet("/tipohabitacion/{id}", (int id, IRepoTipoHabitacion repo) =>
+{
+    var tipo = repo.Detalle(id);
+    return tipo is null
+        ? Results.NotFound()
+        : Results.Ok(new TipoHabitacionDto(tipo.idTipo, tipo.Nombre));
+});
+
+// app.MapPost("/tipohabitacion", (CrearTipoHabitacionDto dto, IRepoTipoHabitacion repo) =>
+// {
+//     var nuevo = new TipoHabitacion { Nombre = dto.Nombre };
+//     var id = repo.Alta(nuevo);
+//     return Results.Ok(new TipoHabitacionDto(id, nuevo.Nombre));
+// });
+
 app.Run();
 
 public record struct Paisdto(uint IdPais, string Nombre);
 
 
 public record struct UsuarioDto(uint idUsuario, string Nombre, string Apellido, string Mail);
-
+public record struct CrearTipoHabitacionDto(string Nombre);
+public record struct TipoHabitacionDto(uint Id, string Nombre);
 public class PaisDto
 {
     public uint IdPais { get; set; }
