@@ -11,36 +11,39 @@ public class RepoReserva : RepoDapper, IRepoReserva
     }
 
     //Altas
-    private async Task<uint> AltaReservaInternaAsync(Reserva reserva, Func<string, DynamicParameters, Task> ejecutor)
+    public async Task<uint> AltaAsync(Reserva reserva)
     {
         string storedProcedure = "insert_reserva";
+        DynamicParameters parametros = CargarParamsAlta(reserva);
 
+        await _conexion.ExecuteAsync(storedProcedure, parametros);
+
+        reserva.idReserva = parametros.Get<uint>("p_idReserva");
+        return reserva.idReserva;
+    }
+
+    private static DynamicParameters CargarParamsAlta(Reserva reserva)
+    {
         var parametros = new DynamicParameters();
-        parametros.Add("p_idHabitacion", reserva.habitacion.idHabitacion);
+        parametros.Add("p_idHabitacion", reserva.idHabitacion);
         parametros.Add("p_idMetododePago", reserva.metodoPago.idMetodoPago);
         parametros.Add("p_idUsuario", reserva.idUsuario);
         parametros.Add("p_Entrada", reserva.Entrada);
         parametros.Add("p_Salida", reserva.Salida);
         parametros.Add("p_Telefono", reserva.Telefono);
         parametros.Add("p_idReserva", direction: ParameterDirection.Output);
-
-        await ejecutor(storedProcedure, parametros);
-
-        reserva.idReserva = parametros.Get<uint>("p_idReserva");
-        return reserva.idReserva;
+        return parametros;
     }
 
     public uint Alta(Reserva reserva)
     {
-        return AltaReservaInternaAsync(reserva, (sp, p) =>
-        {
-            _conexion.Execute(sp, p);
-            return Task.CompletedTask;
-        }).GetAwaiter().GetResult();
-    }
-    public async Task<uint> AltaAsync(Reserva reserva)
-    {
-        return await AltaReservaInternaAsync(reserva, (sp, p) => _conexion.ExecuteAsync(sp, p));
+        var parametrosAlta = CargarParamsAlta(reserva);
+
+        _conexion.Execute("insert_reserva", parametrosAlta);
+
+        reserva.idReserva = parametrosAlta.Get<uint>("p_idReserva");
+        return reserva.idReserva;
+
     }
 
     //Detalles
