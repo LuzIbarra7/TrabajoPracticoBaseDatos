@@ -1,0 +1,38 @@
+@model IEnumerable<Trivago.Core.Ubicacion.Pais>
+
+<style>
+    body {
+        background-color: rgb(255, 208, 192);
+    }
+</style>
+
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-primary">🌍 Lista de Países</h1>
+        <p class="text-muted">Explorá todos los países y sus ciudades.</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        @foreach (var pais in Model)
+        {
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-dark">@pais.Nombre</h5>
+
+                        @if (pais.Ciudades.Any())
+                        {
+                            <ul class="list-group mt-3">
+                                @foreach (var ciudad in pais.Ciudades)
+                                {
+                                    <li class="list-group-item">@ciudad.Nombre</li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

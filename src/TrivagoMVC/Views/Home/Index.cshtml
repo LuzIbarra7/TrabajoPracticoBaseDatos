@@ -1,33 +1,6 @@
-﻿@model TrivagoMVC.Models.AltaCiudadViewModel
-
-@{
-    ViewData["Title"] = "Alta de Ciudad";
+﻿@{
+    ViewData["Title"] = "Inicio";
 }
 
-<style>
-
-    h2
-    {
-    color: rgba(13, 110, 253);
-    font-weight: 800;
-    }
-</style>
-<h2>Alta de Ciudad</h2>
-
-<form asp-action="Index" method="post">
-    <div class="mb-3">
-        <label class="form-label">Nombre de la ciudad</label>
-        <input asp-for="NuevaCiudad.Nombre" class="form-control" />
-        <span asp-validation-for="NuevaCiudad.Nombre" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">País</label>
-        <select asp-for="NuevaCiudad.idPais" asp-items="@(new SelectList(Model.Paises, "idPais", "Nombre"))" class="form-select">
-            <option value="">Seleccione un país</option>
-        </select>
-        <span asp-validation-for="NuevaCiudad.idPais" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Guardar</button>
-</form>
+<h2>Bienvenido a TrivagoMVC</h2>
+<p>Usá el menú para navegar entre las secciones (Hoteles, Ciudades → Alta, Detalle, Listado).</p>
