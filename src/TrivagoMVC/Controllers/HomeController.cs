@@ -6,7 +6,6 @@ namespace TrivagoMVC.Controllers
 {
     public class HomeController : Controller
     {
-        // Datos simulados en memoria
         private static List<Pais> paises = new List<Pais>
         {
             new Pais { idPais = 1, Nombre = "Argentina" },
@@ -14,13 +13,13 @@ namespace TrivagoMVC.Controllers
             new Pais { idPais = 3, Nombre = "Brasil" }
         };
 
-        // === INICIO ===
+        //INICIO
         public IActionResult Index()
         {
             return View();
         }
 
-        // === ALTA DE CIUDADES ===
+        //ALTA DE CIUDADES
         public IActionResult Alta()
         {
             var vm = new AltaCiudadViewModel
@@ -41,7 +40,6 @@ namespace TrivagoMVC.Controllers
                     model.NuevaCiudad.idCiudad = (uint)(pais.Ciudades.Count + 1);
                     pais.Ciudades.Add(model.NuevaCiudad);
                 }
-                // Cuando se da de alta redirige al listado
                 return RedirectToAction("Listado");
             }
 
@@ -49,7 +47,7 @@ namespace TrivagoMVC.Controllers
             return View(model);
         }
 
-        // === DETALLE DE UNA CIUDAD ===
+        //DETALLE DE UNA CIUDAD
         public IActionResult Detalle(uint? idCiudad)
         {
             if (idCiudad == null)
@@ -63,7 +61,7 @@ namespace TrivagoMVC.Controllers
             return View(ciudad);
         }
 
-        // === LISTADO DE CIUDADES ===
+        //LISTADO DE CIUDADES
         public IActionResult Listado()
         {
             return View(paises);
