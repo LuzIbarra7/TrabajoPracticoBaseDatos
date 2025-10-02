@@ -1,0 +1,73 @@
+@model TrivagoMVC.Models.Usuario
+
+@{
+    ViewData["Title"] = "Detalle de " + Model.Nombre;
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Detalle del Usuario</h3>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" 
+                             style="width: 100px; height: 100px; font-size: 48px;">
+                            @Model.Nombre.Substring(0, 1).ToUpper()
+                        </div>
+                    </div>
+
+                    <h4 class="text-primary mb-4">@Model.Nombre @Model.Apellido</h4>
+
+                    <div class="text-start">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <strong>ID Usuario:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                @Model.idUsuario
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <strong>Nombre:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                @Model.Nombre
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <strong>Apellido:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                @Model.Apellido
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <strong><i class="bi bi-envelope"></i> Email:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                <a href="mailto:@Model.Mail">@Model.Mail</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="DetalleUsuario" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver al listado
+                    </a>
+                    <a asp-action="AltaUsuario" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Agregar otro usuario
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+@model List<TrivagoMVC.Models.Usuario>
+
+@{
+    ViewData["Title"] = "Listado de Usuarios";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Listado de Usuarios</h2>
+        <a asp-action="AltaUsuario" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nuevo Usuario
+        </a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var usuario in Model)
+            {
+                <div class="col-md-6 col-lg-3 mb-3">
+                    <div class="card shadow-sm text-center h-100">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" 
+                                     style="width: 60px; height: 60px; font-size: 24px;">
+                                    @usuario.Nombre.Substring(0, 1).ToUpper()
+                                </div>
+                            </div>
+                            <h5 class="card-title">@usuario.Nombre</h5>
+                            <p class="card-text text-muted">
+                                <small>ID: @usuario.idUsuario</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <p class="mb-0">No hay usuarios registrados. <a asp-action="AltaUsuario">Agregar el primer usuario</a></p>
+        </div>
+    }
+</div>

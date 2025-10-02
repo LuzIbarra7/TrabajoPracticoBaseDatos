@@ -1,0 +1,65 @@
+@model TrivagoMVC.ViewModels.AltaHotelViewModel
+
+@{
+    ViewData["Title"] = "Alta de Hotel";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Alta de Hotel</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AltaHotel" method="post">
+                        <div class="mb-3">
+                            <label asp-for="NuevoHotel.Nombre" class="form-label">Nombre del Hotel</label>
+                            <input asp-for="NuevoHotel.Nombre" class="form-control" placeholder="Ej: Hotel Plaza" />
+                            <span asp-validation-for="NuevoHotel.Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NuevoHotel.idCiudad" class="form-label">Ciudad</label>
+                            <select asp-for="NuevoHotel.idCiudad" asp-items="Model.Ciudades" class="form-select">
+                                <option value="">Seleccione una ciudad</option>
+                            </select>
+                            <span asp-validation-for="NuevoHotel.idCiudad" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NuevoHotel.Direccion" class="form-label">Dirección</label>
+                            <input asp-for="NuevoHotel.Direccion" class="form-control" placeholder="Ej: Av. Principal 123" />
+                            <span asp-validation-for="NuevoHotel.Direccion" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NuevoHotel.Telefono" class="form-label">Teléfono</label>
+                            <input asp-for="NuevoHotel.Telefono" class="form-control" placeholder="Ej: +54 11 1234-5678" />
+                            <span asp-validation-for="NuevoHotel.Telefono" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NuevoHotel.URL" class="form-label">URL del sitio web</label>
+                            <input asp-for="NuevoHotel.URL" class="form-control" placeholder="Ej: https://www.hotelplaza.com" />
+                            <span asp-validation-for="NuevoHotel.URL" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Guardar Hotel
+                            </button>
+                            <a asp-action="ListadoHotel" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

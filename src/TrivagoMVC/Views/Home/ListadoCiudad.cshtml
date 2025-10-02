@@ -1,0 +1,49 @@
+@model List<TrivagoMVC.ViewModels.CiudadConPaisViewModel>
+
+@{
+    ViewData["Title"] = "Listado de Ciudades";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Listado de Ciudades</h2>
+        <a asp-action="AltaCiudad" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nueva Ciudad
+        </a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID Ciudad</th>
+                                <th>Nombre</th>
+                                <th>País</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ciudad in Model)
+                            {
+                                <tr>
+                                    <td>@ciudad.idCiudad</td>
+                                    <td>@ciudad.NombreCiudad</td>
+                                    <td>@ciudad.NombrePais</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <p class="mb-0">No hay ciudades registradas. <a asp-action="AltaCiudad">Agregar la primera ciudad</a></p>
+        </div>
+    }
+</div>
