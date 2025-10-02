@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
-using TrivagoMVC.Models;
-
-namespace TrivagoMVC.ViewModels
+namespace TrivagoMVC.Models
 {
     public class AltaHotelViewModel
     {

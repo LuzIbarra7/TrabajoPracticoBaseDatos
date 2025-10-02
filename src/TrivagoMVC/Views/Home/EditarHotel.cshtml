@@ -1,0 +1,53 @@
+@model TrivagoMVC.Models.AltaHotelViewModel
+
+@{
+    ViewData["Title"] = "Editar Hotel";
+}
+
+<h2>Editar Hotel</h2>
+
+<form asp-action="EditarHotel" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label class="form-label">ID Hotel</label>
+        <input asp-for="NuevoHotel.idHotel" class="form-control" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ciudad (no editable)</label>
+        @{
+            // mostrar el nombre de la ciudad según el id
+            var ciudadNombre = "";
+            var ciudadId = Model.NuevoHotel?.idCiudad ?? 0U;
+            var ciudadObj = Model.Ciudades?.FirstOrDefault(s => s.Value == ciudadId.ToString());
+            if (ciudadObj != null) ciudadNombre = ciudadObj.Text;
+        }
+        <input class="form-control" value="@(ciudadNombre ?? "Desconocida")" readonly />
+        <input asp-for="NuevoHotel.idCiudad" type="hidden" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input asp-for="NuevoHotel.Nombre" class="form-control" />
+        <span asp-validation-for="NuevoHotel.Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Dirección</label>
+        <input asp-for="NuevoHotel.Direccion" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Teléfono</label>
+        <input asp-for="NuevoHotel.Telefono" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">URL</label>
+        <input asp-for="NuevoHotel.URL" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a asp-action="ListadoHotel" class="btn btn-secondary">Cancelar</a>
+</form>

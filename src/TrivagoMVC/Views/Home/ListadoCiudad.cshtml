@@ -23,6 +23,7 @@
                                 <th>ID Ciudad</th>
                                 <th>Nombre</th>
                                 <th>País</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,6 +33,14 @@
                                     <td>@ciudad.idCiudad</td>
                                     <td>@ciudad.NombreCiudad</td>
                                     <td>@ciudad.NombrePais</td>
+                                    <td>
+                                        <a asp-action="EditarCiudad"
+                                           asp-route-idPais="@ciudad.idPais"
+                                           asp-route-idCiudad="@ciudad.idCiudad"
+                                           class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i> Editar
+                                        </a>
+                                    </td>
                                 </tr>
                             }
                         </tbody>

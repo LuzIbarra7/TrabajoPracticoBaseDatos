@@ -1,0 +1,34 @@
+@model TrivagoMVC.Models.AltaCiudadViewModel
+
+@{
+    ViewData["Title"] = "Editar Ciudad";
+}
+
+<h2>Editar Ciudad</h2>
+
+<form asp-action="EditarCiudad" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label class="form-label">ID Ciudad</label>
+        <input asp-for="NuevaCiudad.idCiudad" class="form-control" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">País (no editable)</label>
+        @{
+            var paisSeleccionado = Model.Paises?.FirstOrDefault(p => p.idPais == Model.NuevaCiudad.idPais);
+        }
+        <input class="form-control" value="@(paisSeleccionado?.Nombre ?? "Desconocido")" readonly />
+        <input asp-for="NuevaCiudad.idPais" type="hidden" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Nombre de la ciudad</label>
+        <input asp-for="NuevaCiudad.Nombre" class="form-control" />
+        <span asp-validation-for="NuevaCiudad.Nombre" class="text-danger"></span>
+    </div>
+
+    <button asp-action="ListadoCiudad"type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a asp-action="ListadoCiudad" class="btn btn-secondary">Cancelar</a>
+</form>
