@@ -9,22 +9,20 @@
 <form asp-action="EditarHotel" method="post">
     @Html.AntiForgeryToken()
 
+    <input type="hidden" asp-for="NuevoHotel.idHotel" />
+
     <div class="mb-3">
         <label class="form-label">ID Hotel</label>
         <input asp-for="NuevoHotel.idHotel" class="form-control" readonly />
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Ciudad (no editable)</label>
-        @{
-            // mostrar el nombre de la ciudad según el id
-            var ciudadNombre = "";
-            var ciudadId = Model.NuevoHotel?.idCiudad ?? 0U;
-            var ciudadObj = Model.Ciudades?.FirstOrDefault(s => s.Value == ciudadId.ToString());
-            if (ciudadObj != null) ciudadNombre = ciudadObj.Text;
-        }
-        <input class="form-control" value="@(ciudadNombre ?? "Desconocida")" readonly />
-        <input asp-for="NuevoHotel.idCiudad" type="hidden" />
+        <label class="form-label">Ciudad</label>
+        @* Model.Ciudades debe venir como List<SelectListItem> desde el controller GET EditarHotel *@
+        <select asp-for="NuevoHotel.idCiudad" asp-items="Model.Ciudades" class="form-select">
+            <option value="">Seleccione una ciudad</option>
+        </select>
+        <span asp-validation-for="NuevoHotel.idCiudad" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -36,18 +34,27 @@
     <div class="mb-3">
         <label class="form-label">Dirección</label>
         <input asp-for="NuevoHotel.Direccion" class="form-control" />
+        <span asp-validation-for="NuevoHotel.Direccion" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Teléfono</label>
         <input asp-for="NuevoHotel.Telefono" class="form-control" />
+        <span asp-validation-for="NuevoHotel.Telefono" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label class="form-label">URL</label>
         <input asp-for="NuevoHotel.URL" class="form-control" />
+        <span asp-validation-for="NuevoHotel.URL" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Guardar cambios</button>
-    <a asp-action="ListadoHotel" class="btn btn-secondary">Cancelar</a>
+    <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar cambios</button>
+        <a asp-action="ListadoHotel" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Cancelar</a>
+    </div>
 </form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

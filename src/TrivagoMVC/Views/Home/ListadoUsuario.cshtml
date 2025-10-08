@@ -5,6 +5,14 @@
 }
 
 <div class="container py-4">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Listado de Usuarios</h2>
         <a asp-action="AltaUsuario" class="btn btn-primary">
@@ -26,10 +34,14 @@
                                     @usuario.Nombre.Substring(0, 1).ToUpper()
                                 </div>
                             </div>
-                            <h5 class="card-title">@usuario.Nombre</h5>
-                            <p class="card-text text-muted">
-                                <small>ID: @usuario.idUsuario</small>
-                            </p>
+                            <h5 class="card-title">@usuario.Nombre @usuario.Apellido</h5>
+                            <p class="card-text text-muted"><small>ID: @usuario.idUsuario</small></p>
+
+                            <div class="d-flex justify-content-center gap-2 mt-3">
+                                <a asp-action="EditarUsuario" asp-route-idUsuario="@usuario.idUsuario" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

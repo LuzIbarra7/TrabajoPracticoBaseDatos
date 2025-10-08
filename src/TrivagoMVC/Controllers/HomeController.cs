@@ -38,7 +38,6 @@ namespace TrivagoMVC.Controllers
 
         // ALTA DE CIUDADES - POST
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult AltaCiudad(AltaCiudadViewModel model)
         {
             if (!ModelState.IsValid)
@@ -81,7 +80,7 @@ namespace TrivagoMVC.Controllers
                     idPais = c.idPais,
                     NombrePais = p.Nombre
                 }))
-                .OrderBy(c => c.NombreCiudad)
+                .OrderBy(c => c.NombrePais)
                 .ToList();
 
             return View(todasLasCiudades);
@@ -139,9 +138,7 @@ namespace TrivagoMVC.Controllers
             return View("EditarCiudad", vm);
         }
 
-        // EDITAR CIUDAD - POST
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult EditarCiudad(AltaCiudadViewModel model)
         {
             if (!ModelState.IsValid)
@@ -150,27 +147,78 @@ namespace TrivagoMVC.Controllers
                 return View("EditarCiudad", model);
             }
 
-            var pais = paises.FirstOrDefault(p => p.idPais == model.NuevaCiudad.idPais);
-            if (pais == null)
-            {
-                ModelState.AddModelError("", "País no encontrado.");
-                model.Paises = paises;
-                return View("EditarCiudad", model);
-            }
-
-            var ciudad = pais.Ciudades.FirstOrDefault(c => c.idCiudad == model.NuevaCiudad.idCiudad);
-            if (ciudad == null)
+            // encontrar la ciudad ORIGINAL (en cualquier país)
+            var ciudadOriginal = paises.SelectMany(p => p.Ciudades).FirstOrDefault(c => c.idCiudad == model.NuevaCiudad.idCiudad);
+            if (ciudadOriginal == null)
             {
                 ModelState.AddModelError("", "Ciudad no encontrada.");
                 model.Paises = paises;
                 return View("EditarCiudad", model);
             }
 
-            // actualizar solo campos editables (no cambios en id)
-            ciudad.Nombre = model.NuevaCiudad.Nombre;
+            // buscar el pais destino (seleccionado en el formulario)
+            var paisDestino = paises.FirstOrDefault(p => p.idPais == model.NuevaCiudad.idPais);
+            if (paisDestino == null)
+            {
+                ModelState.AddModelError("", "País no encontrado.");
+                model.Paises = paises;
+                return View("EditarCiudad", model);
+            }
 
-            return RedirectToAction("DetalleCiudad", new { idCiudad = ciudad.idCiudad });
+            // buscar el pais origen (donde está la ciudad actualmente)
+            var paisOrigen = paises.FirstOrDefault(p => p.Ciudades.Any(c => c.idCiudad == ciudadOriginal.idCiudad));
+            if (paisOrigen == null)
+            {
+                ModelState.AddModelError("", "País origen no encontrado.");
+                model.Paises = paises;
+                return View("EditarCiudad", model);
+            }
+
+            // Si cambió de país, remover de origen y agregar a destino
+            if (paisOrigen.idPais != paisDestino.idPais)
+            {
+                // quitar de origen
+                paisOrigen.Ciudades.RemoveAll(c => c.idCiudad == ciudadOriginal.idCiudad);
+
+                // asegurarse la lista destino existe
+                paisDestino.Ciudades ??= new List<Ciudad>();
+
+                // si hay conflicto de ids en destino (raro), reasignar un id nuevo
+                if (paisDestino.Ciudades.Any(c => c.idCiudad == model.NuevaCiudad.idCiudad))
+                {
+                    model.NuevaCiudad.idCiudad = (uint)(paisDestino.Ciudades.Count + 1);
+                }
+
+                var nueva = new Ciudad
+                {
+                    idCiudad = model.NuevaCiudad.idCiudad,
+                    idPais = paisDestino.idPais,
+                    Nombre = model.NuevaCiudad.Nombre,
+                    Hoteles = ciudadOriginal.Hoteles ?? new List<Hotel>()
+                };
+
+                paisDestino.Ciudades.Add(nueva);
+
+                // redirigir al detalle de la ciudad (usando el id final)
+                return RedirectToAction("DetalleCiudad", new { idCiudad = nueva.idCiudad });
+            }
+            else
+            {
+                // mismo país: sólo actualizar nombre en la ciudad existente dentro del país origen
+                var ciudadEnOrigen = paisOrigen.Ciudades.FirstOrDefault(c => c.idCiudad == model.NuevaCiudad.idCiudad);
+                if (ciudadEnOrigen == null)
+                {
+                    ModelState.AddModelError("", "Ciudad no encontrada en el país.");
+                    model.Paises = paises;
+                    return View("EditarCiudad", model);
+                }
+
+                ciudadEnOrigen.Nombre = model.NuevaCiudad.Nombre;
+
+                return RedirectToAction("DetalleCiudad", new { idCiudad = ciudadEnOrigen.idCiudad });
+            }
         }
+
 
         // HOTELES
 
@@ -197,7 +245,6 @@ namespace TrivagoMVC.Controllers
 
         // ALTA DE HOTELES - POST
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult AltaHotel(AltaHotelViewModel model)
         {
             if (!ModelState.IsValid)
@@ -346,7 +393,6 @@ namespace TrivagoMVC.Controllers
 
         // EDITAR HOTEL - POST
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult EditarHotel(AltaHotelViewModel model)
         {
             if (!ModelState.IsValid)
@@ -409,20 +455,20 @@ namespace TrivagoMVC.Controllers
             return View(new Usuario());
         }
 
-        // ALTA DE USUARIOS - POST
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult AltaUsuario(Usuario usuario)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                usuario.idUsuario = nextUsuarioId++;
-                usuarios.Add(usuario);
-                return RedirectToAction("ListadoUsuario");
+                return View("AltaUsuario", usuario);
             }
 
-            return View(usuario);
+            usuario.idUsuario = nextUsuarioId++;
+            usuarios.Add(usuario);
+
+            return RedirectToAction("ListadoUsuario");
         }
+
 
         // LISTADO DE USUARIOS
         public IActionResult ListadoUsuario()
@@ -463,7 +509,7 @@ namespace TrivagoMVC.Controllers
                     idUsuario = usuario.idUsuario,
                     Nombre = usuario.Nombre,
                     Mail = usuario.Mail,
-                    // copia otros campos que tengas
+                    Apellido = usuario.Apellido
                 }
             };
 
@@ -472,7 +518,6 @@ namespace TrivagoMVC.Controllers
 
         // EDITAR USUARIO - POST
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult EditarUsuario(EditarUsuarioViewModel model)
         {
             if (!ModelState.IsValid)
@@ -487,10 +532,9 @@ namespace TrivagoMVC.Controllers
                 return View("EditarUsuario", model);
             }
 
-            // Actualizar campos editables (no id)
             usuario.Nombre = model.Usuario.Nombre;
             usuario.Mail = model.Usuario.Mail;
-            // actualiza otros campos si los tenés
+            usuario.Apellido = model.Usuario.Apellido;
 
             return RedirectToAction("DetalleUsuario", new { idUsuario = usuario.idUsuario });
         }

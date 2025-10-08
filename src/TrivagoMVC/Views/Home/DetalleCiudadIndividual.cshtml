@@ -1,21 +1,21 @@
-@model Trivago.Core.Ubicacion.Ciudad
+@model TrivagoMVC.ViewModels.DetalleCiudadViewModel
 
 @{
-    ViewData["Title"] = "Detalle de la Ciudad";
+    ViewData["Title"] = "Detalle de " + Model.Ciudad.Nombre;
 }
 
 <div class="container py-4">
     <div class="card">
         <div class="card-body">
-            <h2 class="card-title">@Model.Nombre</h2>
-            <p><strong>Id Ciudad:</strong> @Model.idCiudad</p>
-            <p><strong>Id País:</strong> @Model.idPais</p>
+            <h2 class="card-title">@Model.Ciudad.Nombre</h2>
+            <p><strong>Id Ciudad:</strong> @Model.Ciudad.idCiudad</p>
+            <p><strong>País:</strong> @Model.NombrePais</p>
 
-            @if (Model.Hoteles != null && Model.Hoteles.Any())
+            @if (Model.Ciudad.Hoteles != null && Model.Ciudad.Hoteles.Any())
             {
                 <h5>Hoteles</h5>
                 <ul>
-                    @foreach (var h in Model.Hoteles)
+                    @foreach (var h in Model.Ciudad.Hoteles)
                     {
                         <li>@h.Nombre</li>
                     }

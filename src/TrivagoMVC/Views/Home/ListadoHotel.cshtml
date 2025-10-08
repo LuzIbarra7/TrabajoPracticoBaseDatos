@@ -28,6 +28,7 @@
                                     <th>ID Hotel</th>
                                     <th>Ciudad</th>
                                     <th>Nombre del Hotel</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,6 +38,11 @@
                                         <td>@hotel.idHotel</td>
                                         <td>@hotel.NombreCiudad</td>
                                         <td>@hotel.NombreHotel</td>
+                                        <td>
+                                            <a asp-action="EditarHotel" asp-route-idCiudad="@hotel.idCiudad" asp-route-idHotel="@hotel.idHotel" class="btn btn-warning btn-sm">
+                                                <i class="bi bi-pencil-square"></i> Editar
+                                            </a>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>

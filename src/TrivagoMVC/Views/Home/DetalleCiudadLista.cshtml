@@ -4,12 +4,8 @@
     ViewData["Title"] = "Detalle de Ciudades";
 }
 <style>
-    .hover-shadow {
-        transition: box-shadow 0.3s ease;
-    }
-    .hover-shadow:hover {
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-    }
+    .hover-shadow { transition: box-shadow 0.3s ease; }
+    .hover-shadow:hover { box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important; }
 </style>
 
 <div class="container py-4">
@@ -26,18 +22,16 @@
             @foreach (var ciudad in Model)
             {
                 <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card h-100 shadow-sm hover-shadow" style="cursor: pointer;" 
-                         onclick="window.location.href='@Url.Action("Detalle", new { idCiudad = ciudad.idCiudad })'">
+                    <a asp-action="DetalleCiudad" asp-route-idCiudad="@ciudad.idCiudad" 
+                       class="card h-100 shadow-sm hover-shadow text-decoration-none text-body">
                         <div class="card-body">
                             <h5 class="card-title text-primary">@ciudad.Nombre</h5>
-                            <p class="card-text text-muted mb-1">
-                                <small>ID: @ciudad.idCiudad</small>
-                            </p>
+                            <p class="card-text text-muted mb-1"><small>ID: @ciudad.idCiudad</small></p>
                             <div class="mt-2">
-                                <span class="badge bg-secondary">@ciudad.Hoteles.Count hotel(es)</span>
+                                <span class="badge bg-secondary">@((ciudad.Hoteles != null) ? ciudad.Hoteles.Count : 0) hotel(es)</span>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             }
         </div>
@@ -49,4 +43,3 @@
         </div>
     }
 </div>
-
