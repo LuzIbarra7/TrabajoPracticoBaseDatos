@@ -6,5 +6,6 @@ namespace TrivagoMVC.ViewModels
     {
         public Ciudad Ciudad { get; set; }
         public string NombrePais { get; set; }
+        public uint IdPais { get; set; }
     }
 }

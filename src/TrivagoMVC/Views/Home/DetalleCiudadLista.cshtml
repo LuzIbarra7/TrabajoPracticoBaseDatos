@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Detalle de Ciudades";
 }
+
 <style>
     .hover-shadow { transition: box-shadow 0.3s ease; }
     .hover-shadow:hover { box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important; }
@@ -16,13 +17,15 @@
         </a>
     </div>
 
-    @if (Model.Any())
+    @if (Model != null && Model.Any())
     {
         <div class="row">
             @foreach (var ciudad in Model)
             {
                 <div class="col-md-6 col-lg-4 mb-3">
-                    <a asp-action="DetalleCiudad" asp-route-idCiudad="@ciudad.idCiudad" 
+                    <a asp-action="DetalleCiudad"
+                       asp-route-idPais="@ciudad.idPais"
+                       asp-route-idCiudad="@ciudad.idCiudad"
                        class="card h-100 shadow-sm hover-shadow text-decoration-none text-body">
                         <div class="card-body">
                             <h5 class="card-title text-primary">@ciudad.Nombre</h5>
