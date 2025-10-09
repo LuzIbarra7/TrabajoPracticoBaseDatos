@@ -1,7 +1,7 @@
 @model TrivagoMVC.Models.AltaHotelViewModel
 
 @{
-    ViewData["Title"] = "Alta de Hotel";
+    ViewData[index: "Title"] = "Alta de Hotel";
 }
 
 <div class="container py-4">
@@ -13,6 +13,8 @@
                 </div>
                 <div class="card-body">
                     <form asp-action="AltaHotel" method="post">
+                        @Html.AntiForgeryToken()
+
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.Nombre" class="form-label">Nombre del Hotel</label>
                             <input asp-for="NuevoHotel.Nombre" class="form-control" placeholder="Ej: Hotel Plaza" />
@@ -20,11 +22,11 @@
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="NuevoHotel.idCiudad" class="form-label">Ciudad</label>
-                            <select asp-for="NuevoHotel.idCiudad" asp-items="Model.Ciudades" class="form-select">
+                            <label asp-for="SelectCiudad" class="form-label">Ciudad</label>
+                            <select asp-for="SelectCiudad" asp-items="Model.Ciudades" class="form-select">
                                 <option value="">Seleccione una ciudad</option>
                             </select>
-                            <span asp-validation-for="NuevoHotel.idCiudad" class="text-danger"></span>
+                            <span asp-validation-for="SelectCiudad" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
@@ -61,5 +63,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync(partialViewName:"_ValidationScriptsPartial");}
 }

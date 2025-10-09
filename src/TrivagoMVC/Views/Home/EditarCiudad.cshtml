@@ -1,7 +1,7 @@
 @model TrivagoMVC.Models.AltaCiudadViewModel
 
 @{
-    ViewData["Title"] = "Editar Ciudad";
+    ViewData[index: "Title"] = "Editar Ciudad";
 }
 
 <h2>Editar Ciudad</h2>
@@ -37,5 +37,5 @@
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync(partialViewName: "_ValidationScriptsPartial");}
 }

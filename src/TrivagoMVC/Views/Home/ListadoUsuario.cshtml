@@ -1,14 +1,14 @@
 @model List<TrivagoMVC.Models.Usuario>
 
 @{
-    ViewData["Title"] = "Listado de Usuarios";
+    ViewData[index: "Title"] = "Listado de Usuarios";
 }
 
 <div class="container py-4">
-    @if (TempData["SuccessMessage"] != null)
+    @if (TempData[key: "SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["SuccessMessage"]
+            @TempData[key: "SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
@@ -31,7 +31,7 @@
                             <div class="mb-3">
                                 <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" 
                                      style="width: 60px; height: 60px; font-size: 24px;">
-                                    @usuario.Nombre.Substring(0, 1).ToUpper()
+                                    @usuario.Nombre.Substring(startIndex: 0, length: 1).ToUpper()
                                 </div>
                             </div>
                             <h5 class="card-title">@usuario.Nombre @usuario.Apellido</h5>

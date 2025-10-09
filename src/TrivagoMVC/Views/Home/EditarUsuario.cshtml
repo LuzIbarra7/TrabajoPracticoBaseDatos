@@ -1,7 +1,7 @@
 @model TrivagoMVC.ViewModels.EditarUsuarioViewModel
 
 @{
-    ViewData["Title"] = "Editar Usuario";
+    ViewData[index: "Title"] = "Editar Usuario";
 }
 
 <h2>Editar Usuario</h2>
@@ -48,5 +48,5 @@
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync(partialViewName: "_ValidationScriptsPartial");}
 }

@@ -1,7 +1,7 @@
 @model List<TrivagoMVC.Models.Usuario>
 
 @{
-    ViewData["Title"] = "Detalle de Usuarios";
+    ViewData[index: "Title"] = "Detalle de Usuarios";
 }
 
 <div class="container py-4">
@@ -19,12 +19,12 @@
                 <div class="list-group">
                     @foreach (var usuario in Model)
                     {
-                        <a href="@Url.Action("DetalleUsuario", new { idUsuario = usuario.idUsuario })" 
+                        <a href="@Url.Action(action: "DetalleUsuario", new { idUsuario = usuario.idUsuario })" 
                            class="list-group-item list-group-item-action">
                             <div class="d-flex w-100 align-items-center">
                                 <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center me-3" 
                                      style="width: 40px; height: 40px;">
-                                    @usuario.Nombre.Substring(0, 1).ToUpper()
+                                    @usuario.Nombre.Substring(startIndex: 0, length: 1).ToUpper()
                                 </div>
                                 <div>
                                     <h6 class="mb-0">@usuario.Nombre @usuario.Apellido</h6>

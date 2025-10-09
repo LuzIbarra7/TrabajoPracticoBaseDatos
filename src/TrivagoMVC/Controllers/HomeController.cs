@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TrivagoMVC.Models;
 using TrivagoMVC.ViewModels;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace TrivagoMVC.Controllers
 {
@@ -17,15 +19,17 @@ namespace TrivagoMVC.Controllers
         private static List<Usuario> usuarios = new List<Usuario>();
         private static uint nextUsuarioId = 1;
 
-        //INICIO
+        // INICIO
         public IActionResult Index()
         {
             return View();
         }
 
-        //CIUDADES
+        // =========================
+        // CIUDADES
+        // =========================
 
-        //ALTA DE CIUDADES
+        // ALTA DE CIUDADES - GET
         public IActionResult AltaCiudad()
         {
             var vm = new AltaCiudadViewModel
@@ -36,7 +40,7 @@ namespace TrivagoMVC.Controllers
             return View(vm);
         }
 
-        //ALTA DE CIUDADES
+        // ALTA DE CIUDADES - POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AltaCiudad(AltaCiudadViewModel model)
@@ -70,7 +74,7 @@ namespace TrivagoMVC.Controllers
             return RedirectToAction("ListadoCiudad");
         }
 
-        //LISTADO DE CIUDADES
+        // LISTADO DE CIUDADES
         public IActionResult ListadoCiudad()
         {
             var todasLasCiudades = paises
@@ -114,6 +118,7 @@ namespace TrivagoMVC.Controllers
                 }
             }
 
+            // fallback global (por compatibilidad con posibles links antiguos)
             if (ciudad == null)
             {
                 ciudad = paises.SelectMany(p => p.Ciudades).FirstOrDefault(c => c.idCiudad == idCiudad);
@@ -136,7 +141,7 @@ namespace TrivagoMVC.Controllers
             return View("DetalleCiudadIndividual", detalle);
         }
 
-        //EDITAR CIUDAD
+        // EDITAR CIUDAD - GET
         public IActionResult EditarCiudad(uint idPais, uint idCiudad)
         {
             var pais = paises.FirstOrDefault(p => p.idPais == idPais);
@@ -160,8 +165,9 @@ namespace TrivagoMVC.Controllers
             return View("EditarCiudad", vm);
         }
 
-        //EDITAR CIUDAD(mueve la ciudad si cambió de país, o actualiza nombre)
+        // EDITAR CIUDAD - POST (mueve la ciudad si cambió de país, o actualiza nombre)
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditarCiudad(AltaCiudadViewModel model)
         {
             if (!ModelState.IsValid)
@@ -203,7 +209,7 @@ namespace TrivagoMVC.Controllers
                 // quitar de origen
                 paisOrigen.Ciudades.RemoveAll(c => c.idCiudad == ciudadOriginal.idCiudad);
 
-                // asegurarse la lista destino existe
+                // asegurarse la lista destino exista
                 paisDestino.Ciudades ??= new List<Ciudad>();
 
                 // si hay conflicto de ids en destino (raro), reasignar un id nuevo
@@ -242,17 +248,19 @@ namespace TrivagoMVC.Controllers
             }
         }
 
+        // =========================
         // HOTELES
+        // =========================
 
-        //ALTA DE HOTELES
+        // ALTA DE HOTELES - GET
         public IActionResult AltaHotel()
         {
             var ciudadesSelect = paises
-                .SelectMany(p => p.Ciudades.Select(c => new { c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
-                .Select(c => new SelectListItem
+                .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                .Select(x => new SelectListItem
                 {
-                    Value = c.idCiudad.ToString(),
-                    Text = $"{c.Nombre} ({c.NombrePais})"
+                    Value = $"{x.idPais}:{x.idCiudad}",
+                    Text = $"{x.Nombre} ({x.NombrePais})"
                 })
                 .ToList();
 
@@ -265,37 +273,72 @@ namespace TrivagoMVC.Controllers
             return View(vm);
         }
 
-        //ALTA DE HOTELES
+        // ALTA DE HOTELES - POST
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AltaHotel(AltaHotelViewModel model)
         {
+            if (string.IsNullOrWhiteSpace(model.SelectCiudad))
+            {
+                ModelState.AddModelError("SelectCiudad", "Debe seleccionar una ciudad.");
+            }
+
             if (!ModelState.IsValid)
             {
                 model.Ciudades = paises
-                    .SelectMany(p => p.Ciudades.Select(c => new { c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
-                    .Select(c => new SelectListItem
+                    .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                    .Select(x => new SelectListItem
                     {
-                        Value = c.idCiudad.ToString(),
-                        Text = $"{c.Nombre} ({c.NombrePais})"
+                        Value = $"{x.idPais}:{x.idCiudad}",
+                        Text = $"{x.Nombre} ({x.NombrePais})"
                     })
                     .ToList();
 
                 return View(model);
             }
 
-            var ciudad = paises
-                .SelectMany(p => p.Ciudades)
-                .FirstOrDefault(c => c.idCiudad == model.NuevoHotel.idCiudad);
+            var parts = model.SelectCiudad.Split(':');
+            if (parts.Length != 2
+                || !uint.TryParse(parts[0], out var idPaisSeleccionado)
+                || !uint.TryParse(parts[1], out var idCiudadSeleccionado))
+            {
+                ModelState.AddModelError("SelectCiudad", "Selección de ciudad inválida.");
+                model.Ciudades = paises
+                    .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                    .Select(x => new SelectListItem
+                    {
+                        Value = $"{x.idPais}:{x.idCiudad}",
+                        Text = $"{x.Nombre} ({x.NombrePais})"
+                    })
+                    .ToList();
+                return View(model);
+            }
 
+            var pais = paises.FirstOrDefault(p => p.idPais == idPaisSeleccionado);
+            if (pais == null)
+            {
+                ModelState.AddModelError("", "País no encontrado.");
+                model.Ciudades = paises
+                    .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                    .Select(x => new SelectListItem
+                    {
+                        Value = $"{x.idPais}:{x.idCiudad}",
+                        Text = $"{x.Nombre} ({x.NombrePais})"
+                    })
+                    .ToList();
+                return View(model);
+            }
+
+            var ciudad = pais.Ciudades.FirstOrDefault(c => c.idCiudad == idCiudadSeleccionado);
             if (ciudad == null)
             {
-                ModelState.AddModelError("", "Ciudad no encontrada.");
+                ModelState.AddModelError("", "Ciudad no encontrada en el país seleccionado.");
                 model.Ciudades = paises
-                    .SelectMany(p => p.Ciudades.Select(c => new { c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
-                    .Select(c => new SelectListItem
+                    .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                    .Select(x => new SelectListItem
                     {
-                        Value = c.idCiudad.ToString(),
-                        Text = $"{c.Nombre} ({c.NombrePais})"
+                        Value = $"{x.idPais}:{x.idCiudad}",
+                        Text = $"{x.Nombre} ({x.NombrePais})"
                     })
                     .ToList();
                 return View(model);
@@ -303,12 +346,16 @@ namespace TrivagoMVC.Controllers
 
             ciudad.Hoteles ??= new List<Hotel>();
             model.NuevoHotel.idHotel = (uint)(ciudad.Hoteles.Count + 1);
+
+            // asegurar que el hotel almacena el idCiudad correcto
+            model.NuevoHotel.idCiudad = ciudad.idCiudad;
+
             ciudad.Hoteles.Add(model.NuevoHotel);
 
             return RedirectToAction("ListadoHotel");
         }
 
-        //LISTADO DE HOTELES
+        // LISTADO DE HOTELES
         public IActionResult ListadoHotel()
         {
             var hotelesAgrupados = paises
@@ -334,7 +381,7 @@ namespace TrivagoMVC.Controllers
             return View(hotelesAgrupados);
         }
 
-        //DETALLE DE HOTELES
+        // DETALLE DE HOTELES
         public IActionResult DetalleHotel(uint? idHotel, uint? idCiudad)
         {
             if (idHotel == null)
@@ -380,7 +427,7 @@ namespace TrivagoMVC.Controllers
             return View("DetalleHotelIndividual", detalle);
         }
 
-        //EDITAR HOTEL
+        // EDITAR HOTEL - GET
         public IActionResult EditarHotel(uint idCiudad, uint idHotel)
         {
             var ciudad = paises.SelectMany(p => p.Ciudades).FirstOrDefault(c => c.idCiudad == idCiudad);
@@ -388,6 +435,15 @@ namespace TrivagoMVC.Controllers
 
             var hotel = ciudad.Hoteles.FirstOrDefault(h => h.idHotel == idHotel);
             if (hotel == null) return NotFound();
+
+            var ciudadesSelect = paises
+                .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                .Select(x => new SelectListItem
+                {
+                    Value = $"{x.idPais}:{x.idCiudad}",
+                    Text = $"{x.Nombre} ({x.NombrePais})"
+                })
+                .ToList();
 
             var vm = new AltaHotelViewModel
             {
@@ -400,84 +456,177 @@ namespace TrivagoMVC.Controllers
                     Telefono = hotel.Telefono,
                     URL = hotel.URL
                 },
-                Ciudades = paises
-                    .SelectMany(p => p.Ciudades.Select(c => new { c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
-                    .Select(c => new SelectListItem
-                    {
-                        Value = c.idCiudad.ToString(),
-                        Text = $"{c.Nombre} ({c.NombrePais})"
-                    })
-                    .ToList()
+                Ciudades = ciudadesSelect,
+                SelectCiudad = $"{paises.First(p => p.Ciudades.Any(c => c.idCiudad == ciudad.idCiudad)).idPais}:{ciudad.idCiudad}"
             };
 
             return View("EditarHotel", vm);
         }
 
-        //EDITAR HOTEL
+        // EDITAR HOTEL - POST
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditarHotel(AltaHotelViewModel model)
         {
+            if (string.IsNullOrWhiteSpace(model.SelectCiudad))
+            {
+                ModelState.AddModelError("SelectCiudad", "Debe seleccionar una ciudad.");
+            }
+
             if (!ModelState.IsValid)
             {
                 model.Ciudades = paises
-                    .SelectMany(p => p.Ciudades.Select(c => new { c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
-                    .Select(c => new SelectListItem
+                    .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                    .Select(x => new SelectListItem
                     {
-                        Value = c.idCiudad.ToString(),
-                        Text = $"{c.Nombre} ({c.NombrePais})"
+                        Value = $"{x.idPais}:{x.idCiudad}",
+                        Text = $"{x.Nombre} ({x.NombrePais})"
                     })
                     .ToList();
                 return View("EditarHotel", model);
             }
 
-            var ciudad = paises.SelectMany(p => p.Ciudades).FirstOrDefault(c => c.idCiudad == model.NuevoHotel.idCiudad);
-            if (ciudad == null)
+            var parts = model.SelectCiudad.Split(':');
+            if (parts.Length != 2
+                || !uint.TryParse(parts[0], out var idPaisSeleccionado)
+                || !uint.TryParse(parts[1], out var idCiudadSeleccionado))
             {
-                ModelState.AddModelError("", "Ciudad no encontrada.");
+                ModelState.AddModelError("SelectCiudad", "Selección de ciudad inválida.");
                 model.Ciudades = paises
-                    .SelectMany(p => p.Ciudades.Select(c => new { c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
-                    .Select(c => new SelectListItem
+                    .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                    .Select(x => new SelectListItem
                     {
-                        Value = c.idCiudad.ToString(),
-                        Text = $"{c.Nombre} ({c.NombrePais})"
+                        Value = $"{x.idPais}:{x.idCiudad}",
+                        Text = $"{x.Nombre} ({x.NombrePais})"
                     })
                     .ToList();
                 return View("EditarHotel", model);
             }
 
-            var hotel = ciudad.Hoteles.FirstOrDefault(h => h.idHotel == model.NuevoHotel.idHotel);
-            if (hotel == null)
+            // encontrar el hotel original (en cualquier ciudad)
+            var ciudadOrigen = paises.SelectMany(p => p.Ciudades).FirstOrDefault(c => c.Hoteles.Any(h => h.idHotel == model.NuevoHotel.idHotel));
+            if (ciudadOrigen == null)
+            {
+                ModelState.AddModelError("", "Hotel original no encontrado.");
+                model.Ciudades = paises
+                    .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                    .Select(x => new SelectListItem
+                    {
+                        Value = $"{x.idPais}:{x.idCiudad}",
+                        Text = $"{x.Nombre} ({x.NombrePais})"
+                    })
+                    .ToList();
+                return View("EditarHotel", model);
+            }
+
+            var hotelOriginal = ciudadOrigen.Hoteles.FirstOrDefault(h => h.idHotel == model.NuevoHotel.idHotel);
+            if (hotelOriginal == null)
             {
                 ModelState.AddModelError("", "Hotel no encontrado.");
                 model.Ciudades = paises
-                    .SelectMany(p => p.Ciudades.Select(c => new { c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
-                    .Select(c => new SelectListItem
+                    .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                    .Select(x => new SelectListItem
                     {
-                        Value = c.idCiudad.ToString(),
-                        Text = $"{c.Nombre} ({c.NombrePais})"
+                        Value = $"{x.idPais}:{x.idCiudad}",
+                        Text = $"{x.Nombre} ({x.NombrePais})"
                     })
                     .ToList();
                 return View("EditarHotel", model);
             }
 
-            hotel.Nombre = model.NuevoHotel.Nombre;
-            hotel.Direccion = model.NuevoHotel.Direccion;
-            hotel.Telefono = model.NuevoHotel.Telefono;
-            hotel.URL = model.NuevoHotel.URL;
+            // comprobar si cambió de ciudad/pais
+            var paisOrigen = paises.First(p => p.Ciudades.Any(c => c.idCiudad == ciudadOrigen.idCiudad));
+            if (paisOrigen == null)
+            {
+                ModelState.AddModelError("", "País origen no encontrado.");
+                model.Ciudades = paises
+                    .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                    .Select(x => new SelectListItem
+                    {
+                        Value = $"{x.idPais}:{x.idCiudad}",
+                        Text = $"{x.Nombre} ({x.NombrePais})"
+                    })
+                    .ToList();
+                return View("EditarHotel", model);
+            }
 
-            return RedirectToAction("DetalleHotel", new { idHotel = hotel.idHotel, idCiudad = ciudad.idCiudad });
+            if (paisOrigen.idPais != idPaisSeleccionado || ciudadOrigen.idCiudad != idCiudadSeleccionado)
+            {
+                // mover a ciudad destino
+                var paisDestino = paises.FirstOrDefault(p => p.idPais == idPaisSeleccionado);
+                if (paisDestino == null)
+                {
+                    ModelState.AddModelError("", "País destino no encontrado.");
+                    model.Ciudades = paises
+                        .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                        .Select(x => new SelectListItem
+                        {
+                            Value = $"{x.idPais}:{x.idCiudad}",
+                            Text = $"{x.Nombre} ({x.NombrePais})"
+                        })
+                        .ToList();
+                    return View("EditarHotel", model);
+                }
+
+                var ciudadDestino = paisDestino.Ciudades.FirstOrDefault(c => c.idCiudad == idCiudadSeleccionado);
+                if (ciudadDestino == null)
+                {
+                    ModelState.AddModelError("", "Ciudad destino no encontrada.");
+                    model.Ciudades = paises
+                        .SelectMany(p => p.Ciudades.Select(c => new { p.idPais, c.idCiudad, c.Nombre, NombrePais = p.Nombre }))
+                        .Select(x => new SelectListItem
+                        {
+                            Value = $"{x.idPais}:{x.idCiudad}",
+                            Text = $"{x.Nombre} ({x.NombrePais})"
+                        })
+                        .ToList();
+                    return View("EditarHotel", model);
+                }
+
+                // quitar de origen
+                ciudadOrigen.Hoteles.RemoveAll(h => h.idHotel == hotelOriginal.idHotel);
+
+                // crear nueva instancia del hotel con el mismo id
+                var nuevoHotel = new Hotel
+                {
+                    idHotel = hotelOriginal.idHotel,
+                    idCiudad = ciudadDestino.idCiudad,
+                    Nombre = model.NuevoHotel.Nombre,
+                    Direccion = model.NuevoHotel.Direccion,
+                    Telefono = model.NuevoHotel.Telefono,
+                    URL = model.NuevoHotel.URL
+                };
+
+                ciudadDestino.Hoteles ??= new List<Hotel>();
+                ciudadDestino.Hoteles.Add(nuevoHotel);
+
+                return RedirectToAction("DetalleHotel", new { idHotel = nuevoHotel.idHotel, idCiudad = ciudadDestino.idCiudad });
+            }
+            else
+            {
+                // misma ciudad: actualizar campos
+                hotelOriginal.Nombre = model.NuevoHotel.Nombre;
+                hotelOriginal.Direccion = model.NuevoHotel.Direccion;
+                hotelOriginal.Telefono = model.NuevoHotel.Telefono;
+                hotelOriginal.URL = model.NuevoHotel.URL;
+
+                return RedirectToAction("DetalleHotel", new { idHotel = hotelOriginal.idHotel, idCiudad = ciudadOrigen.idCiudad });
+            }
         }
 
-        //USUARIOS
+        // =========================
+        // USUARIOS
+        // =========================
 
-        //ALTA DE USUARIOS
+        // ALTA DE USUARIOS - GET
         public IActionResult AltaUsuario()
         {
             return View(new Usuario());
         }
 
-        //ALTA DE USUARIOS
+        // ALTA DE USUARIOS - POST
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AltaUsuario(Usuario usuario)
         {
             if (!ModelState.IsValid)
@@ -491,13 +640,13 @@ namespace TrivagoMVC.Controllers
             return RedirectToAction("ListadoUsuario");
         }
 
-        //LISTADO DE USUARIOS
+        // LISTADO DE USUARIOS
         public IActionResult ListadoUsuario()
         {
             return View(usuarios.OrderBy(u => u.Nombre).ToList());
         }
 
-        //DETALLE DE USUARIOS
+        // DETALLE DE USUARIOS
         public IActionResult DetalleUsuario(uint? idUsuario)
         {
             if (idUsuario == null)
@@ -517,7 +666,7 @@ namespace TrivagoMVC.Controllers
             return View("DetalleUsuarioIndividual", usuario);
         }
 
-        //EDITAR USUARIO
+        // EDITAR USUARIO - GET
         public IActionResult EditarUsuario(uint idUsuario)
         {
             var usuario = usuarios.FirstOrDefault(u => u.idUsuario == idUsuario);
@@ -537,8 +686,9 @@ namespace TrivagoMVC.Controllers
             return View("EditarUsuario", vm);
         }
 
-        //EDITAR USUARIO
+        // EDITAR USUARIO - POST
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditarUsuario(EditarUsuarioViewModel model)
         {
             if (!ModelState.IsValid)

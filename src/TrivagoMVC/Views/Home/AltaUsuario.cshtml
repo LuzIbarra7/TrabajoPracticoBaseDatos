@@ -1,7 +1,7 @@
 @model TrivagoMVC.Models.Usuario
 
 @{
-    ViewData["Title"] = "Alta de Usuario";
+    ViewData[index: "Title"] = "Alta de Usuario";
 }
 
 <div class="container py-4">
@@ -55,5 +55,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync(partialViewName: "_ValidationScriptsPartial");}
 }

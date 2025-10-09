@@ -1,10 +1,10 @@
 @model IEnumerable<Trivago.Core.Ubicacion.Pais>
 
 @{
-    ViewData["Title"] = "Listado de Países y Ciudades";
+    ViewData[index: "Title"] = "Listado de Países y Ciudades";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>@ViewData[index: "Title"]</h1>
 
 @foreach (var pais in Model)
 {
@@ -29,7 +29,6 @@
                                 <td>@c.idCiudad</td>
                                 <td>@c.Nombre</td>
                                 <td>
-                                    <!-- Link hacia Detalle usando el id de la ciudad -->
                                     <a asp-action="Detalle" asp-controller="Home" asp-route-idCiudad="@c.idCiudad">Detalle</a>
                                 </td>
                             </tr>
@@ -41,8 +40,6 @@
             {
                 <p class="text-muted">No hay ciudades registradas para este país.</p>
             }
-
-            <!-- Enlace rápido para dar de alta una ciudad (opcional) -->
             <p>
                 <a asp-action="Alta" asp-controller="Home" asp-route-idPais="@pais.idPais">Agregar ciudad a @pais.Nombre</a>
             </p>

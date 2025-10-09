@@ -12,12 +12,12 @@
         </a>
     </div>
 
-    @if (Model.Any())
+    @if (Model != null && Model.Any())
     {
         @foreach (var paisGroup in Model)
         {
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">@paisGroup.NombrePais</h4>
                 </div>
                 <div class="card-body">
@@ -39,9 +39,10 @@
                                         <td>@hotel.NombreCiudad</td>
                                         <td>@hotel.NombreHotel</td>
                                         <td>
-                                            <a asp-action="EditarHotel" asp-route-idCiudad="@hotel.idCiudad" asp-route-idHotel="@hotel.idHotel" class="btn btn-warning btn-sm">
+                                            <button type="button" class="btn btn-warning btn-sm"
+                                                onclick="window.location.href='@Url.Action("EditarHotel", new { idHotel = hotel.idHotel, idCiudad = hotel.idCiudad })'">
                                                 <i class="bi bi-pencil-square"></i> Editar
-                                            </a>
+                                            </button>
                                         </td>
                                     </tr>
                                 }
