@@ -1,0 +1,49 @@
+@model TrivagoMVC.ViewModels.EditarUsuarioViewModel
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">Editar Usuario</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditarUsuario" method="post">
+                        <input type="hidden" asp-for="Usuario.idUsuario" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Usuario.Nombre" class="form-label">Nombre</label>
+                                <input asp-for="Usuario.Nombre" class="form-control" />
+                                <span asp-validation-for="Usuario.Nombre" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Usuario.Apellido" class="form-label">Apellido</label>
+                                <input asp-for="Usuario.Apellido" class="form-control" />
+                                <span asp-validation-for="Usuario.Apellido" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Usuario.Mail" class="form-label">Email</label>
+                            <input asp-for="Usuario.Mail" type="email" class="form-control" />
+                            <span asp-validation-for="Usuario.Mail" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Usuario.Contrasena" class="form-label">Contraseña (dejar vacío para no cambiar)</label>
+                            <input asp-for="Usuario.Contrasena" type="password" class="form-control" />
+                            <span asp-validation-for="Usuario.Contrasena" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning">Guardar Cambios</button>
+                            <a asp-action="DetalleUsuarioLista" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+@model List<TrivagoMVC.ViewModels.HotelesPorPaisViewModel>
+
+@{
+    ViewData["Title"] = "Listado de Hoteles";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Listado de Hoteles por País</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning text-center">
+            No hay hoteles cargados.
+        </div>
+    }
+    else
+    {
+        foreach (var paisGroup in Model)
+        {
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4>@paisGroup.NombrePais</h4>
+                </div>
+
+                <div class="card-body">
+                    @if (!paisGroup.Hoteles.Any())
+                    {
+                        <p>No hay hoteles registrados para este país.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Ciudad</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var hotel in paisGroup.Hoteles)
+                                {
+                                    <tr>
+                                        <td>@hotel.NombreHotel</td>
+                                        <td>@hotel.NombreCiudad</td>
+                                        <td>
+                                            <a asp-controller="Hoteles" asp-action="EditarHotel" asp-route-idHotel="@hotel.idHotel" asp-route-idCiudad="@hotel.idCiudad" class="btn btn-warning btn-sm">
+                                                Editar
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        }
+    }
+
+    <div class="text-center mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver al Inicio</a>
+    </div>
+</div>

@@ -1,7 +1,7 @@
 @model TrivagoMVC.ViewModels.DetalleCiudadViewModel
 
 @{
-    ViewData[index: "Title"] = "Detalle de " + Model.Ciudad.Nombre;
+    ViewData["Title"] = "Detalle de " + Model.Ciudad.Nombre;
 }
 
 <div class="container py-4">
@@ -27,7 +27,7 @@
             }
 
             <p class="mt-3">
-                <a asp-action="DetalleCiudad" asp-controller="Home" class="btn btn-secondary">Volver al listado</a>
+                <a asp-action="DetalleCiudadLista" asp-controller="Ciudades" class="btn btn-secondary">Volver al listado</a>
             </p>
         </div>
     </div>
