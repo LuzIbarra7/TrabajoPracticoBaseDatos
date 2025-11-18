@@ -1,4 +1,4 @@
-@model List<TrivagoMVC.ViewModels.CiudadConPaisViewModel>
+@model TrivagoMVC.Models.CiudadViewModel
 
 @{
     ViewData["Title"] = "Detalle de Ciudades";
@@ -12,15 +12,14 @@
         </a>
     </div>
 
-    @if (Model != null && Model.Any())
+    @if (Model.Ciudades != null && Model.Ciudades.Any())
     {
         <div class="row">
-            @foreach (var ciudad in Model)
+            @foreach (var ciudad in Model.Ciudades)
             {
                 <div class="col-md-6 col-lg-4 mb-3">
-                    <!-- Aquí usamos <a> con asp-action/asp-controller/asp-route para generar URL correcta -->
                     <a asp-controller="Ciudades"
-                       asp-action="DetalleCiudad"
+                       asp-action="DetalleCiudadIndividual"
                        asp-route-idCiudad="@ciudad.idCiudad"
                        class="card h-100 shadow-sm hover-shadow text-decoration-none text-body"
                        style="cursor:pointer;">
@@ -29,9 +28,7 @@
                             <p class="card-text text-muted mb-1">
                                 <small>País: @ciudad.NombrePais</small>
                             </p>
-                            <p class="card-text">
-                                <small>ID Ciudad: @ciudad.idCiudad</small>
-                            </p>
+                        
                         </div>
                     </a>
                 </div>

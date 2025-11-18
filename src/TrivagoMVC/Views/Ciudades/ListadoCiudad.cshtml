@@ -1,4 +1,4 @@
-@model List<TrivagoMVC.ViewModels.CiudadConPaisViewModel>
+@model TrivagoMVC.Models.CiudadViewModel
 
 @{
     ViewData["Title"] = "Listado de Ciudades";
@@ -7,17 +7,17 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Listado de Ciudades</h2>
-        <a asp-action="AltaCiudad" class="btn btn-primary">
+        <a asp-action="AltaCiudad" asp-controller="Ciudades" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Nueva Ciudad
         </a>
     </div>
 
-    @if (Model.Any())
+    @if (Model.Ciudades != null && Model.Ciudades.Any())
     {
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th>Nombre</th>
@@ -26,14 +26,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var ciudad in Model)
+                            @foreach (var ciudad in Model.Ciudades)
                             {
                                 <tr>
-                                    <td>@ciudad.NombreCiudad</td>
+                                    <td>
+                                        <a asp-action="DetalleCiudadIndividual"
+                                           asp-route-idCiudad="@ciudad.idCiudad"
+                                           class="text-decoration-none text-body">
+                                            @ciudad.NombreCiudad
+                                        </a>
+                                    </td>
                                     <td>@ciudad.NombrePais</td>
                                     <td>
-                                        <a asp-action="Editar"
-                                           asp-route-id="@ciudad.idCiudad"
+                                        <a asp-action="EditarCiudad"
+                                           asp-route-idCiudad="@ciudad.idCiudad"
                                            class="btn btn-warning btn-sm">
                                             <i class="bi bi-pencil-square"></i> Editar
                                         </a>
@@ -49,7 +55,14 @@
     else
     {
         <div class="alert alert-info">
-            <p class="mb-0">No hay ciudades registradas. <a asp-action="Alta">Agregar la primera ciudad</a></p>
+            <p class="mb-0">
+                No hay ciudades registradas. 
+                <a asp-action="AltaCiudad" asp-controller="Ciudades">Agregar la primera ciudad</a>
+            </p>
         </div>
     }
+
+    <div class="text-center mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver al Inicio</a>
+    </div>
 </div>

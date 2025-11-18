@@ -15,13 +15,16 @@
                     <form asp-action="EditarHotel" method="post">
                         @Html.AntiForgeryToken()
 
+                        <!-- ID Hotel oculto -->
                         <input type="hidden" asp-for="NuevoHotel.idHotel" />
 
-                        <div class="mb-3">
-                            <label class="form-label">ID Hotel</label>
-                            <input asp-for="NuevoHotel.idHotel" class="form-control" readonly />
-                        </div>
 
+                        <div class="mb-3">
+                            <label asp-for="NuevoHotel.Nombre" class="form-label">Nombre</label>
+                            <input asp-for="NuevoHotel.Nombre" class="form-control" placeholder="Ej: Hotel Plaza"/>
+                            <span asp-validation-for="NuevoHotel.Nombre" class="text-danger"></span>
+                        </div>
+                        <!-- Selección de ciudad -->
                         <div class="mb-3">
                             <label asp-for="SelectCiudad" class="form-label">Ciudad</label>
                             <select asp-for="SelectCiudad" asp-items="Model.Ciudades" class="form-select">
@@ -31,29 +34,23 @@
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="NuevoHotel.Nombre" class="form-label">Nombre</label>
-                            <input asp-for="NuevoHotel.Nombre" class="form-control" />
-                            <span asp-validation-for="NuevoHotel.Nombre" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
                             <label asp-for="NuevoHotel.Direccion" class="form-label">Dirección</label>
-                            <input asp-for="NuevoHotel.Direccion" class="form-control" />
+                            <input asp-for="NuevoHotel.Direccion" class="form-control" placeholder="Ej: Av. Principal 123" />
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.Telefono" class="form-label">Teléfono</label>
-                            <input asp-for="NuevoHotel.Telefono" class="form-control" />
+                            <input asp-for="NuevoHotel.Telefono" class="form-control" placeholder="Ej: +54 11 1234-5678"/>
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.URL" class="form-label">URL</label>
-                            <input asp-for="NuevoHotel.URL" class="form-control" />
+                            <input asp-for="NuevoHotel.URL" class="form-control" placeholder="Ej: https://www.hotelplaza.com"/>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar cambios</button>
-                            <a asp-action="ListadoHotel" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                            <a asp-action="DetalleHotelLista" class="btn btn-secondary">Cancelar</a>
                         </div>
                     </form>
                 </div>
@@ -63,5 +60,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync(partialViewName: "_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

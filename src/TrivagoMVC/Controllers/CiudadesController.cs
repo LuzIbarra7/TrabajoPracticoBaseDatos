@@ -1,148 +1,161 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Trivago.Core.Persistencia;
 using TrivagoMVC.Models;
-using TrivagoMVC.ViewModels;
-using System.Collections.Generic;
+using Trivago.Core.Ubicacion;
+using System.Threading.Tasks;
 using System.Linq;
 
 namespace TrivagoMVC.Controllers
 {
     public class CiudadesController : Controller
     {
-        public static List<Pais> Paises = new()
-        {
-            new Pais { idPais = 1, Nombre = "Argentina" },
-            new Pais { idPais = 2, Nombre = "Francia" },
-            new Pais { idPais = 3, Nombre = "Brasil" }
-        };
+        private readonly IRepoCiudad _repoCiudad;
+        private readonly IRepoPais _repoPais;
+        private readonly IRepoHotel _repoHotel;
+        
 
-        public static List<Ciudad> Ciudades = new()
-        {
-            new Ciudad { idCiudad = 1, Nombre = "Buenos Aires", idPais = 1 },
-            new Ciudad { idCiudad = 2, Nombre = "Paris", idPais = 2 },
-            new Ciudad { idCiudad = 3, Nombre = "Brasilia", idPais = 3 }
-        };
 
-        // ✅ LISTADO DE CIUDADES (AGRUPADAS POR PAÍS)
-        public IActionResult ListadoCiudad()
-        {
-            var viewModel = Ciudades
-                .Join(Paises,
-                    c => c.idPais,
-                    p => p.idPais,
-                    (c, p) => new CiudadConPaisViewModel
-                    {
-                        idCiudad = c.idCiudad,
-                        NombreCiudad = c.Nombre,
-                        idPais = p.idPais,
-                        NombrePais = p.Nombre
-                    })
-                .OrderBy(vm => vm.NombrePais)
-                .ThenBy(vm => vm.NombreCiudad)
-                .ToList();
 
-            return View(viewModel);
+        // Constructor
+        public CiudadesController(IRepoCiudad repoCiudad, IRepoPais repoPais, IRepoHotel repoHotel)
+        {
+            _repoCiudad = repoCiudad;
+            _repoPais = repoPais;
+            _repoHotel = repoHotel;
         }
 
-        // ✅ DETALLE DE LISTADO DE CIUDADES (Clicables)
-        public IActionResult DetalleCiudadLista()
+        // Listado de ciudades
+        public async Task<IActionResult> ListadoCiudad()
         {
-            var viewModel = Ciudades.Select(ciudad =>
+            var ciudades = await _repoCiudad.ListarAsync();
+
+            var model = new CiudadViewModel
             {
-                var pais = Paises.FirstOrDefault(p => p.idPais == ciudad.idPais);
-                return new CiudadConPaisViewModel
+                Ciudades = ciudades.Select(c => new CiudadConPaisViewModel
                 {
-                    idCiudad = ciudad.idCiudad,
-                    NombreCiudad = ciudad.Nombre,
-                    idPais = ciudad.idPais,
-                    NombrePais = pais?.Nombre ?? "Desconocido"
-                };
-            }).ToList();
-
-            return View(viewModel);
-        }
-
-        // ✅ DETALLE DE UNA CIUDAD INDIVIDUAL (Incluye hoteles)
-        public IActionResult DetalleCiudad(uint idCiudad)
-        {
-            var ciudad = Ciudades.FirstOrDefault(c => c.idCiudad == idCiudad);
-            if (ciudad == null) return NotFound();
-
-            var pais = Paises.FirstOrDefault(p => p.idPais == ciudad.idPais);
-
-            // Asociar hoteles a esta ciudad
-            ciudad.Hoteles = HotelesController.Hoteles
-                .Where(h => h.idCiudad == ciudad.idCiudad)
-                .ToList();
-
-            var viewModel = new DetalleCiudadViewModel
-            {
-                Ciudad = ciudad,
-                NombrePais = pais?.Nombre ?? "Desconocido",
-                IdPais = ciudad.idPais
+                    idCiudad = c.idCiudad,
+                    NombreCiudad = c.Nombre,
+                    idPais = c.idPais,
+                    NombrePais = _repoPais.Detalle(c.idPais)?.Nombre ?? ""
+                }).ToList()
             };
 
-            return View("DetalleCiudadIndividual", viewModel);
+            return View(model);
         }
 
-        // ✅ ALTA DE CIUDAD
-        [HttpGet]
+        // Alta de ciudad GET
         public IActionResult AltaCiudad()
         {
-            var vm = new AltaCiudadViewModel
+            var model = new AltaCiudadViewModel
             {
-                Paises = Paises
+                Paises = _repoPais.Listar()
             };
-            return View(vm);
+
+            return View(model);
         }
 
+        // Alta de ciudad POST
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult AltaCiudad(AltaCiudadViewModel vm)
+        public async Task<IActionResult> AltaCiudad(AltaCiudadViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                vm.Paises = Paises;
-                return View(vm);
+                model.Paises = _repoPais.Listar();
+                return View(model);
             }
 
-            uint nuevoId = (uint)(Ciudades.Any() ? Ciudades.Max(c => c.idCiudad) + 1 : 1);
-            vm.NuevaCiudad.idCiudad = nuevoId;
+            var ciudad = new Ciudad
+            {
+                Nombre = model.NuevaCiudad.Nombre,
+                idPais = model.NuevaCiudad.idPais
+            };
 
-            Ciudades.Add(vm.NuevaCiudad);
-            return RedirectToAction("ListadoCiudad");
+            await _repoCiudad.AltaAsync(ciudad);
+
+            return RedirectToAction(nameof(ListadoCiudad));
         }
 
-        // ✅ EDITAR CIUDAD
-        [HttpGet]
-        public IActionResult Editar(uint id)
+        public async Task<IActionResult> EditarCiudad(uint idCiudad)
         {
-            var ciudad = Ciudades.FirstOrDefault(c => c.idCiudad == id);
+            var ciudad = await _repoCiudad.DetalleAsync(idCiudad);
             if (ciudad == null) return NotFound();
 
-            ViewBag.Paises = Paises;
-            return View("EditarCiudad", ciudad);
-        }
+            var paises = await _repoPais.ListarAsync();
 
+            var model = new EditarCiudadViewModel
+            {
+                idCiudad = ciudad.idCiudad,
+                Datos = new CiudadFormViewModel
+                {
+                    Nombre = ciudad.Nombre,
+                    idPais = ciudad.idPais
+                },
+                Paises = paises
+            };
+
+            return View(model);
+        }
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EditarCiudad(Ciudad ciudad)
+        public async Task<IActionResult> EditarCiudad(EditarCiudadViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Paises = Paises;
+                model.Paises = await _repoPais.ListarAsync();
+                return View(model);
             }
 
-            var ciudadExistente = Ciudades.FirstOrDefault(c => c.idCiudad == ciudad.idCiudad);
-            if (ciudadExistente == null) return NotFound();
+            var ciudad = new Ciudad
+            {
+                idCiudad = model.idCiudad,
+                Nombre = model.Datos.Nombre,
+                idPais = model.Datos.idPais
+            };
 
-            ciudadExistente.Nombre = ciudad.Nombre;
-            ciudadExistente.idPais = ciudad.idPais;
-
+            await _repoCiudad.ModificarAsync(ciudad);
             return RedirectToAction("ListadoCiudad");
         }
 
+        public IActionResult DetalleCiudadLista()
+        {
+            // Listamos todas las ciudades
+            var ciudades = _repoCiudad.Listar();
+
+            // Proyectamos a CiudadConPaisViewModel
+            var vm = new CiudadViewModel
+            {
+                Ciudades = ciudades.Select(c => new CiudadConPaisViewModel
+                {
+                    idCiudad = c.idCiudad,
+                    NombreCiudad = c.Nombre,
+                    idPais = c.idPais,
+                    NombrePais = _repoPais.Detalle(c.idPais)?.Nombre 
+                }).ToList()
+            };
+
+            return View("DetalleCiudadLista", vm);
+        }
+
+
+        public async Task<IActionResult> DetalleCiudadIndividual(uint idCiudad)
+        {
+            var ciudad = await _repoCiudad.DetalleAsync(idCiudad);
+            if (ciudad == null) return NotFound();
+
+            var pais = await _repoPais.DetalleAsync(ciudad.idPais);
+
+            // Traemos los hoteles
+            var hoteles = await _repoHotel.InformarHotelesPorIdCiudadAsync((int)ciudad.idCiudad);
+
+            var vm = new CiudadViewModel
+            {
+                Ciudad = ciudad,
+                NombrePais = pais?.Nombre,
+                Hoteles = hoteles
+            };
+
+            return View(vm);
+        }
     }
 }

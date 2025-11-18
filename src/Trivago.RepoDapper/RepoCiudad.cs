@@ -117,4 +117,14 @@ public class RepoCiudad : RepoDapper, IRepoCiudad
             _conexion.QueryAsync<Ciudad>(sql, param));
     }
 
+
+   // ✅ Modificar ciudad
+    public async Task ModificarAsync(Ciudad ciudad)
+    {
+        string sql = @"UPDATE Ciudad 
+                       SET Nombre = @Nombre, idPais = @idPais 
+                       WHERE idCiudad = @idCiudad";
+        await _conexion.ExecuteAsync(sql, ciudad);
+    }
+
 }

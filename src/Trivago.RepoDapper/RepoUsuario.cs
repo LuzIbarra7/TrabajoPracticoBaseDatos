@@ -11,7 +11,6 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
 {
     public RepoUsuario(IDbConnection conexion) : base(conexion) { }
 
-    // Hash SHA-256 en C#
     private string HashContrasena(string contrasena)
     {
         using var sha = SHA256.Create();
@@ -29,7 +28,7 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
         parametros.Add("p_Nombre", usuario.Nombre);
         parametros.Add("p_Apellido", usuario.Apellido);
         parametros.Add("p_Mail", usuario.Mail);
-        parametros.Add("p_Contrasena", HashContrasena(usuario.Contrasena)); // Hash aquí
+        parametros.Add("p_Contrasena", HashContrasena(usuario.Contrasena));
         parametros.Add("p_idUsuario", dbType: DbType.UInt32, direction: ParameterDirection.Output);
 
         await ejecutor(storedProcedure, parametros);
@@ -117,5 +116,41 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
             var result = _conexion.QuerySingleOrDefault<Usuario>(sql, param);
             return Task.FromResult(result);
         }).GetAwaiter().GetResult();
+    }
+
+    // --- ACTUALIZAR ---
+    public async Task ActualizarAsync(Usuario usuario)
+    {
+        // Obtener la contraseña actual si se deja vacía
+        string contrasenaFinal = usuario.Contrasena;
+        if (string.IsNullOrEmpty(usuario.Contrasena))
+        {
+            var actual = await DetalleAsync(usuario.idUsuario);
+            contrasenaFinal = actual?.Contrasena ?? "";
+        }
+        else
+        {
+            contrasenaFinal = HashContrasena(usuario.Contrasena);
+        }
+
+        string sql = @"UPDATE Usuario 
+                       SET Nombre = @Nombre, Apellido = @Apellido, Mail = @Mail, Contrasena = @Contrasena 
+                       WHERE idUsuario = @idUsuario";
+
+        await _conexion.ExecuteAsync(sql, new
+        {
+            Nombre = usuario.Nombre,
+            Apellido = usuario.Apellido,
+            Mail = usuario.Mail,
+            Contrasena = contrasenaFinal,
+            idUsuario = usuario.idUsuario
+        });
+    }
+
+    // Método para actualizar contraseña solo si viene
+    public async Task ActualizarContrasenaAsync(uint idUsuario, string nuevaContrasena)
+    {
+        string sql = "UPDATE Usuario SET Contrasena = @Contrasena WHERE idUsuario = @idUsuario";
+        await _conexion.ExecuteAsync(sql, new { Contrasena = HashContrasena(nuevaContrasena), idUsuario });
     }
 }

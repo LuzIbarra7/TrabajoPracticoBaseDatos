@@ -1,30 +1,42 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TrivagoMVC.Models;
-using TrivagoMVC.ViewModels;
+using Trivago.Core.Ubicacion;
+using Trivago.Core.Persistencia;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace TrivagoMVC.Controllers
 {
     public class HotelesController : Controller
     {
-        // Simulación de base de datos en memoria
-        public static List<Hotel> Hoteles = new();
-        public static List<Ciudad> Ciudades => CiudadesController.Ciudades;
-        public static List<Pais> Paises => CiudadesController.Paises;
+        private readonly IRepoHotel _repoHotel;
+        private readonly IRepoCiudad _repoCiudad;
+        private readonly IRepoPais _repoPais;
 
-        // ✅ LISTADO DE HOTELES AGRUPADO POR PAÍS
-        public IActionResult ListadoHotel()
+        public HotelesController(IRepoHotel repoHotel, IRepoCiudad repoCiudad, IRepoPais repoPais)
         {
-            var viewModel = Paises.Select(p => new HotelesPorPaisViewModel
+            _repoHotel = repoHotel;
+            _repoCiudad = repoCiudad;
+            _repoPais = repoPais;
+        }
+
+        // LISTADO DE HOTELES AGRUPADO POR PAÍS
+        public async Task<IActionResult> ListadoHotel()
+        {
+            var paises = await _repoPais.ListarAsync();
+            var hoteles = await _repoHotel.ListarAsync();
+            var ciudades = await _repoCiudad.ListarAsync();
+
+            var viewModel = paises.Select(p => new HotelesPorPaisViewModel
             {
                 NombrePais = p.Nombre,
-                Hoteles = Hoteles
-                    .Where(h => Ciudades.Any(c => c.idCiudad == h.idCiudad && c.idPais == p.idPais))
+                Hoteles = hoteles
+                    .Where(h => ciudades.Any(c => c.idCiudad == h.idCiudad && c.idPais == p.idPais))
                     .Select(h =>
                     {
-                        var ciudad = Ciudades.First(c => c.idCiudad == h.idCiudad);
+                        var ciudad = ciudades.First(c => c.idCiudad == h.idCiudad);
                         return new HotelConCiudadViewModel
                         {
                             idHotel = h.idHotel,
@@ -44,10 +56,13 @@ namespace TrivagoMVC.Controllers
             return View(viewModel);
         }
 
-        // ✅ DETALLE DE LISTA
-        public IActionResult DetalleHotelLista()
+        // DETALLE DE LISTA
+        public async Task<IActionResult> DetalleHotelLista()
         {
-            var lista = Hoteles.Select(h => new HotelConCiudadViewModel
+            var hoteles = await _repoHotel.ListarAsync();
+            var ciudades = await _repoCiudad.ListarAsync();
+
+            var lista = hoteles.Select(h => new HotelConCiudadViewModel
             {
                 idHotel = h.idHotel,
                 idCiudad = h.idCiudad,
@@ -55,19 +70,19 @@ namespace TrivagoMVC.Controllers
                 Direccion = h.Direccion,
                 Telefono = h.Telefono,
                 URL = h.URL,
-                NombreCiudad = Ciudades.FirstOrDefault(c => c.idCiudad == h.idCiudad)?.Nombre ?? "Desconocida"
+                NombreCiudad = ciudades.FirstOrDefault(c => c.idCiudad == h.idCiudad)?.Nombre ?? "Desconocida"
             }).ToList();
 
             return View(lista);
         }
 
-        // ✅ DETALLE INDIVIDUAL
-        public IActionResult DetalleHotel(uint idHotel, uint idCiudad)
+        // DETALLE INDIVIDUAL
+        public async Task<IActionResult> DetalleHotel(uint idHotel)
         {
-            var hotel = Hoteles.FirstOrDefault(h => h.idHotel == idHotel && h.idCiudad == idCiudad);
+            var hotel = await _repoHotel.DetalleAsync(idHotel);
             if (hotel == null) return NotFound();
 
-            var ciudad = Ciudades.FirstOrDefault(c => c.idCiudad == hotel.idCiudad);
+            var ciudad = await _repoCiudad.DetalleAsync(hotel.idCiudad);
             var viewModel = new HotelConCiudadViewModel
             {
                 idHotel = hotel.idHotel,
@@ -82,27 +97,61 @@ namespace TrivagoMVC.Controllers
             return View("DetalleHotelIndividual", viewModel);
         }
 
-        // ✅ ALTA
-        public IActionResult AltaHotel()
+        // ALTA
+       [HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> AltaHotel(AltaHotelViewModel vm)
+{
+    if (!ModelState.IsValid)
+    {
+        var ciudades = await _repoCiudad.ListarAsync();
+        vm.Ciudades = ciudades.Select(c => new SelectListItem
         {
+            Value = c.idCiudad.ToString(),
+            Text = c.Nombre
+        }).ToList();
+        return View(vm);
+    }
+
+    // 👉 SOLUCIÓN: Vincular SelectCiudad con el idCiudad real
+    vm.NuevoHotel.idCiudad = uint.Parse(vm.SelectCiudad);
+
+    await _repoHotel.AltaAsync(vm.NuevoHotel);
+
+    return RedirectToAction("DetalleHotelLista");
+}
+
+
+        // EDITAR
+        public async Task<IActionResult> EditarHotel(uint idHotel)
+        {
+            var hotel = await _repoHotel.DetalleAsync(idHotel);
+            if (hotel == null) return NotFound();
+
+            var ciudades = await _repoCiudad.ListarAsync();
             var vm = new AltaHotelViewModel
             {
-                Ciudades = Ciudades.Select(c => new SelectListItem
+                NuevoHotel = hotel,
+                SelectCiudad = hotel.idCiudad.ToString(),
+                Ciudades = ciudades.Select(c => new SelectListItem
                 {
                     Value = c.idCiudad.ToString(),
                     Text = c.Nombre
                 }).ToList()
             };
+
             return View(vm);
         }
 
+        // POST: EditarHotel
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AltaHotel(AltaHotelViewModel vm)
+        public async Task<IActionResult> EditarHotel(AltaHotelViewModel vm)
         {
             if (!ModelState.IsValid)
             {
-                vm.Ciudades = Ciudades.Select(c => new SelectListItem
+                var ciudades = await _repoCiudad.ListarAsync();
+                vm.Ciudades = ciudades.Select(c => new SelectListItem
                 {
                     Value = c.idCiudad.ToString(),
                     Text = c.Nombre
@@ -110,54 +159,10 @@ namespace TrivagoMVC.Controllers
                 return View(vm);
             }
 
-            uint nuevoId = (uint)(Hoteles.Any() ? Hoteles.Max(h => h.idHotel) + 1 : 1);
-            vm.NuevoHotel.idHotel = nuevoId;
-            vm.NuevoHotel.idCiudad = uint.Parse(vm.SelectCiudad);
-
-            Hoteles.Add(vm.NuevoHotel);
-            return RedirectToAction("DetalleHotelLista");
-        }
-
-        // ✅ EDITAR
-        public IActionResult EditarHotel(uint idHotel, uint idCiudad)
-        {
-            var hotel = Hoteles.FirstOrDefault(h => h.idHotel == idHotel && h.idCiudad == idCiudad);
-            if (hotel == null) return NotFound();
-
-            var vm = new AltaHotelViewModel
-            {
-                NuevoHotel = hotel,
-                SelectCiudad = hotel.idCiudad.ToString(),
-                Ciudades = Ciudades.Select(c => new SelectListItem
-                {
-                    Value = c.idCiudad.ToString(),
-                    Text = c.Nombre
-                }).ToList()
-            };
-
-            return View(vm);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EditarHotel(AltaHotelViewModel vm)
-        {
-            var hotelExistente = Hoteles.FirstOrDefault(h => h.idHotel == vm.NuevoHotel.idHotel);
-            if (hotelExistente == null) return NotFound();
-
-            hotelExistente.Nombre = vm.NuevoHotel.Nombre;
-            hotelExistente.Direccion = vm.NuevoHotel.Direccion;
-            hotelExistente.Telefono = vm.NuevoHotel.Telefono;
-            hotelExistente.URL = vm.NuevoHotel.URL;
-            hotelExistente.idCiudad = uint.Parse(vm.SelectCiudad);
+            await _repoHotel.EditarAsync(vm.NuevoHotel);
 
             return RedirectToAction("DetalleHotelLista");
         }
 
-        // ✅ NUEVO: Volver al listado
-        public IActionResult VolverAlListado()
-        {
-            return RedirectToAction("ListadoHotel");
-        }
     }
 }

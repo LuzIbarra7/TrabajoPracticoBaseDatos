@@ -9,4 +9,6 @@ public interface IRepoCiudad :  IAlta<Ciudad, uint>, IListado<Ciudad>, IDetalle<
     Task<Ciudad?> DetalleAsync(uint id);
     Task<List<Ciudad>> ListarAsync();
     Task<List<Ciudad>> InformarCiudadAsync(uint idPais);
+    Task ModificarAsync(Ciudad ciudad);
+
 }

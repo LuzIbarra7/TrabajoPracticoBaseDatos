@@ -1,4 +1,4 @@
-@model List<TrivagoMVC.ViewModels.HotelConCiudadViewModel>
+@model List<TrivagoMVC.Models.HotelConCiudadViewModel>
 
 @{
     ViewData["Title"] = "Detalle de Hoteles";
@@ -34,4 +34,8 @@
     {
         <div class="alert alert-info">No hay hoteles registrados. <a asp-action="AltaHotel">Agregar el primer hotel</a></div>
     }
+</div>
+
+<div class="text-center mt-4">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver al Inicio</a>
 </div>

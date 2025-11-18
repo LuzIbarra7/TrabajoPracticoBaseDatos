@@ -1,4 +1,4 @@
-@model List<TrivagoMVC.ViewModels.DetalleUsuarioViewModel>
+@model TrivagoMVC.Models.UsuarioViewModel
 
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -8,12 +8,12 @@
         </a>
     </div>
 
-    @if (Model.Any())
+    @if (Model.ListaUsuarios.Any())
     {
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="list-group">
-                    @foreach (var usuario in Model)
+                    @foreach (var usuario in Model.ListaUsuarios)
                     {
                         <a href="@Url.Action("DetalleUsuario", new { idUsuario = usuario.idUsuario })" 
                            class="list-group-item list-group-item-action">
@@ -39,4 +39,8 @@
             No hay usuarios registrados. <a asp-action="AltaUsuario">Agregar el primer usuario</a>
         </div>
     }
+
+    <div class="text-center mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver al Inicio</a>
+    </div>
 </div>

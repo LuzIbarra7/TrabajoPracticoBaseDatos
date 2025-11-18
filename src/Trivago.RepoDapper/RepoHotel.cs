@@ -105,4 +105,13 @@ public class RepoHotel : RepoDapper, IRepoHotel
             _conexion.QueryAsync<Hotel>(sql, param));
     }
 
+    // ✅ Editar
+    public async Task EditarAsync(Hotel hotel)
+    {
+        string sql = @"UPDATE Hotel 
+                       SET Nombre = @Nombre, idCiudad = @idCiudad, Direccion = @Direccion 
+                       WHERE idHotel = @idHotel";
+        await _conexion.ExecuteAsync(sql, hotel);
+    }
+
 }

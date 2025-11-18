@@ -1,34 +1,39 @@
 @model TrivagoMVC.Models.AltaCiudadViewModel
 
-@{
-    ViewData["Title"] = "Alta de Ciudad";
-}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Alta de Ciudad</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AltaCiudad" method="post">
+                        <div class="mb-3">
+                            <label asp-for="NuevaCiudad.Nombre" class="form-label">Nombre</label>
+                            <input asp-for="NuevaCiudad.Nombre" class="form-control"/>
+                            <span asp-validation-for="NuevaCiudad.Nombre" class="text-danger"></span>
+                        </div>
 
-<h2>Alta de Ciudad</h2>
+                        <div class="mb-3">
+                            <label asp-for="NuevaCiudad.idPais" class="form-label">País</label>
+                            <select asp-for="NuevaCiudad.idPais" class="form-select">
+                                <option value="">Seleccione un país</option>
+                                @foreach (var pais in Model.Paises)
+                                {
+                                    <option value="@pais.idPais">@pais.Nombre</option>
+                                }
+                            </select>
+                            <span asp-validation-for="NuevaCiudad.idPais" class="text-danger"></span>
+                        </div>
 
-<form asp-action="AltaCiudad" method="post">
-    @Html.AntiForgeryToken()
-
-    <div class="mb-3">
-        <label class="form-label">Nombre de la ciudad</label>
-        <input asp-for="NuevaCiudad.Nombre" class="form-control" />
-        <span asp-validation-for="NuevaCiudad.Nombre" class="text-danger"></span>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar Ciudad</button>
+                            <a asp-action="ListadoCiudad" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label">País</label>
-        <select asp-for="NuevaCiudad.idPais" asp-items="@(new SelectList(Model.Paises, "idPais", "Nombre"))" class="form-select">
-            <option value="0">Seleccione un país</option>
-        </select>
-        <span asp-validation-for="NuevaCiudad.idPais" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Guardar</button>
-</form>
-
-<style>
-    h2 {
-        color: rgba(13, 110, 253);
-        font-weight: 800;
-    }
-</style>
+</div>

@@ -1,14 +1,10 @@
-@model List<TrivagoMVC.Models.Usuario>
-
-@{
-    ViewData["Title"] = "Listado de Usuarios";
-}
+@model TrivagoMVC.Models.UsuarioViewModel
 
 <div class="container py-4">
-    @if (TempData[key: "SuccessMessage"] != null)
+    @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData[key: "SuccessMessage"]
+            @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
@@ -20,10 +16,10 @@
         </a>
     </div>
 
-    @if (Model.Any())
+    @if (Model.ListaUsuarios.Any())
     {
         <div class="row">
-            @foreach (var usuario in Model)
+            @foreach (var usuario in Model.ListaUsuarios)
             {
                 <div class="col-md-6 col-lg-3 mb-3">
                     <div class="card shadow-sm text-center h-100">
@@ -31,15 +27,15 @@
                             <div class="mb-3">
                                 <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" 
                                      style="width: 60px; height: 60px; font-size: 24px;">
-                                    @usuario.Nombre.Substring(startIndex: 0, length: 1).ToUpper()
+                                    @usuario.Nombre.Substring(0,1).ToUpper()
                                 </div>
                             </div>
                             <h5 class="card-title">@usuario.Nombre @usuario.Apellido</h5>
                             <p class="card-text text-muted"><small>ID: @usuario.idUsuario</small></p>
 
                             <div class="d-flex justify-content-center gap-2 mt-3">
-                                <a asp-action="EditarUsuario" asp-route-idUsuario="@usuario.idUsuario" class="btn btn-warning btn-sm">
-                                    <i class="bi bi-pencil-square"></i> Editar
+                                <a class="btn btn-warning" href="@Url.Action("EditarUsuario", "Usuarios", new { idUsuario = usuario.idUsuario })">
+                                    Editar
                                 </a>
                             </div>
                         </div>
