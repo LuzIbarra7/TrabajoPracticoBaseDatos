@@ -11,7 +11,7 @@ public class RepoHotel : RepoDapper, IRepoHotel
     }
 
     //Altas Hoteles
-    private async Task<uint> AltaHotelInternaAsync(Hotel hotel, Func<string, DynamicParameters, Task> ejecutor)
+    private async Task<uint> AltaHotelInternaAsync(Hotel hotel,  Func<string, DynamicParameters, CommandType, Task> ejecutor)
     {
         string storedProcedure = "insert_hotel";
 
@@ -23,7 +23,8 @@ public class RepoHotel : RepoDapper, IRepoHotel
         parametros.Add("p_URL", hotel.URL);
         parametros.Add("p_idHotel", direction: ParameterDirection.Output);
 
-        await ejecutor(storedProcedure, parametros);
+         await ejecutor(storedProcedure, parametros, CommandType.StoredProcedure);
+
 
         hotel.idHotel = parametros.Get<uint>("p_idHotel");
         return hotel.idHotel;
@@ -31,16 +32,19 @@ public class RepoHotel : RepoDapper, IRepoHotel
 
     public uint Alta(Hotel hotel)
     {
-        return AltaHotelInternaAsync(hotel, (sp, p) =>
+        return AltaHotelInternaAsync(hotel, (sp, p, ct) =>
         {
-            _conexion.Execute(sp, p);
+            _conexion.Execute(sp, p, commandType: ct);
             return Task.CompletedTask;
         }).GetAwaiter().GetResult();
     }
+
     public async Task<uint> AltaAsync(Hotel hotel)
     {
-        return await AltaHotelInternaAsync(hotel, (sp, p) => _conexion.ExecuteAsync(sp, p));
+        return await AltaHotelInternaAsync(hotel, (sp, p, ct) =>
+            _conexion.ExecuteAsync(sp, p, commandType: ct));
     }
+
 
     //Detalle Async
     private async Task<Hotel?> DetalleHotelInternaAsync(uint id, Func<string, object, Task<Hotel?>> ejecutor)

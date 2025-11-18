@@ -3,90 +3,188 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - TrivagoMVC</title>
+    <title>@ViewData["Title"] - Trivago </title>
+
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <!-- Google Font (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tu CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            padding-top: 90px;
+        }
+
+        /* NAVBAR */
+        .travel-navbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e5eaf1;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+            height: 80px;
+        }
+
+        .logo-box {
+            width: 38px;
+            height: 38px;
+            background: #0d6efd;
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .brand-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .menu-link {
+            font-weight: 500;
+            color: #475569 !important;
+            transition: color .2s ease;
+        }
+
+        .menu-link:hover {
+            color: #0d6efd !important;
+        }
+
+        /* Dropdown */
+        .fade-menu {
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 12px 22px rgba(0,0,0,0.08);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all .25s ease;
+            display: block;
+            visibility: hidden;
+        }
+
+        .nav-item.dropdown:hover > .fade-menu {
+            opacity: 1;
+            transform: translateY(0px);
+            visibility: visible;
+        }
+
+        .dropdown-item {
+            color: #475569;
+            padding: 10px 18px;
+            font-size: 15px;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+            color: #0d6efd;
+        }
+
+        /* ESTILOS DE LOGIN/Register (siguen estando acá) */
+        .login-link {
+            color: #1e293b;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .login-link:hover {
+            color: #0d6efd;
+        }
+
+        .btn-register {
+            padding: 8px 20px;
+            background: #0f172a;
+            color: white !important;
+            border-radius: 20px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background .2s ease;
+        }
+
+        .btn-register:hover {
+            background: #1e293b;
+        }
+
+    </style>
 </head>
-<style>
-    body {
-        background-color: rgb(213, 242, 255);
-    }
-</style>
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TrivagoMVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+<header>
+    <nav class="navbar navbar-expand-lg travel-navbar fixed-top">
+        <div class="container-fluid px-4 d-flex align-items-center justify-content-between">
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
-                        </li>
+            <!-- LOGO -->
+            <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                <div class="logo-box">T</div>
+                <span class="brand-text">Trivago</span>
+            </a>
 
-                        <!-- Hoteles -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="hotelesDropdown" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false">
-                                Hoteles
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="hotelesDropdown">
-                                <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="AltaHotel">Alta</a></li>
-                                <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="ListadoHotel">Listado</a></li>
-                                <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="DetalleHotelLista">Detalle</a></li>
-                            </ul>
-                        </li>
+            <!-- Hamburguesa -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                        <!-- Ciudades -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="ciudadesDropdown" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false">
-                                Ciudades
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="ciudadesDropdown">
-                                <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="AltaCiudad">Alta</a></li>
-                                <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="ListadoCiudad">Listado</a></li>
-                                <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="DetalleCiudadLista">Detalle</a></li>
-                            </ul>
-                        </li>
+            <!-- Menú -->
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mx-auto gap-4">
 
-                        <!-- Usuarios -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="usuariosDropdown" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false">
-                                Usuarios
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="usuariosDropdown">
-                                <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="AltaUsuario">Alta</a></li>
-                                <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="ListadoUsuario">Listado</a></li>
-                                <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="DetalleUsuarioLista">Detalle</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle menu-link" href="#" data-bs-toggle="dropdown">Hoteles</a>
+                        <ul class="dropdown-menu fade-menu">
+                            <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="AltaHotel">Alta</a></li>
+                            <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="ListadoHotel">Listado</a></li>
+                            <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="DetalleHotelLista">Detalle</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle menu-link" href="#">Ciudades</a>
+                        <ul class="dropdown-menu fade-menu">
+                            <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="AltaCiudad">Alta</a></li>
+                            <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="ListadoCiudad">Listado</a></li>
+                            <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="DetalleCiudadLista">Detalle</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle menu-link" href="#">Usuarios</a>
+                        <ul class="dropdown-menu fade-menu">
+                            <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="AltaUsuario">Alta</a></li>
+                            <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="ListadoUsuario">Listado</a></li>
+                            <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="DetalleUsuarioLista">Detalle</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+
+                <!-- Ya NO están los botones aquí -->
+
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
 
+<div class="content-offset">
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
+</div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - TrivagoMVC
-        </div>
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

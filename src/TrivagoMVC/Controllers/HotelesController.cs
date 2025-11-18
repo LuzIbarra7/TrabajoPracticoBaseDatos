@@ -97,29 +97,47 @@ namespace TrivagoMVC.Controllers
             return View("DetalleHotelIndividual", viewModel);
         }
 
-        // ALTA
-       [HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> AltaHotel(AltaHotelViewModel vm)
-{
-    if (!ModelState.IsValid)
-    {
-        var ciudades = await _repoCiudad.ListarAsync();
-        vm.Ciudades = ciudades.Select(c => new SelectListItem
+        public async Task<IActionResult> AltaHotel()
         {
-            Value = c.idCiudad.ToString(),
-            Text = c.Nombre
-        }).ToList();
-        return View(vm);
+            var ciudades = await _repoCiudad.ListarAsync();
+            var vm = new AltaHotelViewModel
+            {
+                Ciudades = ciudades.Select(c => new SelectListItem
+                {
+                    Value = c.idCiudad.ToString(),
+                    Text = c.Nombre
+                }).ToList()
+            };
+            return View(vm);
+        }
+
+        // ALTA
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AltaHotel(AltaHotelViewModel vm)
+    {
+        if (!ModelState.IsValid)
+        {
+            vm.Ciudades = (await _repoCiudad.ListarAsync())
+                .Select(c => new SelectListItem 
+                { 
+                    Value = c.idCiudad.ToString(), 
+                    Text = c.Nombre 
+                }).ToList();
+
+            return View(vm);
+        }
+
+        // ✔ Conversión correcta string → uint
+        vm.NuevoHotel.idCiudad = uint.Parse(vm.SelectCiudad);
+
+        await _repoHotel.AltaAsync(vm.NuevoHotel);
+
+        return RedirectToAction("DetalleHotelLista");
     }
 
-    // 👉 SOLUCIÓN: Vincular SelectCiudad con el idCiudad real
-    vm.NuevoHotel.idCiudad = uint.Parse(vm.SelectCiudad);
 
-    await _repoHotel.AltaAsync(vm.NuevoHotel);
 
-    return RedirectToAction("DetalleHotelLista");
-}
 
 
         // EDITAR
@@ -150,19 +168,21 @@ public async Task<IActionResult> AltaHotel(AltaHotelViewModel vm)
         {
             if (!ModelState.IsValid)
             {
-                var ciudades = await _repoCiudad.ListarAsync();
-                vm.Ciudades = ciudades.Select(c => new SelectListItem
-                {
-                    Value = c.idCiudad.ToString(),
-                    Text = c.Nombre
-                }).ToList();
+                vm.Ciudades = (await _repoCiudad.ListarAsync())
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.idCiudad.ToString(),
+                        Text = c.Nombre
+                    }).ToList();
+
                 return View(vm);
             }
+
+            vm.NuevoHotel.idCiudad = uint.Parse(vm.SelectCiudad);
 
             await _repoHotel.EditarAsync(vm.NuevoHotel);
 
             return RedirectToAction("DetalleHotelLista");
         }
-
     }
 }

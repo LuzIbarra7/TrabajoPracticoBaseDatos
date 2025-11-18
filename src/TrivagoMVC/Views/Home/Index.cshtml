@@ -1,13 +1,89 @@
-﻿@{
+﻿<head>
+@{
     ViewData["Title"] = "Inicio";
 }
+<link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-<h2>Bienvenido a TrivagoMVC</h2>
-<p>Usá el menú para navegar entre las secciones (Hoteles, Ciudades y Usuarios → Alta, Detalle, Listado y Editar).</p>
+<style>
+
+body{
+    background: white;
+    font-family: "Roboto Condensed", sans-serif !important;
+}
+
+/* Contenedor fijo bajo el navbar, arriba a la derecha */
+.auth-buttons-top-right {
+    position: absolute;
+    top: 100px;            /* Ajusta si tu navbar es más alto o más bajo */
+    right: 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 999;         /* Para asegurar que queden encima de todo */
+}
+
+/* Estilo original del link de Iniciar Sesión */
+.login-link {
+    color: #1a1a1a;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+/* Estilo original del botón Registrarse */
+.btn-register {
+    background-color: #0d6efd;
+    color: #fff !important;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.btn-register:hover {
+    background-color: #0b5ed7;
+}
+
+/* Tarjeta central debajo del título */
+.welcome-card {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.welcome-card p{
+    font-size: 20px;
+}
+
+</style>
 
 
-<div class="text-center mt-4">
-
-<img src= "~/Imagenes/tecnica12.jpg" alt= "" style="max-width:1000px; border-radius:10px">
-
+</head>
+<body>
+<!-- Contenedor de los botones arriba a la derecha -->
+<div class="auth-buttons-top-right">
+    <a href="#" class="login-link">Iniciar Sesión</a>
+    <a href="#" class="btn-register">Registrarse</a>
 </div>
+
+<!-- Contenido centrado como antes -->
+<div class="text-center mt-5">
+    <h1 class="display-4 fw-bold text-primary">Bienvenido a Trivago</h1>
+    <div class="welcome-card">
+        <p>
+            Explorá, descubrí y gestioná toda la información sobre hoteles, ciudades y usuarios
+            dentro de nuestra plataforma. TrivagoMVC te permite organizar tus datos de manera
+            rápida, intuitiva y eficiente, ofreciéndote un entorno claro, moderno y fácil de navegar
+            para optimizar tu experiencia dentro del sistema.
+        </p>
+    </div>
+</div>
+</body>
