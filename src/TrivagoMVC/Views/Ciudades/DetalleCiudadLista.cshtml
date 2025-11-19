@@ -1,5 +1,22 @@
 @model TrivagoMVC.Models.CiudadViewModel
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
+<style>
+
+body{
+    background: white;
+    font-family: "Roboto Condensed", sans-serif !important;
+    
+}
+ .hover-shadow { transition: box-shadow 0.3s ease; }
+.hover-shadow:hover { box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important; }
+</style>
+
+</head>
+<body>
 @{
     ViewData["Title"] = "Detalle de Ciudades";
 }
@@ -47,8 +64,4 @@
         <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver al Inicio</a>
     </div>
 </div>
-
-<style>
-    .hover-shadow { transition: box-shadow 0.3s ease; }
-    .hover-shadow:hover { box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important; }
-</style>
+</body>

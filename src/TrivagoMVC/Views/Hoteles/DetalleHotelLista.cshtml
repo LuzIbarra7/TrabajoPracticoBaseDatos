@@ -1,5 +1,19 @@
 @model List<TrivagoMVC.Models.HotelConCiudadViewModel>
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
+<style>
+
+body{
+    background: white;
+    font-family: "Roboto Condensed", sans-serif !important;
+}
+</style>
+
+</head>
+<body>
 @{
     ViewData["Title"] = "Detalle de Hoteles";
 }
@@ -39,3 +53,4 @@
 <div class="text-center mt-4">
     <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver al Inicio</a>
 </div>
+</body>

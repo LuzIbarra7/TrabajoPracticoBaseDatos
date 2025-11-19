@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
@@ -20,10 +24,9 @@
     <style>
         body {
             font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            padding-top: 90px;
+            padding-top: 120px;
         }
 
-        /* NAVBAR */
         .travel-navbar {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
@@ -61,7 +64,6 @@
             color: #0d6efd !important;
         }
 
-        /* Dropdown */
         .fade-menu {
             border-radius: 12px;
             border: 1px solid #e2e8f0;
@@ -79,22 +81,11 @@
             visibility: visible;
         }
 
-        .dropdown-item {
-            color: #475569;
-            padding: 10px 18px;
-            font-size: 15px;
-        }
-
-        .dropdown-item:hover {
-            background: #f8fafc;
-            color: #0d6efd;
-        }
-
-        /* ESTILOS DE LOGIN/Register (siguen estando acá) */
         .login-link {
             color: #1e293b;
             font-weight: 500;
             text-decoration: none;
+            margin-top: 10px
         }
 
         .login-link:hover {
@@ -114,7 +105,6 @@
         .btn-register:hover {
             background: #1e293b;
         }
-
     </style>
 </head>
 
@@ -134,44 +124,60 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- Menú -->
             <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav mx-auto gap-4">
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle menu-link" href="#" data-bs-toggle="dropdown">Hoteles</a>
-                        <ul class="dropdown-menu fade-menu">
-                            <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="AltaHotel">Alta</a></li>
-                            <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="ListadoHotel">Listado</a></li>
-                            <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="DetalleHotelLista">Detalle</a></li>
-                        </ul>
-                    </li>
+                <!-- MOSTRAR MENÚ SOLO SI ESTÁ LOGUEADO -->
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <ul class="navbar-nav mx-auto gap-4">
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle menu-link" href="#">Ciudades</a>
-                        <ul class="dropdown-menu fade-menu">
-                            <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="AltaCiudad">Alta</a></li>
-                            <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="ListadoCiudad">Listado</a></li>
-                            <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="DetalleCiudadLista">Detalle</a></li>
-                        </ul>
-                    </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle menu-link" href="#" data-bs-toggle="dropdown">Hoteles</a>
+                            <ul class="dropdown-menu fade-menu">
+                                <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="AltaHotel">Alta</a></li>
+                                <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="ListadoHotel">Listado</a></li>
+                                <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="DetalleHotelLista">Detalle</a></li>
+                            </ul>
+                        </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle menu-link" href="#">Usuarios</a>
-                        <ul class="dropdown-menu fade-menu">
-                            <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="AltaUsuario">Alta</a></li>
-                            <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="ListadoUsuario">Listado</a></li>
-                            <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="DetalleUsuarioLista">Detalle</a></li>
-                        </ul>
-                    </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle menu-link" href="#">Ciudades</a>
+                            <ul class="dropdown-menu fade-menu">
+                                <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="AltaCiudad">Alta</a></li>
+                                <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="ListadoCiudad">Listado</a></li>
+                                <li><a class="dropdown-item" asp-controller="Ciudades" asp-action="DetalleCiudadLista">Detalle</a></li>
+                            </ul>
+                        </li>
 
-                </ul>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle menu-link" href="#">Usuarios</a>
+                            <ul class="dropdown-menu fade-menu">
+                                <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="AltaUsuario">Alta</a></li>
+                                <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="ListadoUsuario">Listado</a></li>
+                                <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="DetalleUsuarioLista">Detalle</a></li>
+                            </ul>
+                        </li>
 
-                <!-- Ya NO están los botones aquí -->
+                    </ul>
+                }
+
+                <!-- BOTONES DERECHA -->
+                <div class="ms-auto d-flex gap-3">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a class="btn btn-danger" asp-controller="Usuarios" asp-action="Logout">Cerrar sesión</a>
+                    }
+                    else
+                    {
+                        <a class="login-link" asp-controller="Usuarios" asp-action="Login">Iniciar sesión</a>
+                        <a class="btn-register" asp-controller="Usuarios" asp-action="AltaUsuario">Registrarse</a>
+                    }
+                </div>
 
             </div>
         </div>
     </nav>
+
 </header>
 
 <div class="content-offset">

@@ -1,34 +1,77 @@
 @model TrivagoMVC.Models.UsuarioViewModel
 
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        background: white;
+        font-family: "Roboto Condensed", sans-serif !important;
+    }
+</style>
+</head>
+
+<body>
 @{
     ViewData["Title"] = "Editar Usuario";
 }
 
-<h2>Editar Usuario</h2>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Editar Usuario</h3>
+                </div>
 
-<form asp-action="EditarUsuario" method="post">
-    <input type="hidden" asp-for="Usuario.idUsuario" />
+                <div class="card-body">
+                    <form asp-action="EditarUsuario" method="post">
+                        @Html.AntiForgeryToken()
 
-    <div class="form-group">
-        <label asp-for="Usuario.Nombre"></label>
-        <input class="form-control" asp-for="Usuario.Nombre" />
+                        <input type="hidden" asp-for="Usuario.idUsuario" />
+
+                        <div class="mb-3">
+                            <label asp-for="Usuario.Nombre" class="form-label">Nombre</label>
+                            <input asp-for="Usuario.Nombre" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Usuario.Apellido" class="form-label">Apellido</label>
+                            <input asp-for="Usuario.Apellido" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Usuario.Mail" class="form-label">Email</label>
+                            <input asp-for="Usuario.Mail" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Contrasena" class="form-label">
+                                Contraseña (dejar vacío si no se cambia)
+                            </label>
+                            <input type="password" asp-for="Contrasena" class="form-control" />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                Guardar cambios
+                            </button>
+                            <a asp-action="ListadoUsuario" class="btn btn-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
     </div>
+</div>
+</body>
 
-    <div class="form-group">
-        <label asp-for="Usuario.Apellido"></label>
-        <input class="form-control" asp-for="Usuario.Apellido" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Usuario.Mail"></label>
-        <input class="form-control" asp-for="Usuario.Mail" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Contrasena">Contraseña (dejar vacío si no se cambia)</label>
-        <input type="password" class="form-control" asp-for="Contrasena" />
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-2">Guardar</button>
-    <a asp-action="ListadoUsuario" class="btn btn-secondary mt-2">Cancelar</a>
-</form>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

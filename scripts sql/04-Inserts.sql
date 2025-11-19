@@ -51,7 +51,6 @@ call insert_usuario('Luz', 'Ibarra', 'luzibarra@gmail.com', '231', @idUsuarioLuz
 
 -- delete from Usuario
 -- where idUsuario in (1, 2, 3);
-
 call insert_reserva(@idHabitacionHotelBuenosAiresSuite1, @idMercadoPago, @idUsuarioLeonardoCheng, now(), '2024-11-03', 11111111, @idReservaLeonardoChengHabitacionHotelBuenosAiresSuite1);
 call insert_reserva(@idHabitacionHotelMendozaJuniorSuite1, @idEfectivo, @idUsuarioMarioRojas, '2024-11-04', '2024-12-02', 11111112, @idReservaMarioRojasHabitacionHotelBuenosAiresSuite1);
 call insert_reserva(@idHabitacionHotelSantiagodelEsteroGranSuite1, @idVisaDebito, @idUsuarioLuzIbarra, '2024-12-04', '2025-01-03', 11111113, @idReservaLuzIbarraHabitacionHotelBuenosAiresSuite1);

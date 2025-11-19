@@ -4,6 +4,9 @@ using TrivagoMVC.Models;
 using Trivago.Core.Ubicacion;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+
+
 
 namespace TrivagoMVC.Controllers
 {
@@ -12,8 +15,13 @@ namespace TrivagoMVC.Controllers
         private readonly IRepoCiudad _repoCiudad;
         private readonly IRepoPais _repoPais;
         private readonly IRepoHotel _repoHotel;
-        
 
+
+        [Authorize]
+        public IActionResult Bienvenido()
+        {
+            return View();
+        }
 
 
         // Constructor

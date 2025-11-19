@@ -3,6 +3,10 @@ using Trivago.Core.Persistencia;
 using Trivago.Core.Ubicacion;
 using TrivagoMVC.Models;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TrivagoMVC.Controllers
 {
@@ -10,61 +14,54 @@ namespace TrivagoMVC.Controllers
     {
         private readonly IRepoUsuario _repoUsuario;
 
-        // Inyeccion de dependencias
         public UsuariosController(IRepoUsuario repoUsuario)
         {
             _repoUsuario = repoUsuario;
         }
 
-        //Listado
+        // ------------------------------
+        //    SOLO LOGUEADOS
+        // ------------------------------
+        [Authorize]
+        public IActionResult Bienvenido()
+        {
+            return View();
+        }
+
+        [Authorize]
         public IActionResult ListadoUsuario()
         {
             var usuarios = _repoUsuario.Listar().ToList();
-            var vm = new UsuarioViewModel
-            {
-                ListaUsuarios = usuarios
-            };
-            return View(vm);
+            return View(new UsuarioViewModel { ListaUsuarios = usuarios });
         }
 
-        //Detalle individual
+        [Authorize]
         public IActionResult DetalleUsuario(uint idUsuario)
         {
             var usuario = _repoUsuario.Detalle(idUsuario);
             if (usuario == null) return NotFound();
 
-            var vm = new UsuarioViewModel
-            {
-                Usuario = usuario
-            };
-            return View("DetalleUsuarioIndividual", vm);
+            return View("DetalleUsuarioIndividual", new UsuarioViewModel { Usuario = usuario });
         }
 
-        //DetalleUsuarioLista
+        [Authorize]
         public IActionResult DetalleUsuarioLista()
         {
             var usuarios = _repoUsuario.Listar().ToList();
-
-            var vm = new UsuarioViewModel
-            {
-                ListaUsuarios = usuarios
-            };
-
-            return View(vm); 
+            return View(new UsuarioViewModel { ListaUsuarios = usuarios });
         }
 
-
-        //Alta
+        // ------------------------------
+        // ALTA USUARIO
+        // ------------------------------
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult AltaUsuario()
         {
-            var vm = new UsuarioViewModel
-            {
-                Usuario = new Usuario()
-            };
-            return View(vm);
+            return View(new UsuarioViewModel { Usuario = new Usuario() });
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AltaUsuario(UsuarioViewModel vm)
@@ -72,25 +69,23 @@ namespace TrivagoMVC.Controllers
             if (!ModelState.IsValid) return View(vm);
 
             _repoUsuario.Alta(vm.Usuario);
-            return RedirectToAction("ListadoUsuario");
+            return RedirectToAction("Login");
         }
 
-        //Editar
+        // ------------------------------
+        // EDITAR USUARIO
+        // ------------------------------
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> EditarUsuario(uint idUsuario)
         {
             var usuario = await _repoUsuario.DetalleAsync(idUsuario);
-            if (usuario == null)
-                return NotFound();
+            if (usuario == null) return NotFound();
 
-            var model = new UsuarioViewModel
-            {
-                Usuario = usuario
-            };
-
-            return View(model);
+            return View(new UsuarioViewModel { Usuario = usuario });
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarUsuario(UsuarioViewModel model)
@@ -98,21 +93,67 @@ namespace TrivagoMVC.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // Actualiza datos generales
             await _repoUsuario.ActualizarAsync(model.Usuario);
 
-            // Actualiza contraseña solo si se completó
             if (!string.IsNullOrEmpty(model.Contrasena))
-            {
                 await _repoUsuario.ActualizarContrasenaAsync(model.Usuario.idUsuario, model.Contrasena);
-            }
 
             TempData["Mensaje"] = "Usuario actualizado correctamente";
 
-            // Redirige al listado para ver cambios
             return RedirectToAction("ListadoUsuario");
         }
 
+        // ------------------------------
+        // LOGIN
+        // ------------------------------
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View(new LoginViewModel());
+        }
 
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            // ---- VERIFICAR EN BD ----
+            var usuario = _repoUsuario.UsuarioPorPass(model.Mail, model.Contrasena);
+
+            if (usuario == null)
+            {
+                ModelState.AddModelError("", "Mail o contraseña incorrectos");
+                return View(model);
+            }
+
+            // ---- CREAR CLAIMS ----
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, usuario.idUsuario.ToString()),
+                new Claim(ClaimTypes.Name, usuario.Nombre),
+                new Claim(ClaimTypes.Email, usuario.Mail)
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            // Redirige al Home al iniciar sesión
+            return RedirectToAction("Index", "Home");
+        }
+
+        // ------------------------------
+        // LOGOUT
+        // ------------------------------
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Usuarios");
+        }
     }
 }
