@@ -38,23 +38,24 @@ DELIMITER ;
 -- Procedure for Hotel
 DROP PROCEDURE IF EXISTS insert_hotel;
 
-DELIMITER //
+DELIMITER / /
 
 CREATE PROCEDURE insert_hotel(
   IN p_idCiudad INT UNSIGNED,
   IN p_Nombre VARCHAR(45),
   IN p_Direccion VARCHAR(45),
-  IN p_Telefono INT,
+  IN p_Telefono VARCHAR(20),
   IN p_URL VARCHAR(90),
-  out p_idHotel int unsigned
+  OUT p_idHotel INT UNSIGNED
 )
 BEGIN
-  INSERT INTO `Hotel` (`idCiudad`, `Nombre`, `Direccion`, `Telefono`, `URL`) VALUES (p_idCiudad, p_Nombre, p_Direccion, p_Telefono, p_URL);
-  set p_idHotel = last_insert_id();
+  INSERT INTO `Hotel` (`idCiudad`, `Nombre`, `Direccion`, `Telefono`, `URL`)
+  VALUES (p_idCiudad, p_Nombre, p_Direccion, p_Telefono, p_URL);
+
+  SET p_idHotel = LAST_INSERT_ID();
 END //
 
-
-DELIMITER ;
+DELIMITER;
 
 -- Procedure for TipoHabitacion
 DROP PROCEDURE IF EXISTS insert_tipo_habitacion;

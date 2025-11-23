@@ -46,25 +46,22 @@ CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Ciudad` (
 -- -----------------------------------------------------
 -- Table `5to_Trivago`.`Hotel`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `5to_Trivago`.`Hotel` ;
+DROP TABLE IF EXISTS `5to_Trivago`.`Hotel`;
 
 CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Hotel` (
-  `idHotel` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `idCiudad` INT UNSIGNED NOT NULL,
-  `Nombre` VARCHAR(45) NOT NULL,
-  `Direccion` VARCHAR(45) NOT NULL,
-  `Telefono` INT UNSIGNED NOT NULL,
-  `URL` VARCHAR(90),
-  PRIMARY KEY (`idHotel`),
-  UNIQUE INDEX `Hotelcol_UNIQUE` (`Telefono` ASC) ,
-  UNIQUE INDEX `Direccion_UNIQUE` (`Direccion` ASC) ,
-  INDEX `fk_Hotel_Ciudad1_idx` (`idCiudad` ASC) ,
-  UNIQUE INDEX `URL_UNIQUE` (`URL` ASC) ,
-  CONSTRAINT `fk_Hotel_Ciudad1`
-    FOREIGN KEY (`idCiudad`)
-    REFERENCES `5to_Trivago`.`Ciudad` (`idCiudad`)
-)
-;
+    `idHotel` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `idCiudad` INT UNSIGNED NOT NULL,
+    `Nombre` VARCHAR(45) NOT NULL,
+    `Direccion` VARCHAR(45) NOT NULL,
+    `Telefono` VARCHAR(20) NOT NULL,
+    `URL` VARCHAR(90) NOT NULL,
+    PRIMARY KEY (`idHotel`),
+    UNIQUE INDEX `Telefono_UNIQUE` (`Telefono` ASC),
+    UNIQUE INDEX `Direccion_UNIQUE` (`Direccion` ASC),
+    UNIQUE INDEX `URL_UNIQUE` (`URL` ASC),
+    INDEX `fk_Hotel_Ciudad1_idx` (`idCiudad` ASC),
+    CONSTRAINT `fk_Hotel_Ciudad1` FOREIGN KEY (`idCiudad`) REFERENCES `5to_Trivago`.`Ciudad` (`idCiudad`)
+);
 
 
 -- -----------------------------------------------------

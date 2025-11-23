@@ -11,7 +11,7 @@ public class RepoHotel : RepoDapper, IRepoHotel
     }
 
     //Altas Hoteles
-    private async Task<uint> AltaHotelInternaAsync(Hotel hotel,  Func<string, DynamicParameters, CommandType, Task> ejecutor)
+    private async Task<uint> AltaHotelInternaAsync(Hotel hotel, Func<string, DynamicParameters, CommandType, Task> ejecutor)
     {
         string storedProcedure = "insert_hotel";
 
@@ -19,12 +19,16 @@ public class RepoHotel : RepoDapper, IRepoHotel
         parametros.Add("p_idCiudad", hotel.idCiudad);
         parametros.Add("p_Nombre", hotel.Nombre);
         parametros.Add("p_Direccion", hotel.Direccion);
-        parametros.Add("p_Telefono", hotel.Telefono);
+
+        // ✅ Corrección 1: asegurar INT real para evitar fallo silencioso del SP
+        parametros.Add("p_Telefono", Convert.ToInt32(hotel.Telefono));
+
         parametros.Add("p_URL", hotel.URL);
-        parametros.Add("p_idHotel", direction: ParameterDirection.Output);
 
-         await ejecutor(storedProcedure, parametros, CommandType.StoredProcedure);
+        // ✅ Corrección 2: declarar tipo del OUT (MySQL lo exige)
+        parametros.Add("p_idHotel", dbType: DbType.UInt32, direction: ParameterDirection.Output);
 
+        await ejecutor(storedProcedure, parametros, CommandType.StoredProcedure);
 
         hotel.idHotel = parametros.Get<uint>("p_idHotel");
         return hotel.idHotel;
@@ -45,13 +49,13 @@ public class RepoHotel : RepoDapper, IRepoHotel
             _conexion.ExecuteAsync(sp, p, commandType: ct));
     }
 
-
     //Detalle Async
     private async Task<Hotel?> DetalleHotelInternaAsync(uint id, Func<string, object, Task<Hotel?>> ejecutor)
     {
         string sql = "SELECT * FROM Hotel WHERE idHotel = @Id LIMIT 1";
         return await ejecutor(sql, new { Id = id });
     }
+
     public Hotel? Detalle(uint id)
     {
         return DetalleHotelInternaAsync(id, (sql, param) =>
@@ -60,6 +64,7 @@ public class RepoHotel : RepoDapper, IRepoHotel
             return Task.FromResult(result);
         }).GetAwaiter().GetResult();
     }
+
     public async Task<Hotel?> DetalleAsync(uint id)
     {
         return await DetalleHotelInternaAsync(id, (sql, param) =>
@@ -82,6 +87,7 @@ public class RepoHotel : RepoDapper, IRepoHotel
             return Task.FromResult(result);
         }).GetAwaiter().GetResult();
     }
+
     public async Task<List<Hotel>> ListarAsync()
     {
         return await ListarHotelInternaAsync(sql => _conexion.QueryAsync<Hotel>(sql));
@@ -103,13 +109,14 @@ public class RepoHotel : RepoDapper, IRepoHotel
             return Task.FromResult(result);
         }).GetAwaiter().GetResult();
     }
+
     public async Task<List<Hotel>> InformarHotelesPorIdCiudadAsync(int idHotel)
     {
         return await InformarHotelInternaAsync(idHotel, (sql, param) =>
             _conexion.QueryAsync<Hotel>(sql, param));
     }
 
-    // ✅ Editar
+    // Editar
     public async Task EditarAsync(Hotel hotel)
     {
         string sql = @"UPDATE Hotel 

@@ -45,9 +45,10 @@ call insert_metodo_pago('VisaDebito', @idVisaDebito);
 -- delete from MetodoPago
 -- where idMetodoPago in (1, 2, 3);
 
-call insert_usuario('Leonardo', 'Cheng', 'leonardocheng@gmail.com', '123', @idUsuarioLeonardoCheng);
-call insert_usuario('Mario', 'Rojas', 'mariorojas@gmail.com', '321', @idUsuarioMarioRojas);
-call insert_usuario('Luz', 'Ibarra', 'luzibarra@gmail.com', '231', @idUsuarioLuzIbarra);
+call insert_usuario('Leonardo', 'Cheng', 'leonardocheng@gmail.com', SHA2('123', 256), @idUsuarioLeonardoCheng);
+call insert_usuario('Mario', 'Rojas', 'mariorojas@gmail.com', SHA2('321', 256), @idUsuarioMarioRojas);
+call insert_usuario('Luz', 'Ibarra', 'luzibarra@gmail.com', SHA2('231', 256), @idUsuarioLuzIbarra);
+
 
 -- delete from Usuario
 -- where idUsuario in (1, 2, 3);

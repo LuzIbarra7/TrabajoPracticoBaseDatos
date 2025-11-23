@@ -1,7 +1,6 @@
 @model TrivagoMVC.Models.AltaHotelViewModel
 
 <head>
-
 <link rel="preconnect" href="https://fonts.googleapis.com"> 
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -14,11 +13,9 @@ body{
     background: white;
     font-family: "Roboto Condensed", sans-serif !important;
 }
-
-
 </style>
-
 </head>
+
 <body>
 <div class="container py-4">
     <div class="row justify-content-center">
@@ -27,16 +24,22 @@ body{
                 <div class="card-header bg-primary text-white">
                     <h3 class="mb-0">Alta de Hotel</h3>
                 </div>
+
                 <div class="card-body">
                     <form asp-action="AltaHotel" method="post">
                         @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
 
+                        <input type="hidden" asp-for="NuevoHotel.idHotel" />
+
+                        <!-- NOMBRE -->
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.Nombre" class="form-label">Nombre del Hotel</label>
                             <input asp-for="NuevoHotel.Nombre" class="form-control" placeholder="Ej: Hotel Plaza" />
                             <span asp-validation-for="NuevoHotel.Nombre" class="text-danger"></span>
                         </div>
 
+                        <!-- CIUDAD -->
                         <div class="mb-3">
                             <label asp-for="SelectCiudad" class="form-label">Ciudad</label>
                             <select asp-for="SelectCiudad" asp-items="Model.Ciudades" class="form-select">
@@ -45,24 +48,35 @@ body{
                             <span asp-validation-for="SelectCiudad" class="text-danger"></span>
                         </div>
 
+                        <!-- DIRECCIÓN -->
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.Direccion" class="form-label">Dirección</label>
                             <input asp-for="NuevoHotel.Direccion" class="form-control" placeholder="Ej: Av. Principal 123" />
                             <span asp-validation-for="NuevoHotel.Direccion" class="text-danger"></span>
                         </div>
 
+                        <!-- TELÉFONO -->
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.Telefono" class="form-label">Teléfono</label>
-                            <input asp-for="NuevoHotel.Telefono" class="form-control" placeholder="Ej: +54 11 1234-5678" />
+
+                            <input asp-for="NuevoHotel.Telefono"
+                                   type="tel"
+                                   class="form-control"
+                                   placeholder="Ej: +54 11 1234-5678"
+                                   pattern="\+?[0-9]{8,15}"
+                                   title="Solo números (8 a 15 dígitos), puede incluir + al inicio" />
+
                             <span asp-validation-for="NuevoHotel.Telefono" class="text-danger"></span>
                         </div>
 
+                        <!-- URL -->
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.URL" class="form-label">URL del sitio web</label>
                             <input asp-for="NuevoHotel.URL" class="form-control" placeholder="Ej: https://www.hotelplaza.com" />
                             <span asp-validation-for="NuevoHotel.URL" class="text-danger"></span>
                         </div>
 
+                        <!-- BOTONES -->
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-save"></i> Guardar Hotel
@@ -71,6 +85,7 @@ body{
                                 <i class="bi bi-x-circle"></i> Cancelar
                             </a>
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -80,5 +95,5 @@ body{
 </body>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync(partialViewName:"_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

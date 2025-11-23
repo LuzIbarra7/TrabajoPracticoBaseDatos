@@ -1,23 +1,21 @@
 @model TrivagoMVC.Models.AltaHotelViewModel
+
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com"> 
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
+@{
+    ViewData["Title"] = "Editar Hotel";
+}
 <style>
-
 body{
     background: white;
     font-family: "Roboto Condensed", sans-serif !important;
 }
 </style>
-
 </head>
 <body>
-@{
-    ViewData["Title"] = "Editar Hotel";
-}
-
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -29,16 +27,14 @@ body{
                     <form asp-action="EditarHotel" method="post">
                         @Html.AntiForgeryToken()
 
-                        <!-- ID Hotel oculto -->
                         <input type="hidden" asp-for="NuevoHotel.idHotel" />
-
 
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.Nombre" class="form-label">Nombre</label>
                             <input asp-for="NuevoHotel.Nombre" class="form-control" placeholder="Ej: Hotel Plaza"/>
                             <span asp-validation-for="NuevoHotel.Nombre" class="text-danger"></span>
                         </div>
-                        <!-- Selección de ciudad -->
+
                         <div class="mb-3">
                             <label asp-for="SelectCiudad" class="form-label">Ciudad</label>
                             <select asp-for="SelectCiudad" asp-items="Model.Ciudades" class="form-select">
@@ -50,16 +46,19 @@ body{
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.Direccion" class="form-label">Dirección</label>
                             <input asp-for="NuevoHotel.Direccion" class="form-control" placeholder="Ej: Av. Principal 123" />
+                            <span asp-validation-for="NuevoHotel.Direccion" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.Telefono" class="form-label">Teléfono</label>
                             <input asp-for="NuevoHotel.Telefono" class="form-control" placeholder="Ej: +54 11 1234-5678"/>
+                            <span asp-validation-for="NuevoHotel.Telefono" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.URL" class="form-label">URL</label>
                             <input asp-for="NuevoHotel.URL" class="form-control" placeholder="Ej: https://www.hotelplaza.com"/>
+                            <span asp-validation-for="NuevoHotel.URL" class="text-danger"></span>
                         </div>
 
                         <div class="d-grid gap-2">
