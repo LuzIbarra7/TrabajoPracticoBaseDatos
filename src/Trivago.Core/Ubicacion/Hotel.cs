@@ -9,7 +9,7 @@ public class Hotel
 
     public uint idCiudad { get; set; }
 
-    public List<Habitacion> Habitaciones { get; set; }
+    public List<Habitacion> Habitaciones { get; set; } = new();
 
      [Required]
     public string Nombre { get; set; }

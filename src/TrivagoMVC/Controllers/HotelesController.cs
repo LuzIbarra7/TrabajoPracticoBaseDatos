@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using TrivagoMVC.Models;
 using Trivago.Core.Ubicacion;
 using Trivago.Core.Persistencia;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -23,12 +22,18 @@ namespace TrivagoMVC.Controllers
             _repoPais = repoPais;
         }
 
+        // =====================================================
+        // BIENVENIDO
+        // =====================================================
         [Authorize]
         public IActionResult Bienvenido()
         {
             return View();
         }
 
+        // =====================================================
+        // LISTADO GENERAL
+        // =====================================================
         public async Task<IActionResult> ListadoHotel()
         {
             var paises = await _repoPais.ListarAsync();
@@ -62,6 +67,9 @@ namespace TrivagoMVC.Controllers
             return View(viewModel);
         }
 
+        // =====================================================
+        // DETALLE INDIVIDUAL
+        // =====================================================
         public async Task<IActionResult> DetalleHotelLista()
         {
             var hoteles = await _repoHotel.ListarAsync();
@@ -101,6 +109,9 @@ namespace TrivagoMVC.Controllers
             return View("DetalleHotelIndividual", viewModel);
         }
 
+        // =====================================================
+        // ALTA (GET)
+        // =====================================================
         public async Task<IActionResult> AltaHotel()
         {
             var ciudades = await _repoCiudad.ListarAsync();
@@ -117,39 +128,43 @@ namespace TrivagoMVC.Controllers
             return View(vm);
         }
 
+        // =====================================================
+        // ALTA (POST)
+        // =====================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AltaHotel(AltaHotelViewModel vm)
+        public async Task<IActionResult> AltaHotel(AltaHotelViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                vm.Ciudades = (await _repoCiudad.ListarAsync())
+                model.Ciudades = (await _repoCiudad.ListarAsync())
                     .Select(c => new SelectListItem
                     {
                         Value = c.idCiudad.ToString(),
                         Text = c.Nombre
                     }).ToList();
 
-                return View(vm);
+                return View(model);
             }
 
-            if (string.IsNullOrEmpty(vm.SelectCiudad))
+            var hotel = new Hotel
             {
-                ModelState.AddModelError(nameof(vm.SelectCiudad), "Debe seleccionar una ciudad.");
+                Nombre = model.NuevoHotel.Nombre,
+                Direccion = model.NuevoHotel.Direccion,
+                Telefono = model.NuevoHotel.Telefono,
+                URL = model.NuevoHotel.URL,
+                idCiudad = model.NuevoHotel.idCiudad,
+                Habitaciones = new List<Habitacion>() // evitar nulos
+            };
 
-                vm.Ciudades = (await _repoCiudad.ListarAsync())
-                    .Select(c => new SelectListItem { Value = c.idCiudad.ToString(), Text = c.Nombre }).ToList();
-                return View(vm);
-            }
+            await _repoHotel.AltaAsync(hotel);
 
-            // 🔥 CORREGIDO: int → uint
-            vm.NuevoHotel.idCiudad = uint.Parse(vm.SelectCiudad);
-
-            await _repoHotel.AltaAsync(vm.NuevoHotel);
-
-            return RedirectToAction("DetalleHotelLista");
+            return RedirectToAction("ListadoHotel");
         }
 
+        // =====================================================
+        // EDITAR (GET)
+        // =====================================================
         public async Task<IActionResult> EditarHotel(uint idHotel)
         {
             var hotel = await _repoHotel.DetalleAsync(idHotel);
@@ -157,10 +172,17 @@ namespace TrivagoMVC.Controllers
 
             var ciudades = await _repoCiudad.ListarAsync();
 
-            var vm = new AltaHotelViewModel
+            var vm = new EditarHotelViewModel
             {
-                NuevoHotel = hotel,
-                SelectCiudad = hotel.idCiudad.ToString(),
+                idHotel = hotel.idHotel,
+                Datos = new HotelFormViewModel
+                {
+                    Nombre = hotel.Nombre,
+                    Direccion = hotel.Direccion,
+                    Telefono = hotel.Telefono,
+                    URL = hotel.URL,
+                    idCiudad = hotel.idCiudad
+                },
                 Ciudades = ciudades.Select(c => new SelectListItem
                 {
                     Value = c.idCiudad.ToString(),
@@ -172,9 +194,13 @@ namespace TrivagoMVC.Controllers
             return View(vm);
         }
 
+
+        // =====================================================
+        // EDITAR (POST)
+        // =====================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditarHotel(AltaHotelViewModel vm)
+        public async Task<IActionResult> EditarHotel(EditarHotelViewModel vm)
         {
             if (!ModelState.IsValid)
             {
@@ -188,24 +214,16 @@ namespace TrivagoMVC.Controllers
                 return View(vm);
             }
 
-            if (string.IsNullOrEmpty(vm.SelectCiudad))
-            {
-                ModelState.AddModelError(nameof(vm.SelectCiudad), "Debe seleccionar una ciudad.");
+            var hotel = await _repoHotel.DetalleAsync(vm.idHotel);
+            if (hotel == null) return NotFound();
 
-                vm.Ciudades = (await _repoCiudad.ListarAsync())
-                    .Select(c => new SelectListItem
-                    {
-                        Value = c.idCiudad.ToString(),
-                        Text = c.Nombre
-                    }).ToList();
+            hotel.Nombre = vm.Datos.Nombre;
+            hotel.Direccion = vm.Datos.Direccion;
+            hotel.Telefono = vm.Datos.Telefono;
+            hotel.URL = vm.Datos.URL;
+            hotel.idCiudad = vm.Datos.idCiudad;
 
-                return View(vm);
-            }
-
-            // 🔥 CORREGIDO: int → uint
-            vm.NuevoHotel.idCiudad = uint.Parse(vm.SelectCiudad);
-
-            await _repoHotel.EditarAsync(vm.NuevoHotel);
+            await _repoHotel.EditarAsync(hotel);
 
             return RedirectToAction("DetalleHotelLista");
         }

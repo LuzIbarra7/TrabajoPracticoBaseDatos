@@ -1,15 +1,14 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
-using Trivago.Core.Ubicacion;
+using System.Collections.Generic;
 
 namespace TrivagoMVC.Models
 {
     public class AltaHotelViewModel
     {
-        public Hotel NuevoHotel { get; set; }
+        public HotelFormViewModel NuevoHotel { get; set; } = new HotelFormViewModel();
 
-        public string? SelectCiudad { get; set; }
+        public List<SelectListItem> Ciudades { get; set; } = new();
 
-        public List<SelectListItem> Ciudades { get; set; } = new List<SelectListItem>();
+        public uint idHotel => NuevoHotel.idHotel;
     }
 }

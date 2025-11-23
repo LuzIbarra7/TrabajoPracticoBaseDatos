@@ -1,4 +1,4 @@
-@model TrivagoMVC.Models.AltaHotelViewModel
+@model TrivagoMVC.Models.EditarHotelViewModel
 
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com"> 
@@ -15,6 +15,7 @@ body{
 }
 </style>
 </head>
+
 <body>
 <div class="container py-4">
     <div class="row justify-content-center">
@@ -23,49 +24,63 @@ body{
                 <div class="card-header bg-primary text-white">
                     <h3 class="mb-0">Editar Hotel</h3>
                 </div>
+
                 <div class="card-body">
+
                     <form asp-action="EditarHotel" method="post">
                         @Html.AntiForgeryToken()
 
-                        <input type="hidden" asp-for="NuevoHotel.idHotel" />
+                        <!-- ID DEL HOTEL -->
+                        <input type="hidden" asp-for="idHotel" />
 
+                        <!-- VALIDACIÓN -->
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <!-- NOMBRE -->
                         <div class="mb-3">
-                            <label asp-for="NuevoHotel.Nombre" class="form-label">Nombre</label>
-                            <input asp-for="NuevoHotel.Nombre" class="form-control" placeholder="Ej: Hotel Plaza"/>
-                            <span asp-validation-for="NuevoHotel.Nombre" class="text-danger"></span>
+                            <label asp-for="Datos.Nombre" class="form-label"></label>
+                            <input asp-for="Datos.Nombre" class="form-control" />
+                            <span asp-validation-for="Datos.Nombre" class="text-danger"></span>
                         </div>
 
+                        <!-- CIUDAD -->
                         <div class="mb-3">
-                            <label asp-for="SelectCiudad" class="form-label">Ciudad</label>
-                            <select asp-for="SelectCiudad" asp-items="Model.Ciudades" class="form-select">
+                            <label asp-for="Datos.idCiudad" class="form-label">Ciudad</label>
+                            <select asp-for="Datos.idCiudad" asp-items="Model.Ciudades" class="form-select">
                                 <option value="">Seleccione una ciudad</option>
                             </select>
-                            <span asp-validation-for="SelectCiudad" class="text-danger"></span>
+                            <span asp-validation-for="Datos.idCiudad" class="text-danger"></span>
                         </div>
 
+                        <!-- DIRECCIÓN -->
                         <div class="mb-3">
-                            <label asp-for="NuevoHotel.Direccion" class="form-label">Dirección</label>
-                            <input asp-for="NuevoHotel.Direccion" class="form-control" placeholder="Ej: Av. Principal 123" />
-                            <span asp-validation-for="NuevoHotel.Direccion" class="text-danger"></span>
+                            <label asp-for="Datos.Direccion" class="form-label"></label>
+                            <input asp-for="Datos.Direccion" class="form-control" />
+                            <span asp-validation-for="Datos.Direccion" class="text-danger"></span>
                         </div>
 
+                        <!-- TELÉFONO -->
                         <div class="mb-3">
-                            <label asp-for="NuevoHotel.Telefono" class="form-label">Teléfono</label>
-                            <input asp-for="NuevoHotel.Telefono" class="form-control" placeholder="Ej: +54 11 1234-5678"/>
-                            <span asp-validation-for="NuevoHotel.Telefono" class="text-danger"></span>
+                            <label asp-for="Datos.Telefono" class="form-label"></label>
+                            <input asp-for="Datos.Telefono" class="form-control" />
+                            <span asp-validation-for="Datos.Telefono" class="text-danger"></span>
                         </div>
 
+                        <!-- URL -->
                         <div class="mb-3">
-                            <label asp-for="NuevoHotel.URL" class="form-label">URL</label>
-                            <input asp-for="NuevoHotel.URL" class="form-control" placeholder="Ej: https://www.hotelplaza.com"/>
-                            <span asp-validation-for="NuevoHotel.URL" class="text-danger"></span>
+                            <label asp-for="Datos.URL" class="form-label"></label>
+                            <input asp-for="Datos.URL" class="form-control" />
+                            <span asp-validation-for="Datos.URL" class="text-danger"></span>
                         </div>
 
+                        <!-- BOTONES -->
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">Guardar cambios</button>
                             <a asp-action="DetalleHotelLista" class="btn btn-secondary">Cancelar</a>
                         </div>
+
                     </form>
+
                 </div>
             </div>
         </div>
