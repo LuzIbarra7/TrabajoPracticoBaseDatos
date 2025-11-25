@@ -54,6 +54,8 @@ namespace TrivagoMVC.Models
         public string? Direccion { get; set; }
         public string? Telefono { get; set; }
         public string? URL { get; set; }
+
+        public List<Habitacion> Habitaciones { get; set; } = new List<Habitacion>();
     }
 
     public class HotelesPorPaisViewModel

@@ -43,8 +43,27 @@ public class RepoHabitacion : RepoDapper, IRepoHabitacion
     //Destalle Async
     private async Task<Habitacion?> DetalleHabitacionInternaAsync(uint id, Func<string, object, Task<Habitacion?>> ejecutor)
     {
-        string sql = "SELECT * FROM Habitacion WHERE idHabitacion = @Id LIMIT 1";
-        return await ejecutor(sql, new { Id = id });
+                string sql = @"
+            SELECT h.*,
+                t.*
+            FROM Habitacion h
+            INNER JOIN TipoHabitacion t ON h.idTipo = t.idTipo
+            WHERE h.idHabitacion = @idHabitacion
+            Limit 1";
+
+        var resultado = await _conexion.QueryAsync<Habitacion, TipoHabitacion, Habitacion>(
+            sql,
+            (habitacion, tipo) => 
+            {
+                habitacion.tipoHabitacion = tipo;
+                return habitacion;
+            },
+            new { idHabitacion = id },
+            splitOn: "idTipo"
+        );
+        
+        return resultado.SingleOrDefault();
+
     }
 
     public Habitacion? Detalle(uint id)
@@ -102,10 +121,27 @@ public class RepoHabitacion : RepoDapper, IRepoHabitacion
 
     public async Task<List<Habitacion>> InformarHabitacionPorIdHotelAsync(uint idHotel)
     {
-        string sql = "SELECT * FROM Habitacion WHERE idHotel = @IdHotel";
-        return await InformarHabitacionInternoAsync(sql, new { IdHotel = idHotel }, (q, p) =>
-            _conexion.QueryAsync<Habitacion>(q, p));
+        string sql = @"
+            SELECT h.*,
+                t.*
+            FROM Habitacion h
+            INNER JOIN TipoHabitacion t ON h.idTipo = t.idTipo
+            WHERE h.idHotel = @IdHotel";
+
+        var resultado = await _conexion.QueryAsync<Habitacion, TipoHabitacion, Habitacion>(
+            sql,
+            (habitacion, tipo) => 
+            {
+                habitacion.tipoHabitacion = tipo;
+                return habitacion;
+            },
+            new { IdHotel = idHotel },
+            splitOn: "idTipo"
+        );
+
+        return resultado.ToList();
     }
+
 
     public List<Habitacion> InformarHabitacionPorIdTipo(uint idTipo)
     {

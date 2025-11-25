@@ -14,12 +14,15 @@ namespace TrivagoMVC.Controllers
         private readonly IRepoHotel _repoHotel;
         private readonly IRepoCiudad _repoCiudad;
         private readonly IRepoPais _repoPais;
+        private readonly IRepoHabitacion _repoHabitacion;
+        
 
-        public HotelesController(IRepoHotel repoHotel, IRepoCiudad repoCiudad, IRepoPais repoPais)
+        public HotelesController(IRepoHotel repoHotel, IRepoCiudad repoCiudad, IRepoPais repoPais, IRepoHabitacion repoHabitacion)
         {
             _repoHotel = repoHotel;
             _repoCiudad = repoCiudad;
             _repoPais = repoPais;
+            _repoHabitacion = repoHabitacion;
         }
 
         
@@ -89,6 +92,10 @@ namespace TrivagoMVC.Controllers
             if (hotel == null) return NotFound();
 
             var ciudad = await _repoCiudad.DetalleAsync(hotel.idCiudad);
+            
+            // Traer habitaciones
+            var habitaciones = await _repoHabitacion.InformarHabitacionPorIdHotelAsync(idHotel);
+
             var viewModel = new HotelConCiudadViewModel
             {
                 idHotel = hotel.idHotel,
@@ -97,11 +104,13 @@ namespace TrivagoMVC.Controllers
                 Direccion = hotel.Direccion,
                 Telefono = hotel.Telefono,
                 URL = hotel.URL,
-                NombreCiudad = ciudad?.Nombre ?? "Desconocida"
+                NombreCiudad = ciudad?.Nombre ?? "Desconocida",
+                Habitaciones = habitaciones
             };
 
             return View("DetalleHotelIndividual", viewModel);
         }
+
 
         // ALTA
         public async Task<IActionResult> AltaHotel()
@@ -206,6 +215,8 @@ namespace TrivagoMVC.Controllers
             hotel.Telefono = vm.Datos.Telefono;
             hotel.URL = vm.Datos.URL;
             hotel.idCiudad = vm.Datos.idCiudad;
+
+
 
             await _repoHotel.EditarAsync(hotel);
 

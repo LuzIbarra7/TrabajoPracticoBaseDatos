@@ -1,0 +1,84 @@
+@model TrivagoMVC.Models.AltaHabitacionViewModel
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body{
+            background: #f7f7f7;
+            font-family: "Roboto Condensed", sans-serif !important;
+        }
+
+        .form-container {
+            max-width: 450px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px 35px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            width: 100%;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .cancelar-btn {
+        display: block;
+        width: 60%;
+        margin: 20px auto 0 auto; /* arriba 20px — centrado */
+        padding: 10px;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: 600;
+        }
+
+        
+    </style>
+</head>
+
+<body>
+
+<div class="form-container">
+    <h2>Alta de Habitación</h2>
+
+    <form asp-action="AltaHabitacion" method="post">
+
+        <div class="form-group mb-3">
+            <label>Hotel</label>
+            <select asp-for="Nuevo.idHotel" asp-items="Model.Hoteles" class="form-control"></select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Nombre del tipo de habitación</label>
+            <input asp-for="Nuevo.NombreTipo" class="form-control" placeholder="Ej: Suite Deluxe" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Precio por noche</label>
+            <input asp-for="Nuevo.PrecioPorNoche" class="form-control" placeholder="Ej: 12000" />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">Crear Habitación</button>
+    </form>
+
+        <a asp-controller="Hoteles" asp-action="DetalleHotel" asp-route-idHotel="@Model.idHotel" 
+               class="btn btn-secondary btn-volver">
+                Cancelar
+            </a>
+</div>
+</body>

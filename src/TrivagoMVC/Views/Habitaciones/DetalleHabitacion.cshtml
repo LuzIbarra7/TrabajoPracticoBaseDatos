@@ -1,0 +1,184 @@
+@model TrivagoMVC.Models.HabitacionViewModel
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: "Roboto Condensed", sans-serif !important;
+        }
+
+        .card-container {
+            max-width: 700px;
+            margin: 30px auto;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .comentarios-container {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #e3f2fd, #ffffff);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .comentarios-titulo {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #0d6efd;
+            text-shadow: 1px 1px 0px #ffffff;
+        }
+
+        .comentario-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 15px 18px;
+            margin-bottom: 15px;
+            border-left: 6px solid #0d6efd;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .comentario-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 14px rgba(0,0,0,0.15);
+        }
+
+        .comentario-texto {
+            font-size: 17px;
+            color: #333;
+            margin: 0;
+        }
+
+        .btn-volver {
+            margin-top: 20px;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+
+        .comentario-form {
+            background: #ffffff02;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .comentario-label {
+            font-weight: 600;
+        }
+
+        .comentario-input,
+        .comentario-textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #bdbdbdff;
+            margin-bottom: 10px;
+            background: #f1f1f1ff;
+            resize: none;
+        }
+
+        .comentario-btn {
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .comentario-btn:hover {
+            background: #0056b3;
+        }
+
+        .comentario-fecha {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="container card-container">
+    <div class="card main-card">
+        <div class="card-body">
+
+            <h2 class="card-title">Habitación: @Model.NombreTipo</h2>
+            <p><strong>ID Habitación:</strong> @Model.idHabitacion</p>
+            <p><strong>Hotel:</strong> @Model.NombreHotel</p>
+            <p><strong>Precio por Noche:</strong> $@Model.PrecioPorNoche</p>
+
+            <div class="comentarios-container">
+                <div class="comentarios-titulo">Comentarios</div>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form asp-action="Comentar" asp-controller="Habitaciones" method="post" class="comentario-form">
+
+                        <!-- idHabitacion oculto -->
+                        <input type="hidden" name="idHabitacion" value="@Model.idHabitacion" />
+
+                        <!-- idHotel oculto (para volver al detalle correcto) -->
+                        <input type="hidden" name="idHotel" value="@Model.idHotel" />
+
+                        <div class="form-group">
+                            <label class="comentario-label">Puntuación (1–10)</label>
+                            <input type="number" name="Calificacion" min="1" max="10" class="comentario-input" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="comentario-label">Comentario</label>
+                            <textarea name="Texto" rows="3" class="comentario-textarea"></textarea>
+                        </div>
+
+                        <button type="submit" class="comentario-btn">💬 Enviar</button>
+                    </form>
+                }
+                else
+                {
+                    <p class="text-muted">Inicia sesión para dejar un comentario.</p>
+                }
+
+                @if (Model.Comentarios != null && Model.Comentarios.Any())
+                {
+                    foreach (var comentario in Model.Comentarios)
+                    {
+                        <div class="comentario-card">
+                            <p class="comentario-texto">
+                                ⭐ <strong>@comentario.Calificacion</strong> — @comentario.comentario
+                            </p>
+                            <p class="comentario-fecha">@comentario.Fecha</p>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No hay comentarios aún.</p>
+                }
+            </div>
+
+            <a asp-controller="Hoteles"
+               asp-action="DetalleHotel"
+               asp-route-idHotel="@Model.idHotel"
+               class="btn btn-secondary btn-volver">
+                Volver al Hotel
+            </a>
+
+        </div>
+    </div>
+</div>
+</body>

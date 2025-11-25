@@ -5,54 +5,108 @@ using Trivago.Core.Ubicacion;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Trivago.RepoDapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 
 
 namespace TrivagoMVC.Controllers
 {
-    public class HabitacionController : Controller
+    public class HabitacionesController : Controller
     {
-        private readonly RepoHabitacion _repoHabitacion;
-        private readonly RepoComentario _repoComentario;
+        private readonly IRepoHabitacion _repoHabitacion;
+        private readonly IRepoComentario _repoComentario;
+        private readonly IRepoHotel _repoHotel;
+        private readonly IRepoTipoHabitacion _repoTipoHabitacion;
 
-        public HabitacionController(RepoHabitacion repoHabitacion, RepoComentario repoComentario)
+
+        public HabitacionesController(IRepoHabitacion repoHabitacion, IRepoComentario repoComentario, IRepoHotel repoHotel, IRepoTipoHabitacion repoTipoHabitacion)
         {
             _repoHabitacion = repoHabitacion;
             _repoComentario = repoComentario;
+            _repoHotel = repoHotel;
+            _repoTipoHabitacion = repoTipoHabitacion;
         }
 
         // Detalle de habitación
-        public IActionResult Detalle(uint id)
+        public async Task<IActionResult> DetalleHabitacion(uint idHabitacion, uint idHotel)
         {
-            var habitacion = _repoHabitacion.Detalle(id);
+            var comentarios =  _repoComentario.ListarPorIdHabitacion(idHabitacion);
+            var habitacion = await _repoHabitacion.DetalleAsync(idHabitacion);
             if (habitacion == null) return NotFound();
 
-            habitacion.Comentarios = _repoComentario.ListarPorIdHabitacion(id);
-            return View(habitacion);
+            var hotel = await _repoHotel.DetalleAsync(idHotel);
+
+            var h = await _repoHabitacion.DetalleAsync(idHabitacion);
+            var vm = new HabitacionViewModel
+            {
+                idHabitacion = h.idHabitacion,
+                NombreTipo = h.tipoHabitacion.Nombre,
+                NombreHotel = hotel.Nombre,
+                PrecioPorNoche = h.PrecioPorNoche,
+                Comentarios = comentarios,
+                idHotel = hotel.idHotel 
+            };
+
+            return View(vm);
         }
+
+
 
         // Alta de habitación
-        public IActionResult Alta(uint idHotel)
+        public async Task<IActionResult> AltaHabitacion()
         {
-            var model = new Habitacion
+            var hoteles = await _repoHotel.ListarAsync();
+
+            var vm = new AltaHabitacionViewModel
             {
-                hotel = new Hotel { idHotel = idHotel }
+                Hoteles = hoteles.Select(h => new SelectListItem
+                {
+                    Value = h.idHotel.ToString(),
+                    Text = h.Nombre
+                })
             };
-            return View(model);
+
+            return View(vm);
         }
 
-        [HttpPost]
-        public IActionResult Alta(Habitacion habitacion)
+
+
+
+       [HttpPost]
+        public IActionResult AltaHabitacion(AltaHabitacionViewModel vm)
         {
-            if (!ModelState.IsValid) return View(habitacion);
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            // Crear tipo de habitación nuevo
+            var tipo = new TipoHabitacion
+            {
+                Nombre = vm.Nuevo.NombreTipo
+            };
+            _repoTipoHabitacion.Alta(tipo);
+            
+            // Crear la habitación
+            var habitacion = new Habitacion
+            {
+                PrecioPorNoche = vm.Nuevo.PrecioPorNoche,
+                hotel = new Hotel { idHotel = vm.Nuevo.idHotel },
+                tipoHabitacion = tipo
+            };
 
             _repoHabitacion.Alta(habitacion);
-            return RedirectToAction("DetalleHotelIndividual", "Hotel", new { idHotel = habitacion.hotel.idHotel });
+
+            return RedirectToAction("DetalleHotel", "Hoteles",
+                new { idHotel = vm.Nuevo.idHotel });
         }
+
+
 
         // Agregar comentario
         [HttpPost]
-        public IActionResult AgregarComentario(uint idHabitacion, string texto, sbyte calificacion)
+        [HttpPost]
+        public IActionResult Comentar(uint idHabitacion, sbyte calificacion, string texto, uint idHotel)
         {
             var comentario = new Comentario
             {
@@ -64,8 +118,13 @@ namespace TrivagoMVC.Controllers
 
             _repoComentario.Alta(comentario);
 
-            return RedirectToAction("Detalle", new { id = idHabitacion });
+            // Volvemos al detalle de esa habitación
+            return RedirectToAction(
+                "DetalleHabitacion",
+                new { idHabitacion = idHabitacion, idHotel = idHotel }
+            );
         }
+
     }
 
 }

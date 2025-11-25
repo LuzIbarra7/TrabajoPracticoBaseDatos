@@ -3,27 +3,50 @@
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com"> 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
         body{
-            background: white;
+            background: #f4f4f8;
             font-family: "Roboto Condensed", sans-serif !important;
         }
-        .habitacion-card {
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .habitacion-card:hover {
-            transform: scale(1.02);
-        }
+
         .habitaciones-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
         }
+
+        .habitacion-card {
+            cursor: pointer;
+            width: 220px;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all .25s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,.08);
+        }
+
+        .habitacion-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,.15);
+        }
+
         .habitacion-card .card-body {
             text-align: center;
+            padding: 18px;
+        }
+
+        .habitacion-card h5 {
+            font-weight: 600;
+        }
+
+        .info-card h2 {
+            font-weight: 700;
+        }
+
+        .btn a{
+            color: white !important;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -35,42 +58,54 @@
 
 <div class="container py-4">
     <!-- Info Hotel -->
-    <div class="card mb-4">
+    <div class="card mb-4 info-card">
         <div class="card-body">
             <h2 class="card-title">@Model.NombreHotel</h2>
+
             <p><strong>ID Hotel:</strong> @Model.idHotel</p>
-            <p><strong>Ciudad:</strong> @Model.NombreCiudad (ID ciudad: @Model.idCiudad)</p>
+            <p><strong>Ciudad:</strong> @Model.NombreCiudad (ID @Model.idCiudad)</p>
             <p><strong>Dirección:</strong> @Model.Direccion</p>
             <p><strong>Teléfono:</strong> @Model.Telefono</p>
             <p><strong>URL:</strong> <a href="@Model.URL" target="_blank">@Model.URL</a></p>
 
-            <div class="mt-3">
+            <div class="mt-3 d-flex gap-2">
                 <a asp-action="ListadoHotel" class="btn btn-secondary">Volver al listado</a>
 
                 <button type="button" class="btn btn-warning"
                     onclick="window.location.href='@Url.Action("EditarHotel", new { idHotel = Model.idHotel, idCiudad = Model.idCiudad })'">
-                    <i class="bi bi-pencil-square"></i> Editar
+                    ✏️ Editar
                 </button>
 
+                <!-- BOTÓN ARREGLADO - SIN <a> ADENTRO -->
                 <button type="button" class="btn btn-success"
-                    onclick="window.location.href='@Url.Action("Alta", "Habitacion", new { idHotel = Model.idHotel })'">
-                    <i class="bi bi-plus-circle"></i> Agregar Habitación
+                    onclick="window.location.href='@Url.Action("AltaHabitacion", "Habitaciones", new { idHotel = Model.idHotel })'">
+                    ➕ Agregar Habitación
                 </button>
             </div>
         </div>
     </div>
 
     <!-- Habitaciones -->
-    <h3>Habitaciones</h3>
+    <h3 class="mb-3">Habitaciones</h3>
+
     <div class="habitaciones-container">
-        @foreach (var habitacion in Model.Habitaciones)
+        @if (!Model.Habitaciones.Any())
         {
-            <div class="card habitacion-card col-md-3" onclick="window.location.href='@Url.Action("Detalle", "Habitacion", new { id = habitacion.idHabitacion })'">
-                <div class="card-body">
-                    <h5 class="card-title">@habitacion.tipoHabitacion.Nombre</h5>
-                    <p class="card-text">ID: @habitacion.idHabitacion</p>
+            <p>No hay habitaciones registradas para este hotel.</p>
+        }
+        else
+        {
+            foreach (var habitacion in Model.Habitaciones)
+            {
+                <div class="card habitacion-card"
+                     onclick="window.location.href='@Url.Action("DetalleHabitacion", "Habitaciones", 
+                           new { idHabitacion = habitacion.idHabitacion, idHotel = Model.idHotel })'">
+
+                    <div class="card-body">
+                        <h5>@habitacion.tipoHabitacion.Nombre</h5>
+                    </div>
                 </div>
-            </div>
+            }
         }
     </div>
 </div>
