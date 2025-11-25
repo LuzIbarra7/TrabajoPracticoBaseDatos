@@ -51,7 +51,7 @@ namespace TrivagoMVC.Controllers
             return View(model);
         }
 
-        // Alta de ciudad GET
+        // Alta de ciudad
         public IActionResult AltaCiudad()
         {
             var model = new AltaCiudadViewModel
@@ -62,7 +62,6 @@ namespace TrivagoMVC.Controllers
             return View(model);
         }
 
-        // Alta de ciudad POST
         [HttpPost]
         public async Task<IActionResult> AltaCiudad(AltaCiudadViewModel model)
         {
@@ -83,6 +82,8 @@ namespace TrivagoMVC.Controllers
             return RedirectToAction(nameof(ListadoCiudad));
         }
 
+
+        // Editar
         public async Task<IActionResult> EditarCiudad(uint idCiudad)
         {
             var ciudad = await _repoCiudad.DetalleAsync(idCiudad);
@@ -127,10 +128,9 @@ namespace TrivagoMVC.Controllers
 
         public IActionResult DetalleCiudadLista()
         {
-            // Listamos todas las ciudades
+            // Lista todas las ciudades
             var ciudades = _repoCiudad.Listar();
 
-            // Proyectamos a CiudadConPaisViewModel
             var vm = new CiudadViewModel
             {
                 Ciudades = ciudades.Select(c => new CiudadConPaisViewModel
@@ -153,7 +153,7 @@ namespace TrivagoMVC.Controllers
 
             var pais = await _repoPais.DetalleAsync(ciudad.idPais);
 
-            // Traemos los hoteles
+            // Trae los hoteles
             var hoteles = await _repoHotel.InformarHotelesPorIdCiudadAsync((int)ciudad.idCiudad);
 
             var vm = new CiudadViewModel

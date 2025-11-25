@@ -118,7 +118,7 @@ public class RepoCiudad : RepoDapper, IRepoCiudad
     }
 
 
-   // ✅ Modificar ciudad
+   // Modificar ciudad
     public async Task ModificarAsync(Ciudad ciudad)
     {
         string sql = @"UPDATE Ciudad 

@@ -1,0 +1,61 @@
+@model IEnumerable<Trivago.Core.Ubicacion.Reserva>
+
+@{
+    ViewData["Title"] = "Reservas";
+}
+
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<style>
+body{
+    background: white;
+    font-family: "Roboto Condensed", sans-serif !important;
+}
+</style>
+</head>
+
+<body>
+<div class="container py-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Listado de Reservas</h3>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-striped table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>idReserva</th>
+                        <th>Usuario</th>
+                        <th>Entrada</th>
+                        <th>Salida</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        <tr>
+                            <td>@r.idReserva</td>
+                            <td>@r.UsuarioNombreCompleto</td>
+                            <td>@r.Entrada.ToShortDateString()</td>
+                            <td>@r.Salida.ToShortDateString()</td>
+                            <td>
+                                <a asp-action="DetalleReserva"
+                                   asp-route-id="@r.idReserva"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Ver
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <a asp-action="AltaReserva" class="btn btn-primary">Nueva Reserva</a>
+        </div>
+    </div>
+</div>
+</body>

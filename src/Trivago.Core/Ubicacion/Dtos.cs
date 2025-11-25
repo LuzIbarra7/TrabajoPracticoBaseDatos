@@ -18,7 +18,7 @@ namespace Dtos
     public record struct HabitacionDto(uint idHabitacion, decimal PrecioPorNoche);
     public record struct HotelDto(uint idHotel, uint idCiudad, string Nombre, string Direccion, string Telefono, string URL);
     public record struct MetodoPagoDto(uint idMetodoPago, string TipoMedioPago);
-    public record struct ReservaDto(uint idReserva,uint idHabitacion, uint idUsuario,MetodoPago MetodoPago, DateTime Entrada, DateTime Salida, decimal Precio, uint Telefono);
+    public record struct ReservaDto(uint idReserva,uint idHabitacion, uint idUsuario,MetodoPago MetodoPago, DateTime Entrada, DateTime Salida, decimal Precio, string Telefono);
 
     public class PaisDto
     {

@@ -126,13 +126,13 @@
 
             <div class="collapse navbar-collapse" id="mainNavbar">
 
-                <!-- MOSTRAR MENÚ SOLO SI ESTÁ LOGUEADO -->
+                <!-- MENÚ SOLO SI ESTÁ LOGUEADO -->
                 @if (User.Identity.IsAuthenticated)
                 {
                     <ul class="navbar-nav mx-auto gap-4">
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle menu-link" href="#" data-bs-toggle="dropdown">Hoteles</a>
+                            <a class="nav-link dropdown-toggle menu-link" href="#">Hoteles</a>
                             <ul class="dropdown-menu fade-menu">
                                 <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="AltaHotel">Alta</a></li>
                                 <li><a class="dropdown-item" asp-controller="Hoteles" asp-action="ListadoHotel">Listado</a></li>
@@ -155,6 +155,15 @@
                                 <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="AltaUsuario">Alta</a></li>
                                 <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="ListadoUsuario">Listado</a></li>
                                 <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="DetalleUsuarioLista">Detalle</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- NUEVO ITEM RESERVAS -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle menu-link" href="#">Reservas</a>
+                            <ul class="dropdown-menu fade-menu">
+                                <li><a class="dropdown-item" asp-controller="Reservas" asp-action="AltaReserva">Alta</a></li>
+                                <li><a class="dropdown-item" asp-controller="Reservas" asp-action="ListadoReserva">Listado</a></li>
                             </ul>
                         </li>
 

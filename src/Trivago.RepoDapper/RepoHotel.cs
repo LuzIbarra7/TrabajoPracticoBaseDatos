@@ -125,4 +125,32 @@ public class RepoHotel : RepoDapper, IRepoHotel
         await _conexion.ExecuteAsync(sql, hotel);
     }
 
+    public List<Habitacion> ObtenerHabitacionesPorHotel(uint idHotel)
+        {
+            string sql = @"
+            SELECT 
+                h.idHabitacion,
+                h.idHotel,
+                h.idTipo,
+                h.PrecioPorNoche,
+                t.idTipo,
+                t.Nombre
+            FROM Habitacion h
+            INNER JOIN TipoHabitacion t ON h.idTipo = t.idTipo
+            WHERE h.idHotel = @IdHotel";
+
+            var habitaciones = _conexion.Query<Habitacion, TipoHabitacion, Habitacion>(
+            sql,
+            (habitacion, tipo) =>
+            {
+                habitacion.tipoHabitacion = tipo;
+                return habitacion;
+            },
+            new { IdHotel = idHotel },
+            splitOn: "idTipo"
+        );
+            return habitaciones.ToList();
+        }
+
+
 }

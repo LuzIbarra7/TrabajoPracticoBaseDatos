@@ -15,10 +15,6 @@ public class RepoComentario : RepoDapper, IRepoComentario
         parametros.Add("p_idHabitacion", comentario.Habitacion);
         parametros.Add("p_Comentario", comentario.comentario);
         parametros.Add("p_Calificacion", comentario.Calificacion);
-
-        //if (comentario.Fecha == default)
-        //comentario.Fecha = DateTime.Now;
-
         parametros.Add("p_Fecha", comentario.Fecha);
 
         parametros.Add("p_idComentario", direction: ParameterDirection.Output);

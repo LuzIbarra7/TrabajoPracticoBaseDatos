@@ -6,4 +6,5 @@ public interface IRepoReserva :  IAlta<Reserva, uint>, IListado<Reserva>, IDetal
 {
     List<Reserva> InformarReservasPorIdHabitacion(uint idHabitacion);
     List<Reserva> InformarReservasPorIdMetodoPago(uint idMetodoPago);
+    List<MetodoPago> ListarMetodosPago();
 }   

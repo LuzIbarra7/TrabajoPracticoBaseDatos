@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS `5to_Trivago`.`Reserva` (
   `Entrada` DATETIME NOT NULL,
   `Salida` DATETIME NOT NULL,
   `Precio` DECIMAL UNSIGNED NOT NULL,
-  `Telefono` INT UNSIGNED NOT NULL,
+  `Telefono` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`idReserva`),
   INDEX `fk_Reserva_Habitacion1_idx` (`idHabitacion` ASC) ,
   INDEX `fk_Reserva_MetodoPago1_idx` (`idMetododePago` ASC) ,

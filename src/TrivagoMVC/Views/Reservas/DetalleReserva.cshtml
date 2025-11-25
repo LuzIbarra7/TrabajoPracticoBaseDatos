@@ -1,0 +1,64 @@
+@model Trivago.Core.Ubicacion.Reserva
+
+@{
+    ViewData["Title"] = "Detalle de Reserva";
+}
+
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<style>
+body{
+    background: white;
+    font-family: "Roboto Condensed", sans-serif !important;
+}
+</style>
+</head>
+
+<body>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Reserva #@Model.idReserva</h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+
+                        <dt class="col-sm-4">Hotel</dt>
+                        <dd class="col-sm-8">@Model.NombreHotel</dd>
+
+                        <dt class="col-sm-4">Habitación</dt>
+                        <dd class="col-sm-8">@Model.TipoHabitacionNombre</dd>
+
+                        <dt class="col-sm-4">Usuario</dt>
+                        <dd class="col-sm-8">@Model.UsuarioNombreCompleto</dd>
+
+                        <dt class="col-sm-4">Entrada</dt>
+                        <dd class="col-sm-8">@Model.Entrada.ToShortDateString()</dd>
+
+                        <dt class="col-sm-4">Salida</dt>
+                        <dd class="col-sm-8">@Model.Salida.ToShortDateString()</dd>
+
+                        <dt class="col-sm-4">Precio</dt>
+                        <dd class="col-sm-8">@Model.Precio.ToString("C")</dd>
+
+                        <dt class="col-sm-4">Teléfono</dt>
+                        <dd class="col-sm-8">@Model.Telefono</dd>
+
+                        <dt class="col-sm-4">Método de pago</dt>
+                        <dd class="col-sm-8">@Model.MetodoPagoNombre</dd>
+
+                    </dl>
+
+                    <div class="d-grid gap-2">
+                        <a asp-action="ListadoReserva" class="btn btn-secondary">Volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>

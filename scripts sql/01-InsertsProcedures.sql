@@ -142,7 +142,7 @@ CREATE PROCEDURE insert_reserva(
   IN p_idUsuario INT UNSIGNED,
   IN p_Entrada DATETIME,
   IN p_Salida DATETIME,
-  IN p_Telefono INT,
+  IN p_Telefono VARCHAR(20),
   out p_idReserva int unsigned
 )
 BEGIN

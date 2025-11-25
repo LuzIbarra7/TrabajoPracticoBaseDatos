@@ -1,25 +1,41 @@
 @model TrivagoMVC.Models.HotelConCiudadViewModel
+
 <head>
-<link rel="preconnect" href="https://fonts.googleapis.com"> 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-<style>
-
-body{
-    background: white;
-    font-family: "Roboto Condensed", sans-serif !important;
-}
-</style>
-
+    <style>
+        body{
+            background: white;
+            font-family: "Roboto Condensed", sans-serif !important;
+        }
+        .habitacion-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .habitacion-card:hover {
+            transform: scale(1.02);
+        }
+        .habitaciones-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .habitacion-card .card-body {
+            text-align: center;
+        }
+    </style>
 </head>
+
 <body>
 @{
     ViewData["Title"] = "Detalle de " + Model.NombreHotel;
 }
 
 <div class="container py-4">
-    <div class="card">
+    <!-- Info Hotel -->
+    <div class="card mb-4">
         <div class="card-body">
             <h2 class="card-title">@Model.NombreHotel</h2>
             <p><strong>ID Hotel:</strong> @Model.idHotel</p>
@@ -35,8 +51,27 @@ body{
                     onclick="window.location.href='@Url.Action("EditarHotel", new { idHotel = Model.idHotel, idCiudad = Model.idCiudad })'">
                     <i class="bi bi-pencil-square"></i> Editar
                 </button>
+
+                <button type="button" class="btn btn-success"
+                    onclick="window.location.href='@Url.Action("Alta", "Habitacion", new { idHotel = Model.idHotel })'">
+                    <i class="bi bi-plus-circle"></i> Agregar Habitación
+                </button>
             </div>
         </div>
+    </div>
+
+    <!-- Habitaciones -->
+    <h3>Habitaciones</h3>
+    <div class="habitaciones-container">
+        @foreach (var habitacion in Model.Habitaciones)
+        {
+            <div class="card habitacion-card col-md-3" onclick="window.location.href='@Url.Action("Detalle", "Habitacion", new { id = habitacion.idHabitacion })'">
+                <div class="card-body">
+                    <h5 class="card-title">@habitacion.tipoHabitacion.Nombre</h5>
+                    <p class="card-text">ID: @habitacion.idHabitacion</p>
+                </div>
+            </div>
+        }
     </div>
 </div>
 </body>

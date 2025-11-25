@@ -30,20 +30,17 @@ body{
                     <form asp-action="EditarHotel" method="post">
                         @Html.AntiForgeryToken()
 
-                        <!-- ID DEL HOTEL -->
                         <input type="hidden" asp-for="idHotel" />
 
                         <!-- VALIDACIÓN -->
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                        <!-- NOMBRE -->
                         <div class="mb-3">
                             <label asp-for="Datos.Nombre" class="form-label"></label>
                             <input asp-for="Datos.Nombre" class="form-control" />
                             <span asp-validation-for="Datos.Nombre" class="text-danger"></span>
                         </div>
 
-                        <!-- CIUDAD -->
                         <div class="mb-3">
                             <label asp-for="Datos.idCiudad" class="form-label">Ciudad</label>
                             <select asp-for="Datos.idCiudad" asp-items="Model.Ciudades" class="form-select">
@@ -52,28 +49,24 @@ body{
                             <span asp-validation-for="Datos.idCiudad" class="text-danger"></span>
                         </div>
 
-                        <!-- DIRECCIÓN -->
                         <div class="mb-3">
                             <label asp-for="Datos.Direccion" class="form-label"></label>
                             <input asp-for="Datos.Direccion" class="form-control" />
                             <span asp-validation-for="Datos.Direccion" class="text-danger"></span>
                         </div>
 
-                        <!-- TELÉFONO -->
                         <div class="mb-3">
                             <label asp-for="Datos.Telefono" class="form-label"></label>
                             <input asp-for="Datos.Telefono" class="form-control" />
                             <span asp-validation-for="Datos.Telefono" class="text-danger"></span>
                         </div>
 
-                        <!-- URL -->
                         <div class="mb-3">
                             <label asp-for="Datos.URL" class="form-label"></label>
                             <input asp-for="Datos.URL" class="form-control" />
                             <span asp-validation-for="Datos.URL" class="text-danger"></span>
                         </div>
 
-                        <!-- BOTONES -->
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">Guardar cambios</button>
                             <a asp-action="DetalleHotelLista" class="btn btn-secondary">Cancelar</a>

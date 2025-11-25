@@ -19,9 +19,7 @@ namespace TrivagoMVC.Controllers
             _repoUsuario = repoUsuario;
         }
 
-        // ------------------------------
-        //    SOLO LOGUEADOS
-        // ------------------------------
+       
         [Authorize]
         public IActionResult Bienvenido()
         {
@@ -51,9 +49,7 @@ namespace TrivagoMVC.Controllers
             return View(new UsuarioViewModel { ListaUsuarios = usuarios });
         }
 
-        // ------------------------------
         // ALTA USUARIO
-        // ------------------------------
         [AllowAnonymous]
         [HttpGet]
         public IActionResult AltaUsuario()
@@ -63,7 +59,6 @@ namespace TrivagoMVC.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult AltaUsuario(UsuarioViewModel vm)
         {
             if (!ModelState.IsValid) return View(vm);
@@ -72,9 +67,7 @@ namespace TrivagoMVC.Controllers
             return RedirectToAction("Login");
         }
 
-        // ------------------------------
         // EDITAR USUARIO
-        // ------------------------------
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> EditarUsuario(uint idUsuario)
@@ -87,7 +80,6 @@ namespace TrivagoMVC.Controllers
 
         [Authorize]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarUsuario(UsuarioViewModel model)
         {
             if (!ModelState.IsValid)
@@ -103,15 +95,20 @@ namespace TrivagoMVC.Controllers
             return RedirectToAction("ListadoUsuario");
         }
 
-        // ------------------------------
         // LOGIN
-        // ------------------------------
         [AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
+            // Si ya hay un usuario logueado, NO mostrar login
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View(new LoginViewModel());
         }
+
 
         [AllowAnonymous]
         [HttpPost]
@@ -120,7 +117,7 @@ namespace TrivagoMVC.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // ---- VERIFICAR EN BD ----
+            // VERIFICA EN BD
             var usuario = _repoUsuario.UsuarioPorPass(model.Mail, model.Contrasena);
 
             if (usuario == null)
@@ -129,7 +126,6 @@ namespace TrivagoMVC.Controllers
                 return View(model);
             }
 
-            // ---- CREAR CLAIMS ----
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.idUsuario.ToString()),
@@ -140,15 +136,20 @@ namespace TrivagoMVC.Controllers
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            principal,
+            new AuthenticationProperties
+            {
+                IsPersistent = true,          
+                ExpiresUtc = DateTime.UtcNow.AddHours(8)
+            });
 
-            // Redirige al Home al iniciar sesión
+
             return RedirectToAction("Index", "Home");
         }
 
-        // ------------------------------
         // LOGOUT
-        // ------------------------------
         [Authorize]
         public async Task<IActionResult> Logout()
         {

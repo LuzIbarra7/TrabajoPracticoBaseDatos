@@ -6,7 +6,6 @@ namespace TrivagoMVC.Models
         public string Mail { get; set; } = string.Empty;
         public string Contrasena { get; set; } = string.Empty;
 
-        // Opcional: para mostrar errores en el login
         public string? ErrorMensaje { get; set; }
     }
 }

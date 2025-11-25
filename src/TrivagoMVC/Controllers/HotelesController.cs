@@ -22,18 +22,14 @@ namespace TrivagoMVC.Controllers
             _repoPais = repoPais;
         }
 
-        // =====================================================
-        // BIENVENIDO
-        // =====================================================
+        
         [Authorize]
         public IActionResult Bienvenido()
         {
             return View();
         }
 
-        // =====================================================
-        // LISTADO GENERAL
-        // =====================================================
+        // LISTADO 
         public async Task<IActionResult> ListadoHotel()
         {
             var paises = await _repoPais.ListarAsync();
@@ -67,9 +63,7 @@ namespace TrivagoMVC.Controllers
             return View(viewModel);
         }
 
-        // =====================================================
-        // DETALLE INDIVIDUAL
-        // =====================================================
+        // DETALLE 
         public async Task<IActionResult> DetalleHotelLista()
         {
             var hoteles = await _repoHotel.ListarAsync();
@@ -109,9 +103,7 @@ namespace TrivagoMVC.Controllers
             return View("DetalleHotelIndividual", viewModel);
         }
 
-        // =====================================================
-        // ALTA (GET)
-        // =====================================================
+        // ALTA
         public async Task<IActionResult> AltaHotel()
         {
             var ciudades = await _repoCiudad.ListarAsync();
@@ -128,11 +120,8 @@ namespace TrivagoMVC.Controllers
             return View(vm);
         }
 
-        // =====================================================
-        // ALTA (POST)
-        // =====================================================
+        // ALTA
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AltaHotel(AltaHotelViewModel model)
         {
             if (!ModelState.IsValid)
@@ -154,7 +143,7 @@ namespace TrivagoMVC.Controllers
                 Telefono = model.NuevoHotel.Telefono,
                 URL = model.NuevoHotel.URL,
                 idCiudad = model.NuevoHotel.idCiudad,
-                Habitaciones = new List<Habitacion>() // evitar nulos
+                Habitaciones = new List<Habitacion>() 
             };
 
             await _repoHotel.AltaAsync(hotel);
@@ -162,9 +151,7 @@ namespace TrivagoMVC.Controllers
             return RedirectToAction("ListadoHotel");
         }
 
-        // =====================================================
-        // EDITAR (GET)
-        // =====================================================
+        // EDITAR
         public async Task<IActionResult> EditarHotel(uint idHotel)
         {
             var hotel = await _repoHotel.DetalleAsync(idHotel);
@@ -195,11 +182,8 @@ namespace TrivagoMVC.Controllers
         }
 
 
-        // =====================================================
-        // EDITAR (POST)
-        // =====================================================
+        // EDITAR
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarHotel(EditarHotelViewModel vm)
         {
             if (!ModelState.IsValid)

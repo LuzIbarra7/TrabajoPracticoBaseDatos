@@ -1,0 +1,126 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Trivago.Core.Ubicacion;
+using Trivago.Core.Persistencia;
+using TrivagoMVC.Models;
+using System.Linq;
+using System.Security.Claims;
+
+namespace TrivagoMVC.Controllers
+{
+    public class ReservasController : Controller
+    {
+        private readonly IRepoReserva _repoReserva;
+        private readonly IRepoHotel _repoHotel;
+        private readonly IRepoMetodoPago _repoMetodoPago;
+        private readonly IRepoUsuario _repoUsuario;
+
+        public ReservasController(
+            IRepoReserva repoReserva,
+            IRepoHotel repoHotel,
+            IRepoMetodoPago repoMetodoPago,
+            IRepoUsuario repoUsuario)
+        {
+            _repoReserva = repoReserva;
+            _repoHotel = repoHotel;
+            _repoMetodoPago = repoMetodoPago;
+            _repoUsuario = repoUsuario;
+        }
+
+        [HttpGet]
+        public IActionResult AltaReserva()
+        {
+            var vm = new AltaReservaViewModel();
+
+            vm.Hoteles = _repoHotel.Listar()
+                .Select(h => new SelectListItem { Value = h.idHotel.ToString(), Text = h.Nombre })
+                .ToList();
+
+            vm.MetodosPago = _repoMetodoPago.Listar()
+                .Select(m => new SelectListItem { Value = m.idMetodoPago.ToString(), Text = m.TipoMedioPago })
+                .ToList();
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult AltaReserva(AltaReservaViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                vm.Hoteles = _repoHotel.Listar()
+                    .Select(h => new SelectListItem { Value = h.idHotel.ToString(), Text = h.Nombre })
+                    .ToList();
+
+                vm.MetodosPago = _repoMetodoPago.Listar()
+                    .Select(m => new SelectListItem { Value = m.idMetodoPago.ToString(), Text = m.TipoMedioPago })
+                    .ToList();
+
+                return View(vm);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Cuenta");
+
+            var nuevaReserva = new Reserva
+            {
+                idHotel = vm.Reserva.idHotel!.Value,
+                idHabitacion = vm.Reserva.idHabitacion!.Value,
+                idMetodoPago = vm.Reserva.idMetodoPago!.Value,
+                Entrada = vm.Reserva.Entrada,
+                Salida = vm.Reserva.Salida,
+                Telefono = vm.Reserva.Telefono,
+                idUsuario = uint.Parse(userId)
+            };
+
+            _repoReserva.Alta(nuevaReserva);
+
+            return RedirectToAction("ListadoReserva");
+        }
+
+        public IActionResult ListadoReserva()
+        {
+            var reservas = _repoReserva.Listar();
+
+            var lista = reservas.Select(r =>
+            {
+                var usuario = _repoUsuario.Detalle(r.idUsuario);
+                var habitacion = _repoHotel.ObtenerHabitacionesPorHotel(r.idHotel)
+                    .FirstOrDefault(h => h.idHabitacion == r.idHabitacion);
+
+                var metodoPago = _repoMetodoPago.Detalle(r.idMetodoPago);
+
+                // Asignar strings correctos
+                r.UsuarioNombreCompleto = usuario != null ? usuario.Nombre + " " + usuario.Apellido : "—";
+                r.TipoHabitacionNombre = habitacion != null ? habitacion.tipoHabitacion.Nombre : "—";
+                r.MetodoPagoNombre = metodoPago != null ? metodoPago.TipoMedioPago : "—";
+
+                return r;
+            }).ToList();
+
+            return View(lista);
+        }
+
+        public IActionResult DetalleReserva(uint id)
+        {
+            var reserva = _repoReserva.Detalle(id);
+            if (reserva == null) return NotFound();
+            return View(reserva);
+        }
+
+        public JsonResult HabitacionesPorHotel(uint idHotel)
+        {
+            var habitaciones = _repoHotel.ObtenerHabitacionesPorHotel(idHotel)
+                .Select(h => new
+                {
+                    id = h.idHabitacion,
+                    nombre = h.tipoHabitacion.Nombre,
+                    precio = h.PrecioPorNoche
+                })
+                .ToList();
+
+            return Json(habitaciones);
+        }
+    }
+}

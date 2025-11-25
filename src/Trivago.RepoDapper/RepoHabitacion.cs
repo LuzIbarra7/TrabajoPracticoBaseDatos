@@ -84,10 +84,7 @@ public class RepoHabitacion : RepoDapper, IRepoHabitacion
 
 
     //Informar
-    private async Task<List<Habitacion>> InformarHabitacionInternoAsync(
-    string sql,
-    object parametros,
-    Func<string, object, Task<IEnumerable<Habitacion>>> ejecutor)
+    private async Task<List<Habitacion>> InformarHabitacionInternoAsync(string sql, object parametros, Func<string, object, Task<IEnumerable<Habitacion>>> ejecutor)
     {
         var resultado = await ejecutor(sql, parametros);
         return resultado.ToList();

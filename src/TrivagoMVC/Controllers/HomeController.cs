@@ -16,7 +16,7 @@ namespace Trivago.Web.Controllers
             return RedirectToAction("Login", "Usuario");
         }
 
-        return View(); // Mostrar la pantalla de Bienvenidos
+        return View(); 
     }
 
     }
