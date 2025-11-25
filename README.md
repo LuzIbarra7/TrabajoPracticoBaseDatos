@@ -31,10 +31,14 @@ git clone https://github.com/ChengLeonardo/TrabajoPracticoBaseDatos.git
 
 1. Esperamos que termine de correr el comando y salimos de la _shell_ de MySQL con el comando `exit`.
 
+1. Hacer click derecho en la carpeta de TrivagoMVC y tocar la opcion de "Abril en terminal integrado"
+
+1. Escribir en la terminal "dotnet run"
+
 ## Colaboradores
 
 | Año   | División| Participante                                                                |                                                                                                       |
 | :---: | :---:   |       :---                                                                  | :---
-| 2024  | 5° 7°   | Mario Rojas ([@MarioRojas]())
-| 2024  | 5° 7°   | Luz Mabel ([@LuzMabel]())            
-| 2024  | 5° 7°   | Leonardo Cheng ([@ChengLeonardo](https://github.com/ChengLeonardo))
+| 2025  | 6° 7°   | Giovanni Mendez ([@GiovanniMendez6]())
+| 2025  | 6° 7°   | Luz Mabel ([@LuzIbarra7]())            
+| 2025  | 6° 7°   | Leonardo Cheng ([@ChengLeonardo](https://github.com/ChengLeonardo))
