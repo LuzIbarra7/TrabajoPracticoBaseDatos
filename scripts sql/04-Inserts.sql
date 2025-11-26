@@ -52,9 +52,9 @@ call insert_usuario('Luz', 'Ibarra', 'luzibarra@gmail.com', SHA2('231', 256), @i
 
 -- delete from Usuario
 -- where idUsuario in (1, 2, 3);
-call insert_reserva(@idHabitacionHotelBuenosAiresSuite1, @idMercadoPago, @idUsuarioLeonardoCheng, '2024-11-01', '2024-11-03', 11111111, @idReservaLeonardoChengHabitacionHotelBuenosAiresSuite1);
-call insert_reserva(@idHabitacionHotelMendozaJuniorSuite1, @idEfectivo, @idUsuarioGiovanniMendez, '2024-11-04', '2024-12-02', 11111112, @idReservaGiovanniMendezHabitacionHotelBuenosAiresSuite1);
-call insert_reserva(@idHabitacionHotelSantiagodelEsteroGranSuite1, @idVisaDebito, @idUsuarioLuzIbarra, '2024-12-04', '2025-01-03', 11111113, @idReservaLuzIbarraHabitacionHotelBuenosAiresSuite1);
+call insert_reserva(@idHabitacionHotelBuenosAiresSuite1, @idMercadoPago, @idUsuarioLeonardoCheng, '2025-11-01', '2025-11-05', 11111111, @idReservaLeonardoChengHabitacionHotelBuenosAiresSuite1);
+call insert_reserva(@idHabitacionHotelMendozaJuniorSuite1, @idEfectivo, @idUsuarioGiovanniMendez, '2025-11-04', '2025-12-01', 11111112, @idReservaGiovanniMendezHabitacionHotelBuenosAiresSuite1);
+call insert_reserva(@idHabitacionHotelSantiagodelEsteroGranSuite1, @idVisaDebito, @idUsuarioLuzIbarra, '2025-12-04', '2025-12-23', 11111113, @idReservaLuzIbarraHabitacionHotelBuenosAiresSuite1);
 
 -- delete from Reserva
 -- where idReserva in (1, 2, 3);

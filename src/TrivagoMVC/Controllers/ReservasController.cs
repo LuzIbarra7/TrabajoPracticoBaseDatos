@@ -43,41 +43,59 @@ namespace TrivagoMVC.Controllers
             return View(vm);
         }
 
-        [HttpPost]
-        public IActionResult AltaReserva(AltaReservaViewModel vm)
-        {
-            if (!ModelState.IsValid)
-            {
-                vm.Hoteles = _repoHotel.Listar()
-                    .Select(h => new SelectListItem { Value = h.idHotel.ToString(), Text = h.Nombre })
-                    .ToList();
+       [HttpPost]
+public IActionResult AltaReserva(AltaReservaViewModel vm)
+{
+    // ---- VALIDACIONES DE FECHA ----
+    if (vm.Reserva.Entrada.Year < DateTime.Now.Year ||
+        vm.Reserva.Salida.Year < DateTime.Now.Year)
+    {
+        ModelState.AddModelError("", "Las fechas deben pertenecer al año actual o posterior.");
+    }
 
-                vm.MetodosPago = _repoMetodoPago.Listar()
-                    .Select(m => new SelectListItem { Value = m.idMetodoPago.ToString(), Text = m.TipoMedioPago })
-                    .ToList();
+    if (vm.Reserva.Entrada < DateTime.Today)
+    {
+        ModelState.AddModelError("", "La fecha de ingreso no puede ser anterior a hoy.");
+    }
 
-                return View(vm);
-            }
+    if (vm.Reserva.Salida <= vm.Reserva.Entrada)
+    {
+        ModelState.AddModelError("", "La fecha de salida debe ser posterior a la fecha de entrada.");
+    }
+    // --------------------------------
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-                return RedirectToAction("Login", "Cuenta");
+    if (!ModelState.IsValid)
+    {
+        vm.Hoteles = _repoHotel.Listar()
+            .Select(h => new SelectListItem { Value = h.idHotel.ToString(), Text = h.Nombre })
+            .ToList();
 
-            var nuevaReserva = new Reserva
-            {
-                idHotel = vm.Reserva.idHotel!.Value,
-                idHabitacion = vm.Reserva.idHabitacion!.Value,
-                idMetodoPago = vm.Reserva.idMetodoPago!.Value,
-                Entrada = vm.Reserva.Entrada,
-                Salida = vm.Reserva.Salida,
-                Telefono = vm.Reserva.Telefono,
-                idUsuario = uint.Parse(userId)
-            };
+        vm.MetodosPago = _repoMetodoPago.Listar()
+            .Select(m => new SelectListItem { Value = m.idMetodoPago.ToString(), Text = m.TipoMedioPago })
+            .ToList();
 
-            _repoReserva.Alta(nuevaReserva);
+        return View(vm);
+    }
 
-            return RedirectToAction("ListadoReserva");
-        }
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (string.IsNullOrEmpty(userId))
+        return RedirectToAction("Login", "Cuenta");
+
+    var nuevaReserva = new Reserva
+    {
+        idHotel = vm.Reserva.idHotel!.Value,
+        idHabitacion = vm.Reserva.idHabitacion!.Value,
+        idMetodoPago = vm.Reserva.idMetodoPago!.Value,
+        Entrada = vm.Reserva.Entrada,
+        Salida = vm.Reserva.Salida,
+        Telefono = vm.Reserva.Telefono,
+        idUsuario = uint.Parse(userId)
+    };
+
+    _repoReserva.Alta(nuevaReserva);
+
+    return RedirectToAction("ListadoReserva");
+}
 
         public IActionResult ListadoReserva()
         {
@@ -122,5 +140,17 @@ namespace TrivagoMVC.Controllers
 
             return Json(habitaciones);
         }
+        [HttpPost]
+        public IActionResult CancelarReserva(uint id)
+        {
+            var reserva = _repoReserva.Detalle(id);
+            if (reserva == null)
+                return NotFound();
+
+            _repoReserva.Baja(id);   // MÉTODO QUE YA TENÉS PARA BORRAR
+
+            return RedirectToAction("ListadoReserva");
+        }
+
     }
 }

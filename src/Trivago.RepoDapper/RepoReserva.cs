@@ -153,4 +153,11 @@ public class RepoReserva : RepoDapper, IRepoReserva
         string sql = "SELECT * FROM MetodoPago";
         return _conexion.Query<MetodoPago>(sql).ToList();
     }
+   public void Baja(uint id)
+{
+    string sql = "DELETE FROM Reserva WHERE idReserva = @id";
+    _conexion.Execute(sql, new { id });
+}
+
+
 }

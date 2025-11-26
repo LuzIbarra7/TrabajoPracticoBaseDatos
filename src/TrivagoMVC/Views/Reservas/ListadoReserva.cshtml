@@ -31,7 +31,7 @@ body{
                         <th>Usuario</th>
                         <th>Entrada</th>
                         <th>Salida</th>
-                        <th></th>
+                        <th style="width: 200px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,11 +43,28 @@ body{
                             <td>@r.Entrada.ToShortDateString()</td>
                             <td>@r.Salida.ToShortDateString()</td>
                             <td>
+
+                                <!-- BOTÓN VER -->
                                 <a asp-action="DetalleReserva"
                                    asp-route-id="@r.idReserva"
                                    class="btn btn-sm btn-outline-primary">
                                     Ver
                                 </a>
+
+                                <!-- BOTÓN CANCELAR -->
+                                <form asp-action="CancelarReserva"
+                                      method="post"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('¿Seguro que deseas cancelar esta reserva?');">
+
+                                    <input type="hidden" name="id" value="@r.idReserva" />
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger ms-1">
+                                        Cancelar
+                                    </button>
+                                </form>
+
                             </td>
                         </tr>
                     }
