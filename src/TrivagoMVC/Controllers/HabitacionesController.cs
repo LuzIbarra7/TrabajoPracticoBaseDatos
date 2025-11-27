@@ -66,10 +66,9 @@ namespace TrivagoMVC.Controllers
                 {
                     Value = h.idHotel.ToString(),
                     Text = h.Nombre,
-                    Selected = (h.idHotel == idHotel) // <-- Selecciona automáticamente
+                    Selected = (h.idHotel == idHotel) 
                 }),
                 
-                // 👇 ESTA LÍNEA ES LA CLAVE
                 Nuevo = new HabitacionFormViewModel
                 {
                     idHotel = idHotel

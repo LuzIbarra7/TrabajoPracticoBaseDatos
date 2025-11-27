@@ -14,7 +14,6 @@ namespace TrivagoMVC.Models
     }
 
 
-    // ViewModel para la vista de AltaHabitacion
     public class AltaHabitacionViewModel
     {
         public HabitacionFormViewModel Nuevo { get; set; } = new HabitacionFormViewModel();
@@ -27,7 +26,6 @@ namespace TrivagoMVC.Models
 
 
 
-    // ViewModel para mostrar los detalles de una habitación
     public class HabitacionViewModel
     {
         public uint idHabitacion { get; set; }

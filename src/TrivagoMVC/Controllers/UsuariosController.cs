@@ -100,7 +100,6 @@ namespace TrivagoMVC.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            // Si ya hay un usuario logueado, NO mostrar login
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
@@ -117,7 +116,6 @@ namespace TrivagoMVC.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // VERIFICA EN BD
             var usuario = _repoUsuario.UsuarioPorPass(model.Mail, model.Contrasena);
 
             if (usuario == null)

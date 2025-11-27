@@ -15,11 +15,7 @@ namespace TrivagoMVC.Controllers
         private readonly IRepoMetodoPago _repoMetodoPago;
         private readonly IRepoUsuario _repoUsuario;
 
-        public ReservasController(
-            IRepoReserva repoReserva,
-            IRepoHotel repoHotel,
-            IRepoMetodoPago repoMetodoPago,
-            IRepoUsuario repoUsuario)
+        public ReservasController(IRepoReserva repoReserva, IRepoHotel repoHotel, IRepoMetodoPago repoMetodoPago,IRepoUsuario repoUsuario)
         {
             _repoReserva = repoReserva;
             _repoHotel = repoHotel;
@@ -62,7 +58,6 @@ namespace TrivagoMVC.Controllers
             {
                 ModelState.AddModelError("", "La fecha de salida debe ser posterior a la fecha de entrada.");
             }
-            // --------------------------------
 
             if (!ModelState.IsValid)
             {
