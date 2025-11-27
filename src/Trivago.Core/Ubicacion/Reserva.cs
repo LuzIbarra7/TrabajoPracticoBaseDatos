@@ -9,7 +9,6 @@ namespace Trivago.Core.Ubicacion
 
         public uint idHabitacion { get; set; }
 
-        // Tipo Habitacion
         public string? TipoHabitacionNombre { get; set; } = "";
 
         public uint idMetodoPago { get; set; }
@@ -18,7 +17,6 @@ namespace Trivago.Core.Ubicacion
 
         public uint idUsuario { get; set; }
 
-        // Nombre completo del usuario
         public string? UsuarioNombreCompleto { get; set; } = "";
 
         public uint idHotel { get; set; }
@@ -33,7 +31,6 @@ namespace Trivago.Core.Ubicacion
         [Required]
         public string Telefono { get; set; } = "";
 
-        // Opcionales
         public Habitacion? Habitacion { get; set; }
         public Usuario? Usuario { get; set; }
         public Hotel? Hotel { get; set; }

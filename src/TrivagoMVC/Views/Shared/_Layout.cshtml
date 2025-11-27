@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Trivago </title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
-    <!-- Google Font (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
 
-    <!-- Tu CSS -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     <style>
         body {
-            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            font-family: "Roboto Condensed", sans-serif !important;
             padding-top: 90px;
         }
 
@@ -59,7 +59,6 @@
             color: #0d6efd !important;
         }
 
-        /* Dropdown animado desktop */
         .fade-menu {
             border-radius: 12px;
             border: 1px solid #e2e8f0;
@@ -91,10 +90,21 @@
             background: #1e293b;
         }
 
-        /* ----- FIX PARA MÓVILES ----- */
-        @@media (max-width: 991px) {
+        .login-link {
+            text-decoration: none;
+            margin-top: 10px;
+            color: #000;
+        }
 
-            /* Ocultar dropdowns por defecto en móvil */
+        @@media (max-width: 768px) {
+
+            .ms-auto {
+                margin-left: auto !important;
+                display: flex;
+                justify-content: flex-end !important;
+                width: 100%;
+            }
+
             .dropdown-menu {
                 display: none;
                 opacity: 1 !important;
@@ -104,7 +114,6 @@
                 border: none !important;
             }
 
-            /* Cuando Bootstrap abre el menú */
             .dropdown-menu.show {
                 display: block;
             }
@@ -112,32 +121,40 @@
             .navbar-nav {
                 padding-top: 20px;
             }
+
+            .btn-register {
+                padding: 8px 20px;
+                background: #0f172a;
+                color: white !important;
+                border-radius: 20px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: background .2s ease;
+            }
         }
     </style>
 </head>
 
 <body>
 <header>
-    <nav class="navbar navbar-expand-lg travel-navbar fixed-top p-3">
+    <nav class="navbar navbar-expand-md travel-navbar fixed-top p-3">
         <div class="container-fluid d-flex align-items-center justify-content-between">
 
-            <!-- LOGO -->
             <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
                 <div class="logo-box">T</div>
                 <span class="brand-text">Trivago</span>
             </a>
 
-            <!-- Hamburguesa -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
                 <span class="fa-solid fa-bars"></span>
             </button>
 
-            <!-- MENÚ -->
             <div class="collapse navbar-collapse" id="mainNavbar">
 
                 @if (User.Identity.IsAuthenticated)
                 {
                     <ul class="navbar-nav mx-auto gap-lg-4">
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle menu-link" data-bs-toggle="dropdown" href="#">Hoteles</a>
                             <ul class="dropdown-menu fade-menu">
@@ -172,10 +189,10 @@
                                 <li><a class="dropdown-item" asp-controller="Reservas" asp-action="ListadoReserva">Listado</a></li>
                             </ul>
                         </li>
+
                     </ul>
                 }
 
-                <!-- BOTONES DERECHA -->
                 <div class="ms-auto d-flex gap-3 mt-3 mt-lg-0">
                     @if (User.Identity.IsAuthenticated)
                     {

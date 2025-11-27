@@ -31,14 +31,12 @@ body{
 
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                        <!-- NOMBRE -->
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.Nombre" class="form-label"></label>
                             <input asp-for="NuevoHotel.Nombre" class="form-control" placeholder="Ej: Hotel Plaza" />
                             <span asp-validation-for="NuevoHotel.Nombre" class="text-danger"></span>
                         </div>
 
-                        <!-- CIUDAD -->
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.idCiudad" class="form-label">Ciudad</label>
                             <select asp-for="NuevoHotel.idCiudad" asp-items="Model.Ciudades" class="form-select">
@@ -47,14 +45,12 @@ body{
                             <span asp-validation-for="NuevoHotel.idCiudad" class="text-danger"></span>
                         </div>
 
-                        <!-- DIRECCIÓN -->
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.Direccion" class="form-label"></label>
                             <input asp-for="NuevoHotel.Direccion" class="form-control" placeholder="Ej: Av. Principal 123" />
                             <span asp-validation-for="NuevoHotel.Direccion" class="text-danger"></span>
                         </div>
 
-                        <!-- TELÉFONO -->
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.Telefono" class="form-label"></label>
 
@@ -68,7 +64,6 @@ body{
                             <span asp-validation-for="NuevoHotel.Telefono" class="text-danger"></span>
                         </div>
 
-                        <!-- URL -->
                         <div class="mb-3">
                             <label asp-for="NuevoHotel.URL" class="form-label"></label>
                             <input asp-for="NuevoHotel.URL" class="form-control" placeholder="Ej: https://www.hotelplaza.com" />

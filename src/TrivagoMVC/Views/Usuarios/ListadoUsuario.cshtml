@@ -45,8 +45,6 @@ body{
                                 </div>
                             </div>
                             <h5 class="card-title">@usuario.Nombre @usuario.Apellido</h5>
-                            <p class="card-text text-muted"><small>ID: @usuario.idUsuario</small></p>
-
                             <div class="d-flex justify-content-center gap-2 mt-3">
                                 <a class="btn btn-warning" href="@Url.Action("EditarUsuario", "Usuarios", new { idUsuario = usuario.idUsuario })">
                                     Editar

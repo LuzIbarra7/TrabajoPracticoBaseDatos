@@ -6,7 +6,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
 
     <style>
-        body{
+        body {
             background: #f7f7f7;
             font-family: "Roboto Condensed", sans-serif !important;
         }
@@ -36,18 +36,30 @@
             padding: 10px;
             border-radius: 10px;
         }
-
-        .cancelar-btn {
-        display: block;
-        width: 60%;
-        margin: 20px auto 0 auto; /* arriba 20px — centrado */
-        padding: 10px;
-        border-radius: 10px;
-        text-align: center;
-        font-weight: 600;
+        
+        .btn-volver {
+            display: block;
+            width: 100%;
+            margin: 20px auto 0 auto;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            background-color: #6c757d;
+            color: white;
+            transition: 0.3s ease;
         }
 
-        
+        .btn-volver:hover {
+            background-color: #5a6268;
+            transform: scale(1.03);
+        }
+
+        @@media (max-width: 576px) {
+            .btn-volver {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -70,15 +82,20 @@
 
         <div class="form-group mb-3">
             <label>Precio por noche</label>
-            <input asp-for="Nuevo.PrecioPorNoche" class="form-control" placeholder="Ej: 12000" />
+            <input asp-for="Nuevo.PrecioPorNoche"
+            class="form-control"
+            placeholder="Ej: 12000"
+            inputmode="decimal"
+            pattern="[0-9]+([,\.][0-9]+)?"
+            oninput="this.value = this.value.replace(/[^0-9.,]/g, '')" />
         </div>
 
         <button type="submit" class="btn btn-primary mt-2">Crear Habitación</button>
     </form>
 
-        <a asp-controller="Hoteles" asp-action="DetalleHotel" asp-route-idHotel="@Model.idHotel" 
-               class="btn btn-secondary btn-volver">
-                Cancelar
-            </a>
+    <a asp-controller="Hoteles" asp-action="DetalleHotel" asp-route-idHotel="@Model.idHotel" 
+       class="btn btn-volver">
+        Cancelar
+    </a>
 </div>
 </body>

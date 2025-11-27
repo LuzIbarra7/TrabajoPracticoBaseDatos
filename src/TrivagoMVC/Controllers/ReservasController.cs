@@ -44,59 +44,60 @@ namespace TrivagoMVC.Controllers
         }
 
        [HttpPost]
-public IActionResult AltaReserva(AltaReservaViewModel vm)
-{
-    // ---- VALIDACIONES DE FECHA ----
-    if (vm.Reserva.Entrada.Year < DateTime.Now.Year ||
-        vm.Reserva.Salida.Year < DateTime.Now.Year)
-    {
-        ModelState.AddModelError("", "Las fechas deben pertenecer al año actual o posterior.");
-    }
+        public IActionResult AltaReserva(AltaReservaViewModel vm)
+        {
+            // ---- VALIDACIONES DE FECHA ----
+            if (vm.Reserva.Entrada.Year < DateTime.Now.Year ||
+                vm.Reserva.Salida.Year < DateTime.Now.Year)
+            {
+                ModelState.AddModelError("", "Las fechas deben pertenecer al año actual o posterior.");
+            }
 
-    if (vm.Reserva.Entrada < DateTime.Today)
-    {
-        ModelState.AddModelError("", "La fecha de ingreso no puede ser anterior a hoy.");
-    }
+            if (vm.Reserva.Entrada < DateTime.Today)
+            {
+                ModelState.AddModelError("", "La fecha de ingreso no puede ser anterior a hoy.");
+            }
 
-    if (vm.Reserva.Salida <= vm.Reserva.Entrada)
-    {
-        ModelState.AddModelError("", "La fecha de salida debe ser posterior a la fecha de entrada.");
-    }
-    // --------------------------------
+            if (vm.Reserva.Salida <= vm.Reserva.Entrada)
+            {
+                ModelState.AddModelError("", "La fecha de salida debe ser posterior a la fecha de entrada.");
+            }
+            // --------------------------------
 
-    if (!ModelState.IsValid)
-    {
-        vm.Hoteles = _repoHotel.Listar()
-            .Select(h => new SelectListItem { Value = h.idHotel.ToString(), Text = h.Nombre })
-            .ToList();
+            if (!ModelState.IsValid)
+            {
+                vm.Hoteles = _repoHotel.Listar()
+                    .Select(h => new SelectListItem { Value = h.idHotel.ToString(), Text = h.Nombre })
+                    .ToList();
 
-        vm.MetodosPago = _repoMetodoPago.Listar()
-            .Select(m => new SelectListItem { Value = m.idMetodoPago.ToString(), Text = m.TipoMedioPago })
-            .ToList();
+                vm.MetodosPago = _repoMetodoPago.Listar()
+                    .Select(m => new SelectListItem { Value = m.idMetodoPago.ToString(), Text = m.TipoMedioPago })
+                    .ToList();
 
-        return View(vm);
-    }
+                return View(vm);
+            }
 
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    if (string.IsNullOrEmpty(userId))
-        return RedirectToAction("Login", "Cuenta");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Cuenta");
 
-    var nuevaReserva = new Reserva
-    {
-        idHotel = vm.Reserva.idHotel!.Value,
-        idHabitacion = vm.Reserva.idHabitacion!.Value,
-        idMetodoPago = vm.Reserva.idMetodoPago!.Value,
-        Entrada = vm.Reserva.Entrada,
-        Salida = vm.Reserva.Salida,
-        Telefono = vm.Reserva.Telefono,
-        idUsuario = uint.Parse(userId)
-    };
+            var nuevaReserva = new Reserva
+            {
+                idHotel = vm.Reserva.idHotel!.Value,
+                idHabitacion = vm.Reserva.idHabitacion!.Value,
+                idMetodoPago = vm.Reserva.idMetodoPago!.Value,
+                Entrada = vm.Reserva.Entrada,
+                Salida = vm.Reserva.Salida,
+                Telefono = vm.Reserva.Telefono,
+                idUsuario = uint.Parse(userId)
+            };
 
-    _repoReserva.Alta(nuevaReserva);
+            _repoReserva.Alta(nuevaReserva);
 
-    return RedirectToAction("ListadoReserva");
-}
+            return RedirectToAction("ListadoReserva");
+        }
 
+        //Listado
         public IActionResult ListadoReserva()
         {
             var reservas = _repoReserva.Listar();
@@ -109,7 +110,6 @@ public IActionResult AltaReserva(AltaReservaViewModel vm)
 
                 var metodoPago = _repoMetodoPago.Detalle(r.idMetodoPago);
 
-                // Asignar strings correctos
                 r.UsuarioNombreCompleto = usuario != null ? usuario.Nombre + " " + usuario.Apellido : "—";
                 r.TipoHabitacionNombre = habitacion != null ? habitacion.tipoHabitacion.Nombre : "—";
                 r.MetodoPagoNombre = metodoPago != null ? metodoPago.TipoMedioPago : "—";
@@ -120,6 +120,7 @@ public IActionResult AltaReserva(AltaReservaViewModel vm)
             return View(lista);
         }
 
+        //Detalle
         public IActionResult DetalleReserva(uint id)
         {
             var reserva = _repoReserva.Detalle(id);
@@ -147,7 +148,7 @@ public IActionResult AltaReserva(AltaReservaViewModel vm)
             if (reserva == null)
                 return NotFound();
 
-            _repoReserva.Baja(id);   // MÉTODO QUE YA TENÉS PARA BORRAR
+            _repoReserva.Baja(id);
 
             return RedirectToAction("ListadoReserva");
         }

@@ -55,24 +55,29 @@ namespace TrivagoMVC.Controllers
 
 
         // Alta de habitación
-        public async Task<IActionResult> AltaHabitacion()
+        public async Task<IActionResult> AltaHabitacion(uint idHotel)
         {
             var hoteles = await _repoHotel.ListarAsync();
 
             var vm = new AltaHabitacionViewModel
             {
+                idHotel = idHotel,
                 Hoteles = hoteles.Select(h => new SelectListItem
                 {
                     Value = h.idHotel.ToString(),
-                    Text = h.Nombre
-                })
+                    Text = h.Nombre,
+                    Selected = (h.idHotel == idHotel) // <-- Selecciona automáticamente
+                }),
+                
+                // 👇 ESTA LÍNEA ES LA CLAVE
+                Nuevo = new HabitacionFormViewModel
+                {
+                    idHotel = idHotel
+                }
             };
 
             return View(vm);
         }
-
-
-
 
        [HttpPost]
         public IActionResult AltaHabitacion(AltaHabitacionViewModel vm)
@@ -80,17 +85,17 @@ namespace TrivagoMVC.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            // Crear tipo de habitación nuevo
+            // Se crea el tipo de habitación nuevo
             var tipo = new TipoHabitacion
             {
                 Nombre = vm.Nuevo.NombreTipo
             };
             _repoTipoHabitacion.Alta(tipo);
             
-            // Crear la habitación
+            // Se crear la habitación
             var habitacion = new Habitacion
             {
-                PrecioPorNoche = vm.Nuevo.PrecioPorNoche,
+                PrecioPorNoche = (decimal)vm.Nuevo.PrecioPorNoche,
                 hotel = new Hotel { idHotel = vm.Nuevo.idHotel },
                 tipoHabitacion = tipo
             };
@@ -105,7 +110,6 @@ namespace TrivagoMVC.Controllers
 
         // Agregar comentario
         [HttpPost]
-        [HttpPost]
         public IActionResult Comentar(uint idHabitacion, sbyte calificacion, string texto, uint idHotel)
         {
             var comentario = new Comentario
@@ -118,7 +122,7 @@ namespace TrivagoMVC.Controllers
 
             _repoComentario.Alta(comentario);
 
-            // Volvemos al detalle de esa habitación
+            // Para volver al detalle de esa habitación
             return RedirectToAction(
                 "DetalleHabitacion",
                 new { idHabitacion = idHabitacion, idHotel = idHotel }

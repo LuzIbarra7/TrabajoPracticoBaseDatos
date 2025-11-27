@@ -7,7 +7,6 @@ namespace TrivagoMVC.Models
     {
         public Usuario Usuario { get; set; } = new Usuario();
 
-        // Para detalle individual
         public uint idUsuario => Usuario.idUsuario;
         public string? Nombre => Usuario.Nombre;
         public string? Apellido => Usuario.Apellido;

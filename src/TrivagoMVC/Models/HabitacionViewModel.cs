@@ -10,7 +10,7 @@ namespace TrivagoMVC.Models
 
         public string NombreTipo { get; set; }
 
-        public decimal PrecioPorNoche { get; set; }
+        public decimal? PrecioPorNoche { get; set; }
     }
 
 
@@ -31,8 +31,8 @@ namespace TrivagoMVC.Models
     public class HabitacionViewModel
     {
         public uint idHabitacion { get; set; }
-        public string NombreTipo { get; set; }  // Nombre del tipo de habitación
-        public string NombreHotel { get; set; } // Nombre del hotel
+        public string NombreTipo { get; set; }  
+        public string NombreHotel { get; set; } 
         public decimal PrecioPorNoche { get; set; }
         public uint idHotel { get; set; }    
         public List<Comentario> Comentarios {get; set;} = new List<Comentario>();

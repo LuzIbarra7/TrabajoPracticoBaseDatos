@@ -64,7 +64,7 @@ namespace TrivagoMVC.Controllers
             if (!ModelState.IsValid) return View(vm);
 
             _repoUsuario.Alta(vm.Usuario);
-            return RedirectToAction("Login");
+            return RedirectToAction("DetalleUsuarioLista");
         }
 
         // EDITAR USUARIO

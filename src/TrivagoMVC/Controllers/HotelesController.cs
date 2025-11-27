@@ -93,7 +93,7 @@ namespace TrivagoMVC.Controllers
 
             var ciudad = await _repoCiudad.DetalleAsync(hotel.idCiudad);
             
-            // Traer habitaciones
+            // Trae habitaciones
             var habitaciones = await _repoHabitacion.InformarHabitacionPorIdHotelAsync(idHotel);
 
             var viewModel = new HotelConCiudadViewModel

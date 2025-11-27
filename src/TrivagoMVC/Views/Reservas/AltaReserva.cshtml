@@ -30,7 +30,6 @@
 
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                        <!-- HOTEL -->
                         <div class="mb-3">
                             <label class="form-label">Hotel</label>
                             <select id="HotelId" asp-for="Reserva.idHotel" class="form-select">
@@ -42,7 +41,6 @@
                             </select>
                         </div>
 
-                        <!-- HABITACIÓN -->
                         <div class="mb-3">
                             <label class="form-label">Habitación</label>
                             <select id="HabitacionId" asp-for="Reserva.idHabitacion" class="form-select">
@@ -50,13 +48,11 @@
                             </select>
                         </div>
 
-                        <!-- PRECIO AUTO -->
                         <div class="mb-3">
                             <label class="form-label">Precio</label>
                             <input type="text" id="Precio" class="form-control" readonly />
                         </div>
 
-                        <!-- FECHAS -->
                         <div class="mb-3">
                             <label class="form-label">Fecha de Entrada</label>
                             <input asp-for="Reserva.Entrada" type="date" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")"/>
@@ -67,7 +63,6 @@
                             <input asp-for="Reserva.Salida" type="date" class="form-control" value="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")"/>
                         </div>
 
-                        <!-- TELÉFONO -->
                         <div class="mb-3">
                             <label asp-for="Reserva.Telefono" class="form-label"></label>
 
@@ -83,7 +78,6 @@
                         </div>
 
 
-                        <!-- MÉTODO DE PAGO -->
                         <div class="mb-3">
                             <label class="form-label">Método de Pago</label>
                             <select asp-for="Reserva.idMetodoPago" asp-items="Model.MetodosPago" class="form-select">
@@ -109,7 +103,6 @@
     <script>
         $(document).ready(function () {
 
-            // Cambiar hotel => cargar habitaciones
             $('#HotelId').change(function () {
                 var idHotel = $(this).val();
 
@@ -123,7 +116,7 @@
                             $('#HabitacionId').append(
                                 $('<option>', {
                                     value: h.id,
-                                    text: h.nombre,   // <<--- ESTE era tu problema
+                                    text: h.nombre, 
                                     'data-precio': h.precio
                                 })
                             );
@@ -132,7 +125,6 @@
                 }
             });
 
-            // Cambiar habitación => mostrar precio
             $('#HabitacionId').change(function () {
                 var precio = $('#HabitacionId option:selected').data('precio');
                 $('#Precio').val(precio ? "$" + precio : "");
