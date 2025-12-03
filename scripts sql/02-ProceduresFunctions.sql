@@ -53,8 +53,8 @@ declare disponible bool;
 exists(
 select *
             from Reserva
-            where (Entrada >= unaEntrada and Entrada <= unaSalida)
-            or (Entrada <= unaEntrada and Salida >= unaEntrada)
+            where ((Entrada >= unaEntrada and Entrada <= unaSalida)
+            or (Entrada <= unaEntrada and Salida >= unaEntrada))
             and idHabitacion = unIdHabitacion
             and unaEntrada < now()
         )
