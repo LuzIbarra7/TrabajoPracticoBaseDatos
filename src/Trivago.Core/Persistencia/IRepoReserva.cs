@@ -8,4 +8,6 @@ public interface IRepoReserva :  IAlta<Reserva, uint>, IListado<Reserva>, IDetal
     List<Reserva> InformarReservasPorIdMetodoPago(uint idMetodoPago);
     List<MetodoPago> ListarMetodosPago();
     void Baja(uint idReserva);
+    bool HaySuperposicionFechas(uint idHabitacion, DateTime entrada, DateTime salida);
+
 }   

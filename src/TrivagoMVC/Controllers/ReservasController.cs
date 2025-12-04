@@ -59,6 +59,14 @@ namespace TrivagoMVC.Controllers
                 ModelState.AddModelError("", "La fecha de salida debe ser posterior a la fecha de entrada.");
             }
 
+            if (_repoReserva.HaySuperposicionFechas(
+                vm.Reserva.idHabitacion!.Value,
+                vm.Reserva.Entrada,
+                vm.Reserva.Salida))
+            {
+                ModelState.AddModelError("", "La habitación ya está reservada en ese período.");
+            }
+
             if (!ModelState.IsValid)
             {
                 vm.Hoteles = _repoHotel.Listar()

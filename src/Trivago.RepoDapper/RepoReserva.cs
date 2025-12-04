@@ -13,11 +13,15 @@ public class RepoReserva : RepoDapper, IRepoReserva
     //Altas
     public async Task<uint> AltaAsync(Reserva reserva)
     {
+        if (HaySuperposicionFechas(reserva.idHabitacion, reserva.Entrada, reserva.Salida))
+        {
+            throw new Exception("La habitación ya está reservada para ese rango de fechas.");
+        }
+
         string storedProcedure = "insert_reserva";
         DynamicParameters parametros = CargarParamsAlta(reserva);
 
         await _conexion.ExecuteAsync(storedProcedure, parametros);
-
         reserva.idReserva = parametros.Get<uint>("p_idReserva");
         return reserva.idReserva;
     }
@@ -37,14 +41,18 @@ public class RepoReserva : RepoDapper, IRepoReserva
 
     public uint Alta(Reserva reserva)
     {
-        var parametrosAlta = CargarParamsAlta(reserva);
+        // Validación ANTES de insertar
+        if (HaySuperposicionFechas(reserva.idHabitacion, reserva.Entrada, reserva.Salida))
+        {
+            throw new Exception("La habitación ya está reservada para ese rango de fechas.");
+        }
 
+        var parametrosAlta = CargarParamsAlta(reserva);
         _conexion.Execute("insert_reserva", parametrosAlta);
 
         reserva.idReserva = parametrosAlta.Get<uint>("p_idReserva");
         return reserva.idReserva;
     }
-
     
     private async Task<Reserva?> DetalleReservaInternaAsync(uint id, Func<string, object, Task<Reserva?>> ejecutor)
     {
@@ -153,11 +161,32 @@ public class RepoReserva : RepoDapper, IRepoReserva
         string sql = "SELECT * FROM MetodoPago";
         return _conexion.Query<MetodoPago>(sql).ToList();
     }
-   public void Baja(uint id)
-{
-    string sql = "DELETE FROM Reserva WHERE idReserva = @id";
-    _conexion.Execute(sql, new { id });
-}
+    
+    public void Baja(uint id)
+    {
+        string sql = "DELETE FROM Reserva WHERE idReserva = @id";
+        _conexion.Execute(sql, new { id });
+    }
+
+    public bool HaySuperposicionFechas(uint idHabitacion, DateTime entrada, DateTime salida)
+    {
+        string sql = @"
+            SELECT COUNT(*) 
+            FROM Reserva
+            WHERE idHabitacion = @idHabitacion
+            AND (
+                    (@entrada < Salida) AND (@salida > Entrada)
+                )
+        ";
+
+        int count = _conexion.ExecuteScalar<int>(sql, new {
+            idHabitacion,
+            entrada,
+            salida
+        });
+
+        return count > 0;
+    }
 
 
 }
